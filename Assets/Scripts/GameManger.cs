@@ -69,6 +69,7 @@ public class GameManger : MonoBehaviour
     {
         lookSometingByIndex(2);
     }
+    
     public void lookSometingByIndex(int index)
     {
         float time1 = Time.realtimeSinceStartup;
