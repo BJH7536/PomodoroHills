@@ -1,4 +1,0 @@
-repository "SPS@FirstOrganization@cloud"
-  path "/"
-    br "/main"
-    co "/main"
