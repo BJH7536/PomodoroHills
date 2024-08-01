@@ -2,8 +2,6 @@ using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using VInspector;
-using static Cinemachine.CinemachineVirtualCameraBase;
 
 public class CameraManager : MonoBehaviour
 {

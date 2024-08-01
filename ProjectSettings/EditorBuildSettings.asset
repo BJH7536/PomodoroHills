@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Pinch.unity
+    guid: 729228b930199a244928a449a23be1ce
+  - enabled: 1
     path: Assets/Scenes/SwipeUpUI.unity
     guid: d78e82acd2ae63a43b05612da8a69058
   - enabled: 1
