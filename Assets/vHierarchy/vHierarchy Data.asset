@@ -64,16 +64,19 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-220297318-0
         - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-1804763560-0
         - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-610161644-0
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-1510948442-0
         values:
-        - colorIndex: 6
-          iconNameOrGuid: 
-        - colorIndex: 3
-          iconNameOrGuid: 
-        - colorIndex: 5
-          iconNameOrGuid: 
+        - colorIndex: 0
+          iconNameOrGuid: Folder Icon
+        - colorIndex: 0
+          iconNameOrGuid: Folder Icon
+        - colorIndex: 0
+          iconNameOrGuid: Folder Icon
         - colorIndex: 0
           iconNameOrGuid: Settings Icon
         - colorIndex: 8
+          iconNameOrGuid: 
+        - colorIndex: 6
           iconNameOrGuid: 
     - goDatas_byGlobalId:
         keys:
