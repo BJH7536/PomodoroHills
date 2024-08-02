@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -11,7 +11,7 @@ public class TouchArea : MonoBehaviour, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        inputPanel.SetActive(true);     //�Է��г� Ȱ��ȭ
+        inputPanel.SetActive(true);     //입력패널 활성화
     }
 
 

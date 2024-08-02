@@ -16,10 +16,6 @@ public class CircularSilde : MonoBehaviour
 
 	[SerializeField]
 	private Image progressImage;
-	[SerializeField]
-	private RectTransform progressEndContainer;
-	[SerializeField]
-	private RectTransform progressEndImage;
 
 	private void Update()
 	{
@@ -39,8 +35,6 @@ public class CircularSilde : MonoBehaviour
 		float fillAmount = (value);
 		progressImage.fillAmount = fillAmount;
 		float angle = fillAmount * 360.0f;
-		progressEndContainer.localEulerAngles = new Vector3(0, 0, -angle);
-		progressEndImage.localEulerAngles = new Vector3(0, 0, angle);
 	}
 
 	public float GetFillAmount()

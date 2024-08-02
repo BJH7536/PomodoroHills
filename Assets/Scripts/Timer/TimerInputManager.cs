@@ -1,4 +1,4 @@
-using TMPro;
+ï»¿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,7 +15,7 @@ public class TimerInputManager : MonoBehaviour
         
     private void Start()
     {                                                                   
-        // °¢ ÀÔ·ÂÇÊµå¿¡ °ª ÀÔ·Â½Ã ÃÖ´ë±æÀÌ(2)ÀÔ·Â ½Ã ÇöÀç ÀÔ·ÂÇÊµåÀÇ ÀÔ·Â°ªÀ» Á¦ÇÑÇÏ°í ´ÙÀ½ ÀÔ·ÂÇÊµå·Î ÀÌµ¿ÇÔ
+        // ê° ì…ë ¥í•„ë“œì— ê°’ ì…ë ¥ì‹œ ìµœëŒ€ê¸¸ì´(2)ì…ë ¥ ì‹œ í˜„ì¬ ì…ë ¥í•„ë“œì˜ ì…ë ¥ê°’ì„ ì œí•œí•˜ê³  ë‹¤ìŒ ì…ë ¥í•„ë“œë¡œ ì´ë™í•¨
         inputMainHour.onValueChanged.AddListener(delegate { OnValueChanged(inputMainHour, inputMainMinute, 23); });
         inputMainMinute.onValueChanged.AddListener(delegate { OnValueChanged(inputMainMinute, inputMainSecond, 60); });
         inputMainSecond.onValueChanged.AddListener(delegate { OnValueChanged(inputMainSecond, inputRestHour, 60); });
@@ -31,7 +31,7 @@ public class TimerInputManager : MonoBehaviour
 
     void OnValueChanged(TMP_InputField currentField, TMP_InputField nextField, int maxValue)
     {
-    // °¢ ÀÔ·ÂÇÊµå¿¡ °ª ÀÔ·Â½Ã ÃÖ´ë±æÀÌ(2)ÀÔ·Â ½Ã ÇöÀç ÀÔ·ÂÇÊµåÀÇ ÀÔ·Â°ªÀ» Á¦ÇÑÇÏ°í ´ÙÀ½ ÀÔ·ÂÇÊµå·Î ÀÌµ¿ÇÔ
+    // ê° ì…ë ¥í•„ë“œì— ê°’ ì…ë ¥ì‹œ ìµœëŒ€ê¸¸ì´(2)ì…ë ¥ ì‹œ í˜„ì¬ ì…ë ¥í•„ë“œì˜ ì…ë ¥ê°’ì„ ì œí•œí•˜ê³  ë‹¤ìŒ ì…ë ¥í•„ë“œë¡œ ì´ë™í•¨
 
         if (currentField.text.Length >= 2)
         {
@@ -45,13 +45,13 @@ public class TimerInputManager : MonoBehaviour
             }
             else
             {
-                // À¯È¿ÇÑ °ªÀÌ ¾Æ´Ò °æ¿ì ÃÖ´ë°ªÀ¸·Î ¼³Á¤
-                currentField.text = (maxValue - 1).ToString("D2"); // µÎ ÀÚ¸® Çü½ÄÀ¸·Î ¼³Á¤ÇÕ´Ï´Ù.
+                // ìœ íš¨í•œ ê°’ì´ ì•„ë‹ ê²½ìš° ìµœëŒ€ê°’ìœ¼ë¡œ ì„¤ì •
+                currentField.text = (maxValue - 1).ToString("D2"); // ë‘ ìë¦¬ í˜•ì‹ìœ¼ë¡œ ì„¤ì •í•©ë‹ˆë‹¤.
             }
         }
     }
 
-    public void OnSubmit()                      //Å¸ÀÌ¸Ó ¼³Á¤ È®ÀÎ¹öÆ°¿¡ »ç¿ë
+    public void OnSubmit()                      //íƒ€ì´ë¨¸ ì„¤ì • í™•ì¸ë²„íŠ¼ì— ì‚¬ìš©
     {                                                
         float mainTime = 0f;
         float restTime = 0f;
@@ -66,12 +66,12 @@ public class TimerInputManager : MonoBehaviour
 
         if (mainTime != 0f && restTime!= 0f)
         {
-            timerWork.GetSubmit(mainTime, restTime);    //µÎ Å¸ÀÌ¸Ó °ª È®ÀÎ ¹× Á¦Ãâ
-            gameObject.SetActive(false);                //Å¸ÀÌ¸Ó ¼³Á¤ Ã¢ Á¾·á
+            timerWork.GetSubmit(mainTime, restTime);    //ë‘ íƒ€ì´ë¨¸ ê°’ í™•ì¸ ë° ì œì¶œ
+            gameObject.SetActive(false);                //íƒ€ì´ë¨¸ ì„¤ì • ì°½ ì¢…ë£Œ
         }
         else
         {
-            Debug.Log("they can't be zero");            //µÎ Å¸ÀÌ¸Ó °ªÀÌ 0ÀÌ¸é Å¸ÀÌ¸Ó ¼³Á¤ °ÅºÎ
+            Debug.Log("they can't be zero");            //ë‘ íƒ€ì´ë¨¸ ê°’ì´ 0ì´ë©´ íƒ€ì´ë¨¸ ì„¤ì • ê±°ë¶€
         }
             
     }

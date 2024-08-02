@@ -8,10 +8,32 @@ using UnityEngine.UI;
 using TMPro;
 using Ricimi;
 using Cinemachine;
+using Gley.Jumpy;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class TimerWork : MonoBehaviour
 {
-    // 실제로 시간이 작동하는 곳
+    private static TimerWork _instance;
+
+    public static TimerWork Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<TimerWork>();
+                if (_instance == null)
+                {
+                    GameObject go = new GameObject("TimerWork");
+                    _instance = go.AddComponent<TimerWork>();
+                }
+            }
+            return _instance;
+        }
+    }
+
+
+    // 실제로 시간이 작동하는 스크립트임
 
     private float timeToMain ;                  //집중 타이머 설정값
     private float timeToRest;                   //휴식 타이머 설정값
@@ -22,6 +44,23 @@ public class TimerWork : MonoBehaviour
     private bool restCheck = false;             //잔여 타이머가 집중 타이머인지 휴식타이머인지
     private bool isStopped = true;              //타이머의 중단 여부 (ex)▶||
     private bool isWork = false;                //타이머의 작동 여부 (ex)▶■
+    public bool IsStopped
+    {
+        get { return isStopped; }
+        private set { IsStopped = value; }
+    }
+    public bool IsWork
+    {
+        get { return isWork; }
+        private set { IsWork = value; }
+    }
+    public bool RestCheck
+    {
+        get { return restCheck; }
+        private set { RestCheck = value; }
+    }
+
+    public ToDoListContent selectedToDo;        // 타이머의 실행결과를 받을 ToDoItem
 
     public TimerInputManager timerInputManager; 
     public TextMeshProUGUI textForTimer;        // 타이머 숫자 UI
@@ -30,12 +69,21 @@ public class TimerWork : MonoBehaviour
 
     public Button buttonPlay;                   // 새 타이머 주기를 시작하거나 중지/재개하는 버튼
     public Button buttonReset;                  // 현재 타이머 주기를 종료하고 초기화하는 버튼
-    public TMP_Text textStatus;              //현재 상재 (주상태, 휴식상태)를 표시하기위한 임시수단입니다.
+    public RawImage mainImage;              //현재 상재 (주상태, 휴식상태)를 표시하기위한 임시수단입니다.
+    public RawImage restImage;              //현재 상재 (주상태, 휴식상태)를 표시하기위한 임시수단입니다.
+ 
+
+
     void Awake()
     {
+        if(_instance!=null && _instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
         circularSlide = timerSlide.GetComponent<CircularSilde>();
-        buttonPlay.onClick.AddListener(PressPlay);
-        buttonReset.onClick.AddListener(PressReset);
+        buttonPlay.onClick.AddListener(PlayTimer);
+        buttonReset.onClick.AddListener(ResetTimer);
     }
 
     void Start()
@@ -50,6 +98,7 @@ public class TimerWork : MonoBehaviour
         {
             if (timeLeft > 0){ 
                 timeLeft -= Time.deltaTime; //타이머 시간 감소
+                ReturnTimerResult();
                 if (timeLeft < 0)           //잔여 시간이 잘못표시되지않게
                 { timeLeft = 0; } 
                 UpdateTimerText();          //타이머 텍스트 갱신
@@ -58,15 +107,16 @@ public class TimerWork : MonoBehaviour
             else if (!restCheck){ 
                 timeLeft  = timeToRest; 
                 restCheck = true;
-                textStatus.text = "Rest Phase";
+                SetImage();
             }else if (cycleLeft > 1){       //잔여 반복회수 확인() 현재는 미사용
                 cycleLeft--;
                 timeLeft = timeToMain;
                 restCheck = false;
+                SetImage();
             }
             else
             {
-                PressReset();               // 타이머 주기 종료 및 초기화
+                ResetTimer();               // 타이머 주기 종료 및 초기화
             }
         }   
 
@@ -123,15 +173,16 @@ public class TimerWork : MonoBehaviour
         timeToRest = restTime;
         isStopped = true;
         isWork = false;
+        ResetTimer();
     }
 
-    private void PressPlay()
+    private void PlayTimer()        //타이머 실행 및 버튼 색 전환
     {
-        if (!isWork) { PressReset(); isWork = true; }
+        if (!isWork) { ResetTimer(); isWork = true; buttonPlay.image.color = Color.green; }
         else if (!isStopped) { isStopped = true; buttonPlay.image.color = Color.white; }
         else { isStopped = false; buttonPlay.image.color = Color.green ; }
     }
-    private void PressReset()
+    private void ResetTimer()       //타이머 초기화
     {
         isWork = false;
         isStopped = false;
@@ -139,10 +190,37 @@ public class TimerWork : MonoBehaviour
         timeLeft = timeToMain;
         cycleLeft = cycleToDo;
 
-        textStatus.text = "Main Phase";
+        SetImage();
         buttonPlay.image.color = Color.white;
 
         UpdateTimerText();
         UpdateTimerSlide();
     }
+
+
+    private void SetImage()         //타이머에 집중주기와 휴식주기의 아이콘 전환
+    {
+        if (restCheck)
+        {
+            mainImage.enabled = false;
+            restImage.enabled = true;
+        }
+        else
+        {
+            restImage.enabled = false;
+            mainImage.enabled = true;
+        }
+    }
+
+    private void ReturnTimerResult()    //선택된 ToDoList에 타이머 시간 반환
+    {
+        if(selectedToDo != null && !restCheck)
+        {
+            selectedToDo.timePerformed +=Time.deltaTime;
+            selectedToDo.SetTimeText();                 //리스트로 돌아가는 메서드로 옮길예정
+        }
+    }
+
+
+
 }
