@@ -190,6 +190,8 @@ public class TimerWork : MonoBehaviour
         timeLeft = timeToMain;
         cycleLeft = cycleToDo;
 
+        ResetToDoTimeToInt();
+
         SetImage();
         buttonPlay.image.color = Color.white;
 
@@ -212,13 +214,20 @@ public class TimerWork : MonoBehaviour
         }
     }
 
-    private void ReturnTimerResult()    //선택된 ToDoList에 타이머 시간 반환
+
+
+    //아래의 코드는 현재 선택된 ToDoListContent의 누적시간을 제어하는 코드입니다.
+    private void ReturnTimerResult()                    //선택된 ToDoList에 타이머 시간 반환
     {
         if(selectedToDo != null && !restCheck)
         {
             selectedToDo.timePerformed +=Time.deltaTime;
             selectedToDo.SetTimeText();                 //리스트로 돌아가는 메서드로 옮길예정
         }
+    }
+    private void ResetToDoTimeToInt()                   //타이머종료시 잔류한 소수점 아래의 값을 삭제합니다.
+    {   if(selectedToDo !=null)
+        selectedToDo.timePerformed = (int)selectedToDo.timePerformed;
     }
 
 

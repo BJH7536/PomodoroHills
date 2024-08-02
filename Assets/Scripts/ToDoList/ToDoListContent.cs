@@ -12,7 +12,7 @@ public class ToDoListContent : MonoBehaviour
     public Button deleteButton;
 
     public float timePerformed;             //타이머와 함께 작동한 시간(누적)
-    
+    //timePerformed = before + timermax -timerleft로 수정
 
     private void Start()                            //삭제버튼 클릭 시 ToDoItem 삭제
     {
@@ -34,7 +34,15 @@ public class ToDoListContent : MonoBehaviour
     }
     public void SelectToDo()
     {
+        //기존 선택 버튼 색상 변경
+        if (TimerWork.Instance.selectedToDo != null)
+        {
+            TimerWork.Instance.selectedToDo.playButton.image.color = Color.white;
+        }
         TimerWork.Instance.selectedToDo = GetComponent<ToDoListContent>();
+        TimerWork.Instance.selectedToDo.playButton.image.color = Color.green;
+
+
     }
 
 }
