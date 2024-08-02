@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,10 @@ public class ToDoListManager : MonoBehaviour
     public Transform content;           //Scroll View Content 오브젝트
     public Button addItemButton;
 
+
+    public GameObject toDoListUI;
+    public GameObject timerUI;
+
     private void Start()
     {
         addItemButton.onClick.AddListener(AddToDoItem);
@@ -20,8 +25,14 @@ public class ToDoListManager : MonoBehaviour
     {
         if (!string.IsNullOrWhiteSpace(inputField.text)){
             GameObject newItem = Instantiate(todoItemPrefab, content);
-            newItem.GetComponent<ToDoListContent>().contentText.text = inputField.text;
+            ToDoListContent newItemContent = newItem.GetComponent<ToDoListContent>();
+            newItemContent.contentText.text = inputField.text;
             inputField.text = "";
+
+            if (timerUI != null)                //ON/OFF해야할 UI에 대한 정보 저장
+                newItemContent.timerUI = timerUI;
+            if (toDoListUI != null)
+                newItemContent.toDoListUI = toDoListUI;   
         }
     }
 

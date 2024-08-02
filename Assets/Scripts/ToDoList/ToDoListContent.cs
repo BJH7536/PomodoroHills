@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,9 @@ public class ToDoListContent : MonoBehaviour
     public TextMeshProUGUI timeText;
     public Button playButton;
     public Button deleteButton;
+
+    public GameObject toDoListUI;
+    public GameObject timerUI;
 
     public float timePerformed;             //타이머와 함께 작동한 시간(누적)
     //timePerformed = before + timermax -timerleft로 수정
@@ -42,7 +46,10 @@ public class ToDoListContent : MonoBehaviour
         TimerWork.Instance.selectedToDo = GetComponent<ToDoListContent>();
         TimerWork.Instance.selectedToDo.playButton.image.color = Color.green;
 
-
-    }
+        if (toDoListUI != null)         //투두리스트 UI를 끄고타이머의 UI로 이동
+            toDoListUI.SetActive(false);
+        if (timerUI != null)
+            timerUI.SetActive(true);
+}
 
 }

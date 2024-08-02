@@ -71,8 +71,10 @@ public class TimerWork : MonoBehaviour
     public Button buttonReset;                  // 현재 타이머 주기를 종료하고 초기화하는 버튼
     public RawImage mainImage;              //현재 상재 (주상태, 휴식상태)를 표시하기위한 임시수단입니다.
     public RawImage restImage;              //현재 상재 (주상태, 휴식상태)를 표시하기위한 임시수단입니다.
- 
 
+    public GameObject toDoListUI;
+    public GameObject timerUI;
+    public Button undoButton;
 
     void Awake()
     {
@@ -88,6 +90,7 @@ public class TimerWork : MonoBehaviour
 
     void Start()
     {
+        undoButton.onClick.AddListener(ReturnToDoListUI);
         TimerSet(5,5);
     }
 
@@ -212,6 +215,16 @@ public class TimerWork : MonoBehaviour
             restImage.enabled = false;
             mainImage.enabled = true;
         }
+    }
+
+    //아래의 코드는 상하관계인 ToDoList UI와의 이동(UI전환)을 제어하는 코드입니다.
+    private void ReturnToDoListUI()
+    {
+        if (timerUI != null)
+            timerUI.SetActive(false);
+        if (toDoListUI != null)         //투두리스트 UI를 끄고타이머의 UI로 이동
+            toDoListUI.SetActive(true);
+
     }
 
 
