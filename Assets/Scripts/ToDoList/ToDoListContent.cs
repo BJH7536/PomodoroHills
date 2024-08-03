@@ -41,10 +41,11 @@ public class ToDoListContent : MonoBehaviour
         //기존 선택 버튼 색상 변경
         if (TimerWork.Instance.selectedToDo != null)
         {
-            TimerWork.Instance.selectedToDo.playButton.image.color = Color.white;
+            TimerWork.Instance.selectedToDo.playButton.image.color = new Color32(192, 79, 21, 255);
         }
         TimerWork.Instance.selectedToDo = GetComponent<ToDoListContent>();
-        TimerWork.Instance.selectedToDo.playButton.image.color = Color.green;
+        TimerWork.Instance.selectedToDo.playButton.image.color = new Color32(142, 76, 41, 255);
+
 
         if (toDoListUI != null)         //투두리스트 UI를 끄고타이머의 UI로 이동
             toDoListUI.SetActive(false);
