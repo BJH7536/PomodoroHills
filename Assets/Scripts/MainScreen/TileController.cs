@@ -11,11 +11,52 @@ using UnityEngine.EventSystems;
 [ExecuteInEditMode]
 public class TileController : MonoBehaviour, IPointerClickHandler
 {
-    [SerializeField] private TMP_Text DebugText;
     [SerializeField] public CinemachineVirtualCamera camera;
     [SerializeField] private CameraManager CameraManager;
     [SerializeField] private MMF_Player MmfPlayer;
 
+    public static void HideAllTile()
+    {
+        TileController[] otherTiles = FindObjectsOfType<TileController>();
+        foreach (TileController otherTile in otherTiles)
+        {
+            otherTile.InvisibleChild();
+        }
+    }
+    
+    public static void HideAllTile(TileController except)
+    {
+        TileController[] otherTiles = FindObjectsOfType<TileController>();
+        foreach (TileController otherTile in otherTiles)
+        {
+            if (otherTile != except)
+            {
+                otherTile.InvisibleChild();
+            }
+        }
+    }
+    
+    public static void UnHideAllTile()
+    {
+        TileController[] otherTiles = FindObjectsOfType<TileController>();
+        foreach (TileController otherTile in otherTiles)
+        {
+            otherTile.VisibleChild();
+        }
+    }
+    
+    public static void UnHideAllTile(TileController except)
+    {
+        TileController[] otherTiles = FindObjectsOfType<TileController>();
+        foreach (TileController otherTile in otherTiles)
+        {
+            if (otherTile != except)
+            {
+                otherTile.VisibleChild();
+            }
+        }
+    }
+    
     private void Awake()
     {
         MmfPlayer = GetComponent<MMF_Player>();
@@ -24,13 +65,23 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     [ContextMenu("VisibleChild")]
     public void VisibleChild()
     {
-        gameObject.transform.GetChild(0).gameObject.SetActive(true);
+        GetComponent<Collider>().enabled = true;
+        
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).gameObject.SetActive(true);
+        }
     }
     
     [ContextMenu("InvisibleChild")]
     public void InvisibleChild()
     {
-        gameObject.transform.GetChild(0).gameObject.SetActive(false);
+        GetComponent<Collider>().enabled = false;
+        
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).gameObject.SetActive(false);
+        }
     }
 
     [ContextMenu("DisableCamera")]
@@ -47,14 +98,16 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     
     public void OnPointerClick(PointerEventData eventData)
     {
-        DebugText.text = gameObject.name;
-
+        MmfPlayer.PlayFeedbacks();
+        
         CameraManager.CameraTransition(camera);
 
         // Sequence seq = DOTween.Sequence();
         // seq.Append(transform.DOScale(originScale * 1.2f, 0.25f).SetEase(Ease.InOutBounce));
         // seq.Append(transform.DOScale(originScale, 0.25f).SetEase(Ease.InOutBounce));
         
-        MmfPlayer.PlayFeedbacks();
+        TileController.HideAllTile(this);
+        
+        CameraManager.currentCameraMode = CameraManager.CameraMode.ZoomIn;
     }
 }

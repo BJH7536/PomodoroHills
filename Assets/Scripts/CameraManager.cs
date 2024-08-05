@@ -14,6 +14,14 @@ public class CameraManager : MonoBehaviour
     private CinemachineBrain cinemachineBrain;
     private int targetIndex = -1;
 
+    [SerializeField] public static CameraMode currentCameraMode = CameraMode.ZoomOut;
+    
+    public enum CameraMode
+    {
+        ZoomIn,
+        ZoomOut,
+    }
+    
     private void Start()
     {
         Application.targetFrameRate = 120;
@@ -46,6 +54,12 @@ public class CameraManager : MonoBehaviour
 
     public void ZoomOut()
     {
+        if (currentCameraMode == CameraMode.ZoomOut) return;
+        
         CameraTransition(ZoomOutCamera);
+        
+        TileController.UnHideAllTile();
+
+        currentCameraMode = CameraMode.ZoomOut;
     }
 }

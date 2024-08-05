@@ -65,6 +65,24 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-1804763560-0
         - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-610161644-0
         - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-1510948442-0
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-7185067208325702605-8518444466145346299
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-1203971686339634552-8518444466145346299
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-2608105118981651521-8518444466145346299
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-9063859402332926721-8518444466145346299
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-8340145166185393739-8518444466145346299
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-6184881495868909108-8518444466145346299
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-3176001379798513237-8518444466145346299
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-91062417212892174-8518444466145346299
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-8323257601861558459-8518444466145346299
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-4646779108177765043-8518444466145346299
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-124003591154269532-8518444466145346299
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-5440139579035607265-8518444466145346299
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-2760992616208659767-8518444466145346299
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-1789151904267017375-8518444466145346299
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-2177572646034661998-8518444466145346299
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-434908894-0
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-2416456288396144330-5350083934398023830
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-417535767-0
         values:
         - colorIndex: 0
           iconNameOrGuid: Folder Icon
@@ -77,6 +95,42 @@ MonoBehaviour:
         - colorIndex: 8
           iconNameOrGuid: 
         - colorIndex: 6
+          iconNameOrGuid: 
+        - colorIndex: 2
+          iconNameOrGuid: 
+        - colorIndex: 2
+          iconNameOrGuid: 
+        - colorIndex: 2
+          iconNameOrGuid: 
+        - colorIndex: 2
+          iconNameOrGuid: 
+        - colorIndex: 2
+          iconNameOrGuid: 
+        - colorIndex: 2
+          iconNameOrGuid: 
+        - colorIndex: 2
+          iconNameOrGuid: 
+        - colorIndex: 2
+          iconNameOrGuid: 
+        - colorIndex: 2
+          iconNameOrGuid: 
+        - colorIndex: 2
+          iconNameOrGuid: 
+        - colorIndex: 2
+          iconNameOrGuid: 
+        - colorIndex: 2
+          iconNameOrGuid: 
+        - colorIndex: 2
+          iconNameOrGuid: 
+        - colorIndex: 2
+          iconNameOrGuid: 
+        - colorIndex: 2
+          iconNameOrGuid: 
+        - colorIndex: 3
+          iconNameOrGuid: 
+        - colorIndex: 9
+          iconNameOrGuid: 
+        - colorIndex: 3
           iconNameOrGuid: 
     - goDatas_byGlobalId:
         keys:

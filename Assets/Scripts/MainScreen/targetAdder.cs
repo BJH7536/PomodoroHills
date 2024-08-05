@@ -17,7 +17,7 @@ public class targetAdder : MonoBehaviour
         for (int i = 0; i < tiles.Count; i++)
         {
             CinemachineTargetGroup.m_Targets[i] = new CinemachineTargetGroup.Target()
-                { target = tiles[i], weight = 1, radius = 0f };
+                { target = tiles[i], weight = 1, radius = 1.5f };
         }
     }
 }
