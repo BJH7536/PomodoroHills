@@ -4,7 +4,6 @@
 // 다른 스크립트가 함수를 요청할수 있도록 수정
 //TimerSlide 게임오브젝트에 현재 기존 스크립트가 꺼진상태로 살아있음
 
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 

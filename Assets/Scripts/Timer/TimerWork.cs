@@ -1,15 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Security.Principal;
-using Unity.VisualScripting;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Ricimi;
-using Cinemachine;
-using Gley.Jumpy;
-using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class TimerWork : MonoBehaviour
 {
@@ -93,8 +84,7 @@ public class TimerWork : MonoBehaviour
         undoButton.onClick.AddListener(ReturnToDoListUI);
         TimerSet(5,5);
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
         if(isWork && !isStopped)             //타이머가 중지상태가 아니고 실행된 상태이면 
@@ -125,11 +115,6 @@ public class TimerWork : MonoBehaviour
 
 
     }
-
-
-
-
-
 
     void TimerSetFirst(float mainTime, float restTime, int cycleTime)
     {
@@ -202,7 +187,6 @@ public class TimerWork : MonoBehaviour
         UpdateTimerSlide();
     }
 
-
     private void SetImage()         //타이머에 집중주기와 휴식주기의 아이콘 전환
     {
         if (restCheck)
@@ -227,8 +211,6 @@ public class TimerWork : MonoBehaviour
 
     }
 
-
-
     //아래의 코드는 현재 선택된 ToDoListContent의 누적시간을 제어하는 코드입니다.
     private void ReturnTimerResult()                    //선택된 ToDoList에 타이머 시간 반환
     {
@@ -242,7 +224,5 @@ public class TimerWork : MonoBehaviour
     {   if(selectedToDo !=null)
         selectedToDo.timePerformed = (int)selectedToDo.timePerformed;
     }
-
-
 
 }
