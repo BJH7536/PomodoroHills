@@ -83,6 +83,7 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-434908894-0
         - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-2416456288396144330-5350083934398023830
         - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-417535767-0
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-1487859740-0
         values:
         - colorIndex: 0
           iconNameOrGuid: Folder Icon
@@ -95,7 +96,7 @@ MonoBehaviour:
         - colorIndex: 8
           iconNameOrGuid: 
         - colorIndex: 6
-          iconNameOrGuid: 
+          iconNameOrGuid: Canvas Icon
         - colorIndex: 2
           iconNameOrGuid: 
         - colorIndex: 2
@@ -132,6 +133,8 @@ MonoBehaviour:
           iconNameOrGuid: 
         - colorIndex: 3
           iconNameOrGuid: 
+        - colorIndex: 2
+          iconNameOrGuid: Canvas Icon
     - goDatas_byGlobalId:
         keys:
         - globalObjectIdString: GlobalObjectId_V1-2-6f844179429e8be4890a4417586658a7-1012146340-0
