@@ -1,49 +1,87 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TileMapManager : MonoBehaviour
 {
-    [SerializeField] private GameObject floorObject;
-    [SerializeField] private Transform floorTop;
-    [SerializeField] private Transform floorBottom;
-    public int tileLength; // n*n 바닥에서의 n
-    private bool[,] onFloor = new bool [100,100]; //타일위를 오브젝트가 점유하고 있는가
+    public CinemachineTargetGroup TargetGroup; //카메라 임시용
 
 
-    //[임시] 오브젝트 코드저장용
-    //존재하는 오브젝트 리스트(x,y좌표,회전여부,오브젝트코드)
-    //위에 리스트을 읽어서 처음에 이니숄라이즈하는 코드 추가 필요
+    [SerializeField]
+    GameObject tilePrefab;
+
+    public int gridX = 5;      // x,z 그리드 타일맵
+    public int gridZ = 5;      //
+
+
+    Dictionary<Vector2Int, Tile> tileMap = new Dictionary<Vector2Int, Tile>();      //타일 점유여부체크
+    Dictionary<Vector2Int, GameObject> tileMapObject = new Dictionary<Vector2Int, GameObject>();
+
+
+
+
 
     private void Awake()
     {
-        tileLength = 5;
-        setScale();
-        // 타일맵 위의 오브젝트 확인
-    }
-    void Start()
-    {
-        
+        CreateTileMap();
     }
 
-    void Update()
-    {
-        
-    }
 
-    void setScale()
-    {
-        floorObject.transform.localScale = new Vector3(tileLength, 1,tileLength);
-    }
 
-    void initTile() //겜 켰을때 타일 위에 초기화
+    void CreateTileMap()
     {
-        for(int i=0; i < tileLength; i++)
+        for(int x = 0; x < gridX; x++)
         {
-            for(int j=0; j < tileLength; j++)
+            for(int z = 0; z < gridZ; z++)
             {
-                
+                Vector2Int position = new Vector2Int(x, z);// 타일 공간 생성
+                if (!tileMap.ContainsKey(position))
+                {
+                    Tile tile = new Tile(position);
+                    tileMap[position] = tile;
+                }
+
+                Vector3 worldPosition = new Vector3(x, 0, z);// 시각적으로 보이는 타일 오브젝트 생성
+                if (!tileMapObject.ContainsKey(position))
+                {
+                    GameObject tileObject = Instantiate(tilePrefab, worldPosition, Quaternion.identity);
+                    tileMapObject[position] = tileObject;
+
+                    if (TargetGroup != null) { TargetGroup.AddMember(tileObject.transform, 0.5f, 0.5f); }
+                }
             }
         }
     }
+
+
+
+    public bool IsTileAvailable(Vector2Int position)    //타일을 쓸수있는지 확인함 - 점유상태 반환
+    {
+        return tileMap.ContainsKey(position) && !tileMap[position].isOccupied; // 점유 상태 확인
+    }
+
+    public void OccupyTile(Vector2Int position)
+    {
+        tileMap[position].Occupy();
+    }
+
+    public void FreeTile(Vector2Int position)
+    {
+        tileMap[position].Free();
+    }
+
+    private void UpdateTileVisual(Vector2Int position)
+    {
+        // 타일의 시각적 요소를 업데이트
+        GameObject tileObject = tileMapObject[position];
+        Renderer renderer = tileObject.GetComponent<Renderer>();
+
+        if (renderer != null)
+        {
+            Color tileColor = tileMap[position].isOccupied ? Color.red : Color.white; // 예: 점유 상태에 따라 색상 변경
+            renderer.material.color = tileColor;
+        }
+    }
+
 }
