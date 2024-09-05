@@ -29,7 +29,7 @@ public class TileMapManager : MonoBehaviour
 
 
 
-    void CreateTileMap()
+    void CreateTileMap()    //타일맵 클래스 및 오브젝트 nxn개 생성
     {
         for(int x = 0; x < gridX; x++)
         {
@@ -61,17 +61,17 @@ public class TileMapManager : MonoBehaviour
         return tileMap.ContainsKey(position) && !tileMap[position].isOccupied; // 점유 상태 확인
     }
 
-    public void OccupyTile(Vector2Int position)
+    public void OccupyTile(Vector2Int position)     //타일점유 시작
     {
         tileMap[position].Occupy();
     }
 
-    public void FreeTile(Vector2Int position)
+    public void FreeTile(Vector2Int position)       //타일점유 해제
     {
         tileMap[position].Free();
     }
 
-    private void UpdateTileVisual(Vector2Int position)
+    private void UpdateTileVisual(Vector2Int position)      //타일 오브젝트의 비주얼을 업데이트 하기 위한 메소드로 현재 미사용
     {
         // 타일의 시각적 요소를 업데이트
         GameObject tileObject = tileMapObject[position];

@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Item
 {
-    public Vector2Int size { get; private set; }
+    public Vector2Int size { get; private set; }    //xz크기
     public Vector2Int position { get; private set; }
+    public int rotation { get; private set; } //회전여부
     public int itemCode { get; private set; }
     public bool isPlaced { get; private set; } = false;
     public bool isMoving { get; private set; } = false;
