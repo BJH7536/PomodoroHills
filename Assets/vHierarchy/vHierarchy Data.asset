@@ -80,9 +80,9 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-2760992616208659767-8518444466145346299
         - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-1789151904267017375-8518444466145346299
         - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-2177572646034661998-8518444466145346299
-        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-434908894-0
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-897524961800999949-0
         - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-2416456288396144330-5350083934398023830
-        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-417535767-0
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-93502324-0
         - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-1487859740-0
         - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-811123790-0
         - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-764753012-0
@@ -100,6 +100,11 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-1921229924-0
         - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-921147324-0
         - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-1998030890413023721-5350083934398023830
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-1562225029-0
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-1876136624-0
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-651049972-0
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-1202775816-0
+        - globalObjectIdString: GlobalObjectId_V1-2-729228b930199a244928a449a23be1ce-1525223405-0
         values:
         - colorIndex: 2
           iconNameOrGuid: Folder Icon
@@ -183,6 +188,16 @@ MonoBehaviour:
           iconNameOrGuid: 
         - colorIndex: 9
           iconNameOrGuid: 
+        - colorIndex: 0
+          iconNameOrGuid: Settings Icon
+        - colorIndex: 0
+          iconNameOrGuid: Settings Icon
+        - colorIndex: 3
+          iconNameOrGuid: 
+        - colorIndex: 0
+          iconNameOrGuid: Settings Icon
+        - colorIndex: 0
+          iconNameOrGuid: Settings Icon
     - goDatas_byGlobalId:
         keys:
         - globalObjectIdString: GlobalObjectId_V1-2-6f844179429e8be4890a4417586658a7-1012146340-0
