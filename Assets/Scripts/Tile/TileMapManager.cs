@@ -84,45 +84,6 @@ public class TileMapManager : MonoBehaviour
 
     public bool GetEveryTileAvailable(Vector2Int size, Vector2Int position, int rotation)   //GetTileAvailable을 타일에 놓일 모든 자리에서 실행
     {
-        /*switch (rotation)
-        {
-            case 1: //90도
-                for (int x = position.x; x < position.x + size.y; x++)
-                {
-                    for (int y = position.y - size.x + 1; y <= position.y; y++) 
-                    {
-                        if (!GetTileAvailable(new Vector2Int(x, y))) { return false; }
-                    }
-                }
-                break;
-            case 2: //180도
-                for (int x = position.x - size.x + 1; x <= position.x; x++)
-                {
-                    for (int y = position.y - size.y + 1; y <= position.y; y++)
-                    {
-                        if (!GetTileAvailable(new Vector2Int(x, y))) { return false; }
-                    }
-                }
-                break;
-            case 3: //270도
-                for (int x = position.x - size.y + 1; x <= position.x; x++)
-                {
-                    for (int y = position.y; y < position.y + size.x; y++)
-                    {
-                        if (!GetTileAvailable(new Vector2Int(x, y))) { return false; }
-                    }
-                }
-                break;
-            default:
-                for (int x = position.x; x < position.x + size.x; x++)
-                {
-                    for (int y = position.y; y < position.y + size.y; y++)
-                    {
-                        if (!GetTileAvailable(new Vector2Int(x, y))) { return false; }
-                    }
-                }
-                break;
-        }*/
         switch (rotation)
         {
             case 0: // 기본 회전 (0도)
@@ -165,7 +126,6 @@ public class TileMapManager : MonoBehaviour
                 Debug.LogWarning("Invalid rotation value: " + rotation);
                 break;
         }
-        Debug.Log("x");
         return true;
     }
     public bool GetTileAvailable(Vector2Int position)    //타일을 쓸수있는지 확인함 - 점유상태 반환

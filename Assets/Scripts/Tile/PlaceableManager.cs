@@ -44,32 +44,14 @@ public class PlaceableManager : MonoBehaviour
         PlaceTest(1, new Vector2Int(2, 3), 0);
         PlaceTest(1, new Vector2Int(3, 2), 1);
 
-        foreach (var kvp in TileMapManager.Instance.tileMap)
+        /*foreach (var kvp in TileMapManager.Instance.tileMap)
         {
             Vector2Int key = kvp.Key;
             TileMapManager.Instance.tileMap.TryGetValue(key, out Tile val);
             string value = val.isOccupied.ToString();
             Debug.Log($"Key: ({key.x}, {key.y}), Value: {value}");
-        }
-        StartCoroutine(WaitAndExecute());
+        }*/
 
-
-    }
-    IEnumerator WaitAndExecute()
-    {
-        // 1초 동안 대기
-        yield return new WaitForSeconds(1f);PlaceTest(0, new Vector2Int(0, 2), 0);
-        for (int x=0; x<5; x++)
-        {
-            for(int y=0;y<5; y++)
-            {
-                PlaceTest(0, new Vector2Int(x, y), 0);
-
-            }
-        }
-
-        // 1초 후 실행할 코드
-        Debug.Log("1초가 지났습니다!");
     }
 
     void Update()
