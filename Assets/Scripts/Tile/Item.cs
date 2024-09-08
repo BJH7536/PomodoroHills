@@ -1,12 +1,12 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Item
 { 
-    public Vector2Int size { get; private set; }    //xzÅ©±â
+    public Vector2Int size { get; private set; }    //xzí¬ê¸°
     public Vector2Int position { get; private set; }
-    public int rotation { get; private set; } //È¸Àü¿©ºÎ
+    public int rotation { get; private set; } //íšŒì „ì—¬ë¶€
     public int itemCode { get; private set; }
     public bool isPlaced { get; private set; } = false;
     public bool isMoving { get; private set; } = false;
@@ -14,7 +14,7 @@ public class Item
     public Item(int width, int height, int itemCode)
     {
         size = new Vector2Int(width, height);
-        position = new Vector2Int(-1, -1);  //ÃÊ±â°ª(¹Ì¹èÄ¡)
+        position = new Vector2Int(-1, -1);  //ì´ˆê¸°ê°’(ë¯¸ë°°ì¹˜)
     }
 
 }

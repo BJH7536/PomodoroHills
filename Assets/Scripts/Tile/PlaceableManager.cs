@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,7 +7,6 @@ using UnityEngine;
 public class PlaceableManager : MonoBehaviour
 {
     public static PlaceableManager Instance { get; private set; }
-    public TileMapManager tileMapManager;
     public ItemDB itemDB;
 
 
@@ -15,18 +14,18 @@ public class PlaceableManager : MonoBehaviour
     public GameObject selectedItem;
 
 
-    //ÆíÁı µî »óÅÂ°ü·Ã 
-    public bool isEdit;     //ÆíÁı¸ğµå
+    //í¸ì§‘ ë“± ìƒíƒœê´€ë ¨ 
+    public bool isEdit;     //í¸ì§‘ëª¨ë“œ
 
 
     private void Awake()
     {
-        itemDB = GetComponent<ItemDB>(); //ÀÓ½Ã »ç¿ë itemDB
+        itemDB = GetComponent<ItemDB>(); //ì„ì‹œ ì‚¬ìš© itemDB
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-        }   //½Ì±ÛÅæ À¸·Î
+        }   //ì‹±ê¸€í†¤ ìœ¼ë¡œ
 
         else
         {
@@ -63,9 +62,9 @@ public class PlaceableManager : MonoBehaviour
     void FirstLoadForTest()
     {
 
-    }//¹Ì¿Ï
+    }//ë¯¸ì™„
 
-    private void LoadItem()//¹Ì¿Ï ¾ê°¡ ¹¹ÇÏ´Â°Å´õ¶ó?
+    private void LoadItem()//ë¯¸ì™„ ì–˜ê°€ ë­í•˜ëŠ”ê±°ë”ë¼?
     {
        
     }
@@ -78,7 +77,7 @@ public class PlaceableManager : MonoBehaviour
         PlacePlaceable(obj, placeable.size, position, rotation);
     }
 
-    public void UnpackPlaceable(int itemCode)   //ÀÎº¥Åä¸®¿¡¼­ ¹èÄ¡¿ä¼Ò¸¦ ²¨³»´Â ¸Ş¼Òµå
+    public void UnpackPlaceable(int itemCode)   //ì¸ë²¤í† ë¦¬ì—ì„œ ë°°ì¹˜ìš”ì†Œë¥¼ êº¼ë‚´ëŠ” ë©”ì†Œë“œ
     {
         itemDB.itemTable.TryGetValue(itemCode, out GameObject obj);
     }
@@ -90,7 +89,7 @@ public class PlaceableManager : MonoBehaviour
         if (TileMapManager.Instance != null)
         {
             if (!TileMapManager.Instance.GetEveryTileAvailable(size, position, rotation)) {
-                Debug.Log("ÀÌ¹Ì Å¸ÀÏÀ» ´©°¡ ¾²°íÀÖ¾î¿ä");
+                Debug.Log("ì´ë¯¸ íƒ€ì¼ì„ ëˆ„ê°€ ì“°ê³ ìˆì–´ìš”");
             }
             else
             {
@@ -103,7 +102,7 @@ public class PlaceableManager : MonoBehaviour
         }
     }
 
-    void DeletePlaceableObject()//¹Ì¿Ï
+    void DeletePlaceableObject()//ë¯¸ì™„
     {
         if(selectedItem != null)
         {
@@ -112,15 +111,15 @@ public class PlaceableManager : MonoBehaviour
             {
                 Vector2Int position = item.position;
             }
-            //Æ¯Á¤ ÁÂÇ¥ Á¡À¯ ÇØÁ¦
-            //Æ¯Á¤ ÁÂÇ¥ ºÎÅÍ Æ¯Á¤ÁÂÇ¥±îÁö ÇØÁ¦... ÀÌÁß for¹® »ç¿ë (¹ÌÀÛ¼º) //¼­¼ø »ı°¢Á»ÇÒ·¡...
+            //íŠ¹ì • ì¢Œí‘œ ì ìœ  í•´ì œ
+            //íŠ¹ì • ì¢Œí‘œ ë¶€í„° íŠ¹ì •ì¢Œí‘œê¹Œì§€ í•´ì œ... ì´ì¤‘ forë¬¸ ì‚¬ìš© (ë¯¸ì‘ì„±) //ì„œìˆœ ìƒê°ì¢€í• ë˜...
         }
     }
 
     
 
-    //IsEditÀÌ trueÀÎ »óÅÂ¿¡¼­ Å¸ÀÏ¸Ê À§ÀÇ ItemÀ» Å¬¸¯ÇÏ¸é ÁÖÀ§·Î UI°¡ È°¼ºÈ­ µÇ°í µå·¡±×ÇÏ¿© ¿òÁ÷ÀÏ ¼ö ÀÖ´Ù.
-    //ÀÌ¶§ È®ÀÎ, È¸Àü, º¸°ü(»èÁ¦)¿Í °ü·ÃµÈ UI(¹öÆ°) ¶ç¿î´Ù.
+    //IsEditì´ trueì¸ ìƒíƒœì—ì„œ íƒ€ì¼ë§µ ìœ„ì˜ Itemì„ í´ë¦­í•˜ë©´ ì£¼ìœ„ë¡œ UIê°€ í™œì„±í™” ë˜ê³  ë“œë˜ê·¸í•˜ì—¬ ì›€ì§ì¼ ìˆ˜ ìˆë‹¤.
+    //ì´ë•Œ í™•ì¸, íšŒì „, ë³´ê´€(ì‚­ì œ)ì™€ ê´€ë ¨ëœ UI(ë²„íŠ¼) ë„ìš´ë‹¤.
     public void OnIsEdit() { isEdit = true; }
     public void OffIsEdit() { isEdit = false; }
 

@@ -1,4 +1,4 @@
-using Cinemachine;
+ï»¿using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
@@ -8,23 +8,23 @@ using UnityEngine;
 public class TileMapManager : MonoBehaviour
 {
     public static TileMapManager Instance { get; private set; }
-    public CinemachineTargetGroup TargetGroup; //Ä«¸Ş¶ó ÀÓ½Ã¿ë
+    public CinemachineTargetGroup TargetGroup; //ì¹´ë©”ë¼ ì„ì‹œìš©
 
 
-    [SerializeField]
-    GameObject tilePrefab;
+    [SerializeField]        // ë¯¸ì‚¬ìš©
+    GameObject tilePrefab;  // ë¯¸ì‚¬ìš©
     [SerializeField]
     GameObject maintilePrefab;
     GameObject maintile;
     
 
-    public int gridX = 5;      // x,z ±×¸®µå Å¸ÀÏ¸Ê
-    public int gridZ = 5;      //
+    public int gridX = 5;      // x,z ê·¸ë¦¬ë“œ íƒ€ì¼ë§µ
+    public int gridZ = 5;      // ì‚¬ìš©ì ì§„ì²™ë„ì— ë”°ë¼ 
 
-    public Dictionary<Vector2Int, Tile> tileMap = new Dictionary<Vector2Int, Tile>();      //Å¸ÀÏ Á¡À¯¿©ºÎÃ¼Å©
+    public Dictionary<Vector2Int, Tile> tileMap = new Dictionary<Vector2Int, Tile>();      //íƒ€ì¼ ì ìœ ì—¬ë¶€ì²´í¬
 
 
-    Dictionary<Vector2Int, GameObject> tileMapObject = new Dictionary<Vector2Int, GameObject>();    //1x1Å¸ÀÏ ½Ã°¢È­(¹Ì»ç¿ë)
+    Dictionary<Vector2Int, GameObject> tileMapObject = new Dictionary<Vector2Int, GameObject>();    //1x1íƒ€ì¼ ì‹œê°í™”(ë¯¸ì‚¬ìš©)
 
 
 
@@ -36,7 +36,7 @@ public class TileMapManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-        }   //½Ì±ÛÅæ ¼±¾ğ
+        }   //ì‹±ê¸€í†¤ ì„ ì–¸
         else
         {
             Destroy(gameObject);
@@ -48,29 +48,19 @@ public class TileMapManager : MonoBehaviour
 
 
 
-    void CreateTileMap()    //Å¸ÀÏ¸Ê Å¬·¡½º ¹× ¿ÀºêÁ§Æ® nxn°³ »ı¼º
+    void CreateTileMap()    //íƒ€ì¼ë§µ í´ë˜ìŠ¤ ë° ì˜¤ë¸Œì íŠ¸ nxnê°œ ìƒì„± (gridx,gridzê°€ ëŠ˜ì–´ë‚ ë•Œë„ ì‚¬ìš©)
     {
         for(int x = 0; x < gridX; x++)
         {
             for(int z = 0; z < gridZ; z++)
             {
-                Vector2Int position = new Vector2Int(x, z);// Å¸ÀÏ °ø°£ »ı¼º
+                Vector2Int position = new Vector2Int(x, z);// íƒ€ì¼ ê³µê°„ ìƒì„±
                 if (!tileMap.ContainsKey(position))
                 {
                     Tile tile = new Tile(position);
                     tileMap[position] = tile;
                 }
 
-                
-                /*
-                Vector3 worldPosition = new Vector3(x, 0, z);// ½Ã°¢ÀûÀ¸·Î º¸ÀÌ´Â Å¸ÀÏ ¿ÀºêÁ§Æ® »ı¼º
-                if (!tileMapObject.ContainsKey(position))
-                {
-                    GameObject tileObject = Instantiate(tilePrefab, worldPosition, Quaternion.identity);
-                    tileMapObject[position] = tileObject;
-
-                    if (TargetGroup != null) { TargetGroup.AddMember(tileObject.transform, 0.5f, 0.5f); }
-                }*/
             }
         }
         Vector3 mainTilePosition = new Vector3(gridX/2,-0.5f,gridZ/2);
@@ -82,11 +72,11 @@ public class TileMapManager : MonoBehaviour
 
 
 
-    public bool GetEveryTileAvailable(Vector2Int size, Vector2Int position, int rotation)   //GetTileAvailableÀ» Å¸ÀÏ¿¡ ³õÀÏ ¸ğµç ÀÚ¸®¿¡¼­ ½ÇÇà
+    public bool GetEveryTileAvailable(Vector2Int size, Vector2Int position, int rotation)   //GetTileAvailableì„ íƒ€ì¼ì— ë†“ì¼ ëª¨ë“  ìë¦¬ì—ì„œ ì‹¤í–‰
     {
         switch (rotation)
         {
-            case 0: // ±âº» È¸Àü (0µµ)
+            case 0: // ê¸°ë³¸ íšŒì „ (0ë„)
                 for (int x = position.x; x < position.x + size.x; x++)
                 {
                     for (int y = position.y; y < position.y + size.y; y++)
@@ -95,7 +85,7 @@ public class TileMapManager : MonoBehaviour
                     }
                 }
                 break;
-            case 1: // È¸Àü 90µµ
+            case 1: // íšŒì „ 90ë„
                 for (int x = position.x; x < position.x + size.y; x++)
                 {
                     for (int y = position.y - size.x + 1; y <= position.y; y++)
@@ -104,7 +94,7 @@ public class TileMapManager : MonoBehaviour
                     }
                 }
                 break;
-            case 2: // È¸Àü 180µµ
+            case 2: // íšŒì „ 180ë„
                 for (int x = position.x; x > position.x - size.x; x--)
                 {
                     for (int y = position.y; y > position.y - size.y; y--)
@@ -113,7 +103,7 @@ public class TileMapManager : MonoBehaviour
                     }
                 }
                 break;
-            case 3: // È¸Àü 90µµ
+            case 3: // íšŒì „ 270ë„
                 for (int x = position.x - size.y + 1; x <= position.x; x++)
                 {
                     for (int y = position.y; y < position.y + size.x; y++)
@@ -128,7 +118,7 @@ public class TileMapManager : MonoBehaviour
         }
         return true;
     }
-    public bool GetTileAvailable(Vector2Int position)    //Å¸ÀÏÀ» ¾µ¼öÀÖ´ÂÁö È®ÀÎÇÔ - Á¡À¯»óÅÂ ¹İÈ¯
+    public bool GetTileAvailable(Vector2Int position)    //íƒ€ì¼ì„ ì“¸ìˆ˜ìˆëŠ”ì§€ í™•ì¸í•¨ - ì ìœ ìƒíƒœ ë°˜í™˜
     {
         if (tileMap.ContainsKey(position))
         {
@@ -147,7 +137,7 @@ public class TileMapManager : MonoBehaviour
     {
         switch (rotation)
         {
-            case 0: // ±âº» È¸Àü (0µµ)
+            case 0: // ê¸°ë³¸ íšŒì „ (0ë„)
                 for (int x = position.x; x < position.x + size.x; x++)
                 {
                     for (int y = position.y; y < position.y + size.y; y++)
@@ -156,7 +146,7 @@ public class TileMapManager : MonoBehaviour
                     }
                 }
                 break;
-            case 1: // È¸Àü 90µµ
+            case 1: // íšŒì „ 90ë„
                 for (int x = position.x; x < position.x + size.y; x++)
                 {
                     for (int y = position.y - size.x + 1; y <= position.y; y++)
@@ -165,7 +155,7 @@ public class TileMapManager : MonoBehaviour
                     }
                 }
                 break;
-            case 2: // È¸Àü 180µµ
+            case 2: // íšŒì „ 180ë„
                 for (int x = position.x; x > position.x - size.x; x--)
                 {
                     for (int y = position.y; y > position.y - size.y; y--)
@@ -174,7 +164,7 @@ public class TileMapManager : MonoBehaviour
                     }
                 }
                 break;
-            case 3: // È¸Àü 90µµ
+            case 3: // íšŒì „ 90ë„
                 for (int x = position.x - size.y + 1; x <= position.x; x++)
                 {
                     for (int y = position.y; y < position.y + size.x; y++)
@@ -189,25 +179,34 @@ public class TileMapManager : MonoBehaviour
         }
     }
 
-    public void OccupyTile(Vector2Int position)     //Å¸ÀÏÁ¡À¯ ½ÃÀÛ
+
+
+
+
+    public void OccupyTile(Vector2Int position)     //íƒ€ì¼ì ìœ  ì‹œì‘
     {
         tileMap[position].Occupy();
     }
 
-    public void FreeTile(Vector2Int position)       //Å¸ÀÏÁ¡À¯ ÇØÁ¦
+    public void FreeTile(Vector2Int position)       //íƒ€ì¼ì ìœ  í•´ì œ
     {
         tileMap[position].Free();
     }
 
-    private void UpdateTileVisual(Vector2Int position)      //Å¸ÀÏ ¿ÀºêÁ§Æ®ÀÇ ºñÁÖ¾óÀ» ¾÷µ¥ÀÌÆ® ÇÏ±â À§ÇÑ ¸Ş¼Òµå·Î ÇöÀç ¹Ì»ç¿ë
+
+
+
+
+
+    private void UpdateTileVisual(Vector2Int position)      //íƒ€ì¼ ì˜¤ë¸Œì íŠ¸ì˜ ë¹„ì£¼ì–¼ì„ ì—…ë°ì´íŠ¸ í•˜ê¸° ìœ„í•œ ë©”ì†Œë“œë¡œ í˜„ì¬ ë¯¸ì‚¬ìš©
     {
-        // Å¸ÀÏÀÇ ½Ã°¢Àû ¿ä¼Ò¸¦ ¾÷µ¥ÀÌÆ®
+        // íƒ€ì¼ì˜ ì‹œê°ì  ìš”ì†Œë¥¼ ì—…ë°ì´íŠ¸
         GameObject tileObject = tileMapObject[position];
         Renderer renderer = tileObject.GetComponent<Renderer>();
 
         if (renderer != null)
         {
-            Color tileColor = tileMap[position].isOccupied ? Color.red : Color.white; // ¿¹: Á¡À¯ »óÅÂ¿¡ µû¶ó »ö»ó º¯°æ
+            Color tileColor = tileMap[position].isOccupied ? Color.red : Color.white; // ì˜ˆ: ì ìœ  ìƒíƒœì— ë”°ë¼ ìƒ‰ìƒ ë³€ê²½
             renderer.material.color = tileColor;
         }
     }
