@@ -1,11 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 
 public class PlaceableManager : MonoBehaviour
 {
     public static PlaceableManager Instance { get; private set; }
-    public TileMapManager TileMapManager;
+    public TileMapManager tileMapManager;
     public ItemDB itemDB;
 
 
@@ -36,9 +38,39 @@ public class PlaceableManager : MonoBehaviour
     }
     void Start()
     {
-        
-    }
+        PlaceTest(0, new Vector2Int(2, 2), 0);
+        PlaceTest(1, new Vector2Int(1, 2), 3);
+        PlaceTest(1, new Vector2Int(2, 1), 2);
+        PlaceTest(1, new Vector2Int(2, 3), 0);
+        PlaceTest(1, new Vector2Int(3, 2), 1);
 
+        foreach (var kvp in TileMapManager.Instance.tileMap)
+        {
+            Vector2Int key = kvp.Key;
+            TileMapManager.Instance.tileMap.TryGetValue(key, out Tile val);
+            string value = val.isOccupied.ToString();
+            Debug.Log($"Key: ({key.x}, {key.y}), Value: {value}");
+        }
+        StartCoroutine(WaitAndExecute());
+
+
+    }
+    IEnumerator WaitAndExecute()
+    {
+        // 1초 동안 대기
+        yield return new WaitForSeconds(1f);PlaceTest(0, new Vector2Int(0, 2), 0);
+        for (int x=0; x<5; x++)
+        {
+            for(int y=0;y<5; y++)
+            {
+                PlaceTest(0, new Vector2Int(x, y), 0);
+
+            }
+        }
+
+        // 1초 후 실행할 코드
+        Debug.Log("1초가 지났습니다!");
+    }
 
     void Update()
     {
@@ -49,11 +81,44 @@ public class PlaceableManager : MonoBehaviour
     void FirstLoadForTest()
     {
 
-    }
+    }//미완
 
     private void LoadItem()//미완 얘가 뭐하는거더라?
     {
        
+    }
+
+    private void PlaceTest(int index, Vector2Int position, int rotation)
+    {   
+        
+        itemDB.itemTable.TryGetValue(index, out GameObject obj);
+        Placeable placeable = obj.GetComponent<Placeable>();
+        PlacePlaceable(obj, placeable.size, position, rotation);
+    }
+
+    public void UnpackPlaceable(int itemCode)   //인벤토리에서 배치요소를 꺼내는 메소드
+    {
+        itemDB.itemTable.TryGetValue(itemCode, out GameObject obj);
+    }
+
+
+
+    private void PlacePlaceable(GameObject Prefab, Vector2Int size,Vector2Int position, int rotation)
+    {
+        if (TileMapManager.Instance != null)
+        {
+            if (!TileMapManager.Instance.GetEveryTileAvailable(size, position, rotation)) {
+                Debug.Log("이미 타일을 누가 쓰고있어요");
+            }
+            else
+            {
+                TileMapManager.Instance.OccupyEveryTile(size, position, rotation);
+                Vector3 objPosition = new Vector3(position.x, 0f, position.y);
+                Quaternion rotationQuaternion = Quaternion.Euler(0, rotation * 90, 0);
+                GameObject newObj = Instantiate(Prefab, objPosition,rotationQuaternion );
+                placeables.Add(newObj);
+            }
+        }
     }
 
     void DeletePlaceableObject()//미완

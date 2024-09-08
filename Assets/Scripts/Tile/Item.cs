@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Item
-{
+{ 
     public Vector2Int size { get; private set; }    //xz크기
     public Vector2Int position { get; private set; }
     public int rotation { get; private set; } //회전여부
