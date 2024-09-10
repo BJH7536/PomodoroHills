@@ -1,10 +1,10 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GetPlaceable : MonoBehaviour
 {
-    // placeable Ã³À½À¸·Î ¸¸µé¶§(²¨³¾) ¾µ°Å¿¡¿ë
+    // placeable ì²˜ìŒìœ¼ë¡œ ë§Œë“¤ë•Œ(êº¼ë‚¼) ì“¸ê±°ì—ìš©
     // Start is called before the first frame update
     void Start()
     {
@@ -27,7 +27,7 @@ public class GetPlaceable : MonoBehaviour
 
 
 
-    void SelectObject()
+    void SelectObject() //ì´ê±° ì•ˆë˜ê²Œ í•´ì•¼ë¨
     {
         Vector3 mousePosition = Input.mousePosition;
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);

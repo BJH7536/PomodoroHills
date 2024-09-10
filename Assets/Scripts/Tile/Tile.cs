@@ -1,13 +1,14 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Tile //Å¸ÀÏÀÇ »öÀÌ³ª ±âÅ¸ Á¤º¸ µîÀÇ º¯µ¿ µî¿¡ »ç¿ëµË´Ï´Ù.
+public class Tile //íƒ€ì¼ì˜ ìƒ‰ì´ë‚˜ ê¸°íƒ€ ì •ë³´ ë“±ì˜ ë³€ë™ ë“±ì— ì‚¬ìš©ë©ë‹ˆë‹¤.
 {
-    public bool isOccupied { get; set; }    //Å¸ÀÏÀÇ Á¡À¯¿©ºÎ(Å¸ÀÏÀ§¿¡ ¿ÀºêÁ§Æ®°¡ ÀÌ¹Ì Á¸ÀçÇÏ°í ÀÖ´ÂÁö
-    public Vector2Int position { get; set; }
+    public bool isOccupied { get; set; }    //íƒ€ì¼ì˜ ì ìœ ì—¬ë¶€(íƒ€ì¼ìœ„ì— ì˜¤ë¸Œì íŠ¸ê°€ ì´ë¯¸ ì¡´ì¬í•˜ê³  ìˆëŠ”ì§€
 
+
+    public Vector2Int position { get; set; }
     public Tile(Vector2Int position)
     {
         this.position = position;
