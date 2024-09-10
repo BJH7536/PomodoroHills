@@ -3,6 +3,7 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/Assets/LocalDBTest/BuildingDatabase.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/LocalDBTest/CropDatabase.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/LocalDBTest/DecorDatabase.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/LocalDBTest/SeedDatabase.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/LocalDBTest/Tester.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/Tile/GetPlaceable.cs" charset="x-windows-949" />
