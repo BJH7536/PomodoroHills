@@ -15,8 +15,9 @@ public class PlaceableManager : MonoBehaviour
 
 
     //편집 등 상태관련 
-    public bool isEdit;     //편집모드
-
+    public bool isEdit { get; private set; }     //편집모드
+    public bool isMoveEdit { get; private set; }
+    public bool isNewEdit { get; private set; }
 
     private void Awake()
     {
@@ -116,12 +117,16 @@ public class PlaceableManager : MonoBehaviour
         }
     }
 
-    
+
 
     //IsEdit이 true인 상태에서 타일맵 위의 Item을 클릭하면 주위로 UI가 활성화 되고 드래그하여 움직일 수 있다.
     //이때 확인, 회전, 보관(삭제)와 관련된 UI(버튼) 띄운다.
     public void OnIsEdit() { isEdit = true; }
     public void OffIsEdit() { isEdit = false; }
+    public void OnIsNewEdit() { isNewEdit = true; }
+    public void OffIsNewEdit() { isNewEdit = false; }
+    public void OnIsMoveEdit() { isMoveEdit = true; }
+    public void OffIsMoveEdit() { isMoveEdit = false; }
 
 
 
