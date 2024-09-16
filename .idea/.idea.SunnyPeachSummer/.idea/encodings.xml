@@ -6,6 +6,11 @@
     <file url="file://$PROJECT_DIR$/Assets/LocalDBTest/DecorDatabase.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/LocalDBTest/SeedDatabase.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/LocalDBTest/Tester.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/NewTodoListUI/DatePickerUI.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/NewTodoListUI/Popup_TodoList.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/NewTodoListUI/ScrollSystem.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/NewTodoListUI/SingleScrollPicker.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/NewTodoListUI/SwipeDetector.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/Tile/GetPlaceable.cs" charset="x-windows-949" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/Tile/PlaceableManager.cs" charset="x-windows-949" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/Tile/Tile.cs" charset="x-windows-949" />

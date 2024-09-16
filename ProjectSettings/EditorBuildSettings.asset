@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/NewTodoListUI/NewTodoListUI.unity
+    guid: 3b744a2136e630049b806291362d3ef3
+  - enabled: 1
     path: Assets/Scenes/Prototype.unity
     guid: 729228b930199a244928a449a23be1ce
   m_configObjects: {}

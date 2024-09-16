@@ -242,6 +242,25 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-1921229924-0
         - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-921147324-0
         - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-1998030890413023721-5350083934398023830
+        - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-119330683-0
+        - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-915986626-0
+        - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-708056732-0
+        - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-2095519993-0
+        - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-384153348-0
+        - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-830034506-0
+        - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-922333230-0
+        - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-317047755-0
+        - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-846294-0
+        - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-490745997-0
+        - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-795029899-0
+        - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-928799714-0
+        - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-1090112712-0
+        - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-280067745-0
+        - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-1608377952-0
+        - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-419435541-0
+        - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-455820058-0
+        - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-885758873510605389-0
+        - globalObjectIdString: GlobalObjectId_V1-2-3b744a2136e630049b806291362d3ef3-3695526516155042241-0
         values:
         - colorIndex: 2
           iconNameOrGuid: Folder Icon
@@ -324,4 +343,42 @@ MonoBehaviour:
         - colorIndex: 5
           iconNameOrGuid: 
         - colorIndex: 9
+          iconNameOrGuid: 
+        - colorIndex: 6
+          iconNameOrGuid: 
+        - colorIndex: 6
+          iconNameOrGuid: 
+        - colorIndex: 6
+          iconNameOrGuid: 
+        - colorIndex: 6
+          iconNameOrGuid: 
+        - colorIndex: 8
+          iconNameOrGuid: 
+        - colorIndex: 8
+          iconNameOrGuid: 
+        - colorIndex: 8
+          iconNameOrGuid: 
+        - colorIndex: 8
+          iconNameOrGuid: 
+        - colorIndex: 8
+          iconNameOrGuid: 
+        - colorIndex: 8
+          iconNameOrGuid: 
+        - colorIndex: 6
+          iconNameOrGuid: 
+        - colorIndex: 6
+          iconNameOrGuid: 
+        - colorIndex: 6
+          iconNameOrGuid: 
+        - colorIndex: 6
+          iconNameOrGuid: 
+        - colorIndex: 6
+          iconNameOrGuid: 
+        - colorIndex: 6
+          iconNameOrGuid: 
+        - colorIndex: 6
+          iconNameOrGuid: 
+        - colorIndex: 6
+          iconNameOrGuid: 
+        - colorIndex: 6
           iconNameOrGuid: 

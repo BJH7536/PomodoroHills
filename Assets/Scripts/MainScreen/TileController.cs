@@ -100,7 +100,7 @@ public class TileController : MonoBehaviour, IPointerClickHandler
     {
         MmfPlayer.PlayFeedbacks();
         
-        CameraManager.CameraTransition(camera);
+        //CameraManager.CameraTransition(camera);
 
         // Sequence seq = DOTween.Sequence();
         // seq.Append(transform.DOScale(originScale * 1.2f, 0.25f).SetEase(Ease.InOutBounce));
