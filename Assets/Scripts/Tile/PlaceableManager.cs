@@ -12,7 +12,7 @@ public class PlaceableManager : MonoBehaviour
 
     public List<GameObject> placeables = new List<GameObject>();
     public GameObject selectedItem;
-
+    public Vector2Int lastPosition;
 
     //편집 등 상태관련 
     public bool isEdit { get; private set; }     //편집모드
@@ -98,6 +98,7 @@ public class PlaceableManager : MonoBehaviour
                 Vector3 objPosition = new Vector3(position.x, 0f, position.y);
                 Quaternion rotationQuaternion = Quaternion.Euler(0, rotation * 90, 0);
                 GameObject newObj = Instantiate(Prefab, objPosition,rotationQuaternion );
+                newObj.tag = "Placeable";
                 placeables.Add(newObj);
             }
         }

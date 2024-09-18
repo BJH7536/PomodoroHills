@@ -2033,7 +2033,7 @@ GameObject:
   - component: {fileID: 140959694}
   - component: {fileID: 140959693}
   m_Layer: 5
-  m_Name: MinusButton
+  m_Name: MinimizeUI
   m_TagString: ClickableUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5582,8 +5582,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6131817383225773427}
-  - {fileID: 1146586166}
   - {fileID: 140959692}
+  - {fileID: 1146586166}
   - {fileID: 824740585}
   m_Father: {fileID: 796166562}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -10875,6 +10875,18 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 692022384}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
         m_CallState: 2
 --- !u!222 &824740587
 CanvasRenderer:

@@ -9,95 +9,135 @@ using UnityEngine.UI;
 //<미해결>
 //이동편집모드 진입시 편집모드 UI에서 빠져나오는 UI가 사라질 필요가 있음
 //이동편집모드 진입시 UI 중 회전 UI가 생성되어야함
+//현재 스마트폰 환경에서의 다중입력을 생각하지 않았습니다. 조작방식도 스마트폰과 맞지않을겁니다.
 
+//PlaceableManager와 입력 작업을 분리하여 다른 탭 사용 중 해당 스크립트를 비활성화합니다.
 
 public class InteractionManager : MonoBehaviour       //해당 작업은 다른 탭을 이용 중일 때 비활성화 되어야합니다. -> 따라서 PlaceableManager와 분리합니다.
 {
     public EventSystem eventSystem;
     public GameObject editOptionButton;
-    void Start()
-    {
-    }
+
+    private bool isDrag;                //드래그할때 해당하는 작업을 실시간으로 사용합니다.
+    private Vector3 mouseDownPosition;  //클릭 된 위치를 기억합니다. (미사용될것같습니다.)
+    private Vector3 startClickPosition;
+    private float dragSpeed = 0.1f;
+    public float dragThreshold = 0.5f;
+    private float clickCheckTime = 0.5f;
+    public float clickStartTime = 0f;
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))    //조건을 isMoveEdit으로 구분해주세요
-        {
-            OnClickDetected();
-        }    
+        InputMouse();
     }
 
-    void OnClickDetected()
+
+    void InputMouse()
     {
-        if (PlaceableManager.Instance != null && PlaceableManager.Instance.isEdit)
+        if (Input.GetMouseButtonDown(0))    //마우스 클릭될 때...
         {
-            if (!PlaceableManager.Instance.isMoveEdit)
-            {
-                if (!IsMouseOnUI())  //clickableUI 태그를 가진 UI와 오브젝트가 화면에서 겹칠 때 오브젝트 클릭을 무시합니다.
-                {
-                    SelectObject();
-                }
-            }
-            else
-            {
-                if (PlaceableManager.Instance.selectedItem != null)
-                {
-                    Vector3 mousePosition = Input.mousePosition;
-                    MovePlaceable(mousePosition);
-                }
-                else { Debug.Log("선택된 아이템이 없는데, 건물이동을 시도하고 있습니다."); }   
-                //이부분을 분리해서 Update에서 isEdit, isMoveEdit의 상태에 따라 마우스 입력방식을 분리해 주세요
-            }
+            startClickPosition = Input.mousePosition;
+            clickStartTime = Time.time;
+            isDrag = false;
         }
-        else
+        else if (Input.GetMouseButton(0))
         {
-            //Placeable에서 클릭시 작동되는 애니메이션 혹은 상호작용 활성화를 이 부분과 연계
+
+
+            Vector3 currentMousePosition = Input.mousePosition;
+            float distance = Vector3.Distance(startClickPosition, Input.mousePosition);
+
+            if (!isDrag && distance > dragThreshold)
+            {
+                isDrag = true;
+            }
+
+            if (isDrag)
+            {
+                OnDrag();
+            }
+
+        }
+        else if (Input.GetMouseButtonUp(0))      //클릭이 취소될 때...
+        {
+            float clickDuration = Time.time - clickStartTime;
+            if (!isDrag && clickDuration < clickCheckTime)
+            {
+                OnClick();
+            }
         }
 
     }
-    void OnClickPerformer()
+
+    void OnClick()
     {
-        if (! (PlaceableManager.Instance != null))
+        if (!PlaceableManager.Instance.isEdit)              // 터치 상호작용...
         {
-            Debug.Log("there is no PlaceableManager Instance.");
+
         }
-        else
+        else if (!PlaceableManager.Instance.isMoveEdit)     // 편집대상 선택
         {
-            
-            if (PlaceableManager.Instance.isEdit)
+            SelectObject();
+        }
+        else                                                // 편집대상 이동
+        {
+            if (PlaceableManager.Instance.selectedItem != null)
             {
-                if (PlaceableManager.Instance.isMoveEdit)
-                {
-                    //이 상태에서는 MoveObject() 메서드 사용
-                }
-                else
-                {
-                    SelectObject();
-                }
+                MovePlaceable();
             }
-            else
+            else { Debug.Log("선택된 아이템이 없는데, 건물이동을 시도하고 있습니다."); }
+        }
+    }
+
+    private void OnDrag()
+    {
+        if (!PlaceableManager.Instance.isEdit)              // 터치 상호작용...
+        {
+
+        }
+        else if (!PlaceableManager.Instance.isMoveEdit)     // 편집대상 선택
+        {
+
+        }
+        else                                                // 편집대상 이동
+        {
+            if (PlaceableManager.Instance.selectedItem != null)     //실시간 이동으로....
             {
-                //  클릭 대상 Placeable의 상호작용 메서드 실행하기
+                MovePlaceable();
             }
-            
         }
     }
 
 
-    void MovePlaceable(Vector3 position)   // 선택한 오브젝트를 이동할때 선택된 오브젝트와 그 아래 그리드맵을 향해서만 클릭등의 입력을 받도록 제한하여 구현합니다. 이때 클릭이 UI의 영향을 받는 것을 고려합니다.
+
+
+    void MovePlaceable()   // 선택한 오브젝트를 이동할때 선택된 오브젝트와 그 아래 그리드맵을 향해서만 클릭등의 입력을 받도록 제한하여 구현합니다. 이때 클릭이 UI의 영향을 받는 것을 고려합니다.
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if (ray.direction.y != 0)
-        {
-            float targetY = 0f;
-            float t = (targetY - ray.origin.y) / ray.direction.y;
-            if (t >= 0)
-            {
-                Vector3 intersectionPoint = ray.origin + (ray.direction * t);
+        RaycastHit[] hits = Physics.RaycastAll(ray);
 
-                Vector3 placementPosition = Utility.SnapToGrid(intersectionPoint,1f);
+        foreach (var hit in hits)
+        {
+            if (hit.collider.CompareTag("TileMap"))
+            {
+                // 충돌 지점의 좌표 가져오기
+                Vector3 hitPoint = hit.point;
+
+                // x, z 좌표 정수로 반올림
+                int nearestX = Mathf.RoundToInt(hitPoint.x);
+                int nearestZ = Mathf.RoundToInt(hitPoint.z);
+
+                // 결과 출력
+                Debug.Log($"Clicked Point: {hitPoint}, Nearest Integer Coordinates: ({nearestX}, {nearestZ})");
+                if (PlaceableManager.Instance.selectedItem != null)
+                {
+                    GameObject selectedObject = PlaceableManager.Instance.selectedItem;
+                    Vector3 newPosition = new Vector3(nearestX, 0f, nearestZ);
+                    selectedObject.transform.position = newPosition;
+                }
+                break;
             }
         }
     }
@@ -126,27 +166,29 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
         if (Physics.Raycast(ray, out hit))
         {
             GameObject clickedObject = hit.collider.gameObject;
-            if (clickedObject.TryGetComponent<Placeable>(out var placeable))
+
+            // 객체의 태그를 확인하여 특정 태그인 경우에만 처리
+            if (clickedObject.CompareTag("Placeable"))
             {
+                if(PlaceableManager.Instance.selectedItem != null)  //기존의 선택된 
+                {
+
+                }
                 PlaceableManager.Instance.selectedItem = clickedObject;
-                Debug.Log(PlaceableManager.Instance.selectedItem.name + "has been selected.");
+                Debug.Log(PlaceableManager.Instance.selectedItem.name + " has been selected.");
+                Debug.Log(PlaceableManager.Instance.selectedItem.name + " has been selected.");
+
                 if (editOptionButton != null)
-                { editOptionButton.SetActive(true); }
+                {
+                    editOptionButton.SetActive(true);
+                }
             }
-            else
-            {
-                PlaceableManager.Instance.selectedItem = null;
-                if(editOptionButton != null)
-                { editOptionButton.SetActive(false); }
-            }
-        }
-        else
+        }else
         {
             PlaceableManager.Instance.selectedItem = null;// 중복 코드, 클릭 고려필요 
             if (editOptionButton != null)                   //별개의 함수로 분리
             { editOptionButton.SetActive(false); }
         }
-
 
     }
     
