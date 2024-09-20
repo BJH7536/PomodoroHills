@@ -1,11 +1,12 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class DatePickerCaller : MonoBehaviour
 {
-    [SerializeField] private DatePickerUI _datePickerUI;
+    [SerializeField] private TodoListPopup_DatePicker todoListPopupDatePicker;
     [SerializeField] private TMP_Text callerText;
 
     private DateTime _dateTime;
@@ -17,7 +18,9 @@ public class DatePickerCaller : MonoBehaviour
     
     public void OpenDatePicker()
     {
-        _datePickerUI.Open(this, _dateTime);
+        //todoListPopupDatePicker.Open(this, _dateTime);
+        
+        PopupManager.Instance.ShowPopup<TodoListPopup_DatePicker>().Open(this, _dateTime);
     }
     
     public void SetDateTime(DateTime dateTime)
