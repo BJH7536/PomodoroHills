@@ -7,19 +7,20 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 //<미해결>
-//이동편집모드 진입시 편집모드 UI에서 빠져나오는 UI가 사라질 필요가 있음
-//이동편집모드 진입시 UI 중 회전 UI가 생성되어야함
-//현재 스마트폰 환경에서의 다중입력을 생각하지 않았습니다. 조작방식도 스마트폰과 맞지않을겁니다.
+//이동편집모드 진입시 편집모드관련 UI가 사라질 필요가 있음
+//이동편집모드 진입시 UI 중 회전 UI가 생성되어야함 (해결)
+//현재 마우스 입력만 고려되었습니다. 
+//카메라 설정 재작업 후 모바일 환경 내에서의 입력도 고려합니다.
+//드래그 작업 시 클릭된 오브젝트의 유무에 따라 카메라 또는 오브젝트의 이동을 결정합니다. ***
 
-//PlaceableManager와 입력 작업을 분리하여 다른 탭 사용 중 해당 스크립트를 비활성화합니다.
-
+//PlaceableManager와 입력 작업을 분리하여 다른 탭 사용 중 입력 작업으로 인한 연산을 줄입니다.
 public class InteractionManager : MonoBehaviour       //해당 작업은 다른 탭을 이용 중일 때 비활성화 되어야합니다. -> 따라서 PlaceableManager와 분리합니다.
 {
     public EventSystem eventSystem;
     public GameObject editOptionButton;
 
-    private bool isDrag;                //드래그할때 해당하는 작업을 실시간으로 사용합니다.
-    private Vector3 mouseDownPosition;  //클릭 된 위치를 기억합니다. (미사용될것같습니다.)
+    private bool isDrag;                //드래그 상태를 확인하는데 사용합니다.
+    private Vector3 mouseDownPosition;  //클릭 된 위치를 기억합니다. (입력작업 관련 메소드 내 중복 시 삭제)
     private Vector3 startClickPosition;
     private float dragSpeed = 0.1f;
     public float dragThreshold = 0.5f;
@@ -134,13 +135,33 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
                 if (PlaceableManager.Instance.selectedItem != null)
                 {
                     GameObject selectedObject = PlaceableManager.Instance.selectedItem;
+                    Placeable placeable = selectedObject.GetComponent<Placeable>();
                     Vector3 newPosition = new Vector3(nearestX, 0f, nearestZ);
+                    placeable.position = new Vector2Int (nearestX, nearestZ);
                     selectedObject.transform.position = newPosition;
                 }
                 break;
             }
         }
     }
+
+
+    public void RotatePlaceable()
+    {
+        if (PlaceableManager.Instance.selectedItem.TryGetComponent<Placeable>(out Placeable selectedPlaceable))
+        {
+            selectedPlaceable.rotation++;
+            if (selectedPlaceable.rotation > 3) selectedPlaceable.rotation = 0;
+            //오브젝트 회전을 placeable 스크립트 rotation*90으로 변경
+            PlaceableManager.Instance.selectedItem.transform.rotation = Quaternion.Euler(0f,selectedPlaceable.rotation*90f,0f);
+        }
+        else
+        {
+            Debug.Log("There is no selectedPlaceable");
+        }
+    }
+
+
 
     private bool IsMouseOnUI()      //마우스가 UI 위에 있는지 검증합니다. 오브젝트 조작과 UI 조작이 겹칠 경우의 조작을 유효하게 하기 위한 절차입니다.
     {
@@ -185,13 +206,20 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
             }
         }else
         {
-            PlaceableManager.Instance.selectedItem = null;// 중복 코드, 클릭 고려필요 
-            if (editOptionButton != null)                   //별개의 함수로 분리
-            { editOptionButton.SetActive(false); }
+            LoseSelectedItem();
         }
 
     }
     
+    public void ConfirmEditButton()
+    {
+        if (PlaceableManager.Instance.ConfirmEdit())
+        {
+            //버튼 꺼지게
+        }
+        else{ Debug.Log("no"); }
+    }
+
     public void LoseSelectedItem()     //UI가 클릭되었는지 아닌지를 확인하는 절차가 필요
     {                           //상기 절차로 ClickableUI tag를 가지는 UI 클릭시 해당 메소드 미실행
         PlaceableManager.Instance.selectedItem = null; 
