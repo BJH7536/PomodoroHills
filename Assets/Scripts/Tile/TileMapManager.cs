@@ -235,7 +235,10 @@ public class TileMapManager : MonoBehaviour
     }
     public void FreeTile(Vector2Int position)       //타일점유 해제
     {
-        tileMap[position].Free();
+        if (tileMap.ContainsKey(position))
+        {
+            tileMap[position].Free();
+        }
     }
 
 

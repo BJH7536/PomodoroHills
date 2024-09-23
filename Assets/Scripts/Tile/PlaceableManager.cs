@@ -1,9 +1,13 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 
+//최우선 과제, 배치 절차 진입시 현재 소재 Free하기
 // placeable이 자신의 위치정보를 나타내지않아 transform 직접 참조 혹은 생성/확인 시transform을 따라가게합니다.
 // unpack 절차 작성시 반영 필요
 //버튼 등과 상화작용하는 메소드의 경우 가능한 Interaction에서 참조하도록 작성
@@ -15,16 +19,21 @@ public class PlaceableManager : MonoBehaviour
 
 
     public List<GameObject> placeables = new List<GameObject>();
-    public GameObject selectedItem;
-    public Vector2Int lastPosition = new Vector2Int(-1,-1);
+    public GameObject selectedPlaceable;
+    public Vector2Int lastPosition = new Vector2Int(-1, -1);
     public int lastRotation = -1;
+    public UnityEngine.Color OriginColor;
     //편집 등 상태관련 
+
     public bool isEdit { get; private set; }     //편집모드
-    public bool isMoveEdit { get; private set; }
+    public bool isChestEdit { get; private set; }
+    public bool isMoveEdit { get; private set; }    //이동모드
     public bool isNewEdit { get; private set; }
+
 
     private void Awake()
     {
+        ResetLastLocation();
         itemDB = GetComponent<ItemDB>(); //임시 사용 itemDB
         if (Instance == null)
         {
@@ -60,7 +69,6 @@ public class PlaceableManager : MonoBehaviour
 
     void Update()
     {
-        
     }
 
 
@@ -69,31 +77,25 @@ public class PlaceableManager : MonoBehaviour
 
     }//미완
 
-    private void LoadItem()//미완 얘가 뭐하는거더라?
+    private void LoadPlaceable()//
     {
-       
+
     }
 
     private void PlaceTest(int index, Vector2Int position, int rotation)
-    {   
-        
+    {
+
         itemDB.itemTable.TryGetValue(index, out GameObject obj);
         Placeable placeable = obj.GetComponent<Placeable>();
-        PlacePlaceable(obj, placeable.size, position, rotation);
+        PlacePlaceableTest(obj, placeable.size, position, rotation);
     }
 
-    public void UnpackPlaceable(int itemCode)   //인벤토리에서 배치요소를 꺼내는 메소드
-    {
-        itemDB.itemTable.TryGetValue(itemCode, out GameObject obj);
-    }
-
-
-
-    private void PlacePlaceable(GameObject Prefab, Vector2Int size,Vector2Int position, int rotation)
+    private void PlacePlaceableTest(GameObject Prefab, Vector2Int size, Vector2Int position, int rotation)
     {
         if (TileMapManager.Instance != null)
         {
-            if (!TileMapManager.Instance.GetEveryTileAvailable(size, position, rotation)) {
+            if (!TileMapManager.Instance.GetEveryTileAvailable(size, position, rotation))
+            {
                 Debug.Log("이미 타일을 누가 쓰고있어요");
             }
             else
@@ -101,33 +103,101 @@ public class PlaceableManager : MonoBehaviour
                 TileMapManager.Instance.OccupyEveryTile(size, position, rotation);
                 Vector3 objPosition = new Vector3(position.x, 0f, position.y);
                 Quaternion rotationQuaternion = Quaternion.Euler(0, rotation * 90, 0);
-                GameObject newObj = Instantiate(Prefab, objPosition,rotationQuaternion );
+                GameObject newObj = Instantiate(Prefab, objPosition, rotationQuaternion);
                 newObj.tag = "Placeable";
                 placeables.Add(newObj);
                 Placeable plc = newObj.GetComponent<Placeable>();
                 plc.position = position;
                 plc.rotation = rotation;
+            
             }
+        }
+    }
+    //상기 두 메소드는 테스트용으로 작성된 코드임
+    //
+    // 후술할 코드 목적 : 생성, 선택 등 의 분리
+    
+    public GameObject CreatePlaceable(int placeableCode) // 테이블에서 Placeable프리팹을 찾아서 생성
+    {
+        if (itemDB.itemTable.TryGetValue(placeableCode, out GameObject Prefab))
+        {
+            GameObject newObj = Instantiate(Prefab, Vector3.zero, Quaternion.identity);
+            return newObj;
+        }
+        Debug.Log("Can't Find placeableCode in Table");
+        return null;
+    }
+
+    public bool UnpackPlaceable(int placeableCode)   //인벤토리에서 배치요소를 꺼내는 메소드
+    {
+        OnIsNewEdit();
+        ResetLastLocation();//불필요하게 반복되는 부분이나 만약을 위해 작성
+        selectedPlaceable = CreatePlaceable(placeableCode);
+        if (selectedPlaceable != null)
+        {
+            Vector2Int position 
+                = new Vector2Int(TileMapManager.Instance.gridX/2, TileMapManager.Instance.gridZ/2);
+            Placeable placeable = selectedPlaceable.GetComponent<Placeable>();
+            placeable.position = position;
+            selectedPlaceable.transform.position = new Vector3(position.x, 0f,position.y) ;
+            OnIsMoveEdit();
+            OffisChestEdit();
+            return true;
+        }
+        else
+        {
+            Debug.Log("Unpack failed");
+            return false;
+        }
+
+    }
+
+    public bool PackPlaceable()
+    {
+        if (selectedPlaceable != null)
+        {
+            selectedPlaceable.TryGetComponent<Placeable>(out Placeable placeable);
+            TileMapManager.Instance.FreeEveryTile(placeable.size,placeable.position,placeable.rotation);
+            //인벤토리 내 해당하는 수량 +1
+            Destroy(selectedPlaceable);
+            //삭제여부 검토 후 수량 재확인
+            selectedPlaceable = null;
+            return true;
+        }
+        return false;
+    }
+
+    public void RotatePlaceable()       //현재 SelectedPlaceable을 회전 (이관예정)
+    {
+        if (selectedPlaceable.TryGetComponent<Placeable>(out Placeable placeable))
+        {
+            placeable.rotation++;
+            if (placeable.rotation > 3) placeable.rotation = 0;
+            //오브젝트 회전을 placeable 스크립트 rotation*90으로 변경
+            selectedPlaceable.transform.rotation = Quaternion.Euler(0f, placeable.rotation * 90f, 0f);
+        }
+        else
+        {
+            Debug.Log("There is no selectedPlaceable");
         }
     }
 
     public bool ConfirmEdit()   //(미완성)
     {
-        if (selectedItem.TryGetComponent<Placeable>(out Placeable placeable))
+        if (selectedPlaceable.TryGetComponent<Placeable>(out Placeable placeable))
         {
             if (TileMapManager.Instance.GetEveryTileAvailable(placeable.size, placeable.position, placeable.rotation))
             {
                 TileMapManager.Instance.OccupyEveryTile(placeable.size, placeable.position, placeable.rotation);
-                if (lastRotation != -1) // 기존에 있던 오브젝트의 경우
-                    //Free는 옮기기 시작할때 해야합니다. 해당 부분 수정바랍니다.
+                if (!isNewEdit) // 기존에 있던 오브젝트의 경우
                 {
-                    TileMapManager.Instance.FreeEveryTile(placeable.size, lastPosition, lastRotation);
+                    //TileMapManager.Instance.FreeEveryTile(placeable.size, lastPosition, lastRotation); //수정중 240921/0349
                 }
-                else //새로 생성된 오브젝트의 경우 
+                else
                 {
-                    //
+                    placeables.Add(selectedPlaceable);
+                    OffIsNewEdit();
                 }
-                OffIsMoveEdit(); //새로 생성된것일 시...
                 return true;
             }
             else
@@ -144,27 +214,31 @@ public class PlaceableManager : MonoBehaviour
     {
         if (lastRotation == -1)     //새로 생성한 Placeable의 경우
         {
-            Debug.Log("newob");
-        }else if(selectedItem.TryGetComponent<Placeable>(out Placeable placeable))  //기존의 Placeable
+            // 인벤토리 구현시 해당 Placeable 수량 +1
+            Destroy(selectedPlaceable);
+            OffIsNewEdit();
+            Debug.Log("selectedPlaceable is newPlaceable, we pack it up");
+        }
+        else if (selectedPlaceable.TryGetComponent<Placeable>(out Placeable placeable))  //기존의 Placeable
         {
-            TileMapManager.Instance.OccupyEveryTile(placeable.size,lastPosition,lastRotation);
-            selectedItem.transform.position = new Vector3(lastPosition.x, 0f, lastPosition.y);
-            selectedItem.transform.rotation = Quaternion.Euler(0, lastRotation*90f, 0);
-
+            TileMapManager.Instance.OccupyEveryTile(placeable.size, lastPosition, lastRotation);
+            selectedPlaceable.transform.position = new Vector3(lastPosition.x, 0f, lastPosition.y);
+            selectedPlaceable.transform.rotation = Quaternion.Euler(0, lastRotation * 90f, 0);
+            placeable.position = lastPosition;
+            placeable.rotation = lastRotation;
             Debug.Log("oldob");
         }
-        OffIsMoveEdit();
     }
 
 
     void DeletePlaceableObject()//미완성
     {
-        if(selectedItem != null)
+        if (selectedPlaceable != null)
         {
-            Item item = selectedItem.GetComponent<Item>();
-            if(item != null)
+            Placeable placeable = selectedPlaceable.GetComponent<Placeable>();
+            if (placeable != null)
             {
-                Vector2Int position = item.position;
+                Vector2Int position = placeable.position;
             }
             //특정 좌표 점유 해제
             //특정 좌표 부터 특정좌표까지 해제... FreeEveryTile(size,prepos,prerotation)사용 
@@ -175,22 +249,32 @@ public class PlaceableManager : MonoBehaviour
 
 
 
-    //IsEdit이 true인 상태에서 타일맵 위의 Item을 클릭하면 주위로 UI가 활성화 되고 드래그하여 움직일 수 있다.
+    //IsEdit이 true인 상태에서 타일맵 위의 Placeable을 클릭하면 주위로 UI가 활성화 되고 드래그하여 움직일 수 있다.
     //이때 확인, 회전, 보관(삭제)와 관련된 UI(버튼) 띄운다.
     public void OnIsEdit() { isEdit = true; }
     public void OffIsEdit() { isEdit = false; }
     public void OnIsNewEdit() { isNewEdit = true; }
     public void OffIsNewEdit() { isNewEdit = false; }
-    public void OnIsMoveEdit() 
+    public void OnisChestEdit() { isChestEdit = true; }
+    public void OffisChestEdit() { isChestEdit = false; }
+    public void OnIsMoveEdit() // 오브젝트 이동 시작시 기존 위치 Free
     {
-        selectedItem.TryGetComponent<Placeable>(out Placeable placeable);
-        
-        lastRotation = placeable.rotation;
-        lastPosition = placeable.position;
-        
-        isMoveEdit = true; 
+        StartColor();
+        if (selectedPlaceable.TryGetComponent<Placeable>(out Placeable placeable))
+        {
+            TileMapManager.Instance.FreeEveryTile(placeable.size, placeable.position, placeable.rotation);
+            if (isNewEdit)
+            {
+                ResetLastLocation();
+            }
+            else
+            {
+                lastRotation = placeable.rotation;
+                lastPosition = placeable.position;
+            }
 
-        //새로 오브젝트를 생성하는 경우와 구분하여 작성
+            isMoveEdit = true;
+        }
     }
 
     //
@@ -198,18 +282,65 @@ public class PlaceableManager : MonoBehaviour
     {                           // ConfirmEdit, CancleEdit,  해당 메소드가 제일 하위에 위치하도록 변경
 
         isMoveEdit = false;
+        EndColor();
         ResetLastLocation();
     }
-    
 
 
-    //
+
     
-    private void ResetLastLocation()
+    public void StartColor()    //(미사용)
+    {
+        //Renderer renderer = selectedPlaceable.GetComponent<Renderer>();
+        //OriginColor = renderer.material.color;
+    }
+    public void ChangePlaceableColor()
+    {
+        if (selectedPlaceable != null)
+        {
+            Placeable placeable = selectedPlaceable.GetComponent<Placeable>();
+            if (TileMapManager.Instance.GetEveryTileAvailable(placeable.size, placeable.position, placeable.rotation))
+            {
+                MeshRenderer[] renderers = selectedPlaceable.GetComponentsInChildren<MeshRenderer>();
+
+                foreach (MeshRenderer renderer in renderers)
+                {
+                    renderer.material.color = UnityEngine.Color.green;
+                }
+            }
+            else
+            {
+                MeshRenderer[] renderers = selectedPlaceable.GetComponentsInChildren<MeshRenderer>();
+
+                foreach (MeshRenderer renderer in renderers)
+                {
+                    renderer.material.color = UnityEngine.Color.red;
+                }
+            }
+        }
+
+    }
+    public void EndColor()
+    {
+        if (selectedPlaceable != null)
+        {
+            MeshRenderer[] renderers = selectedPlaceable.GetComponentsInChildren<MeshRenderer>();
+
+            foreach (MeshRenderer renderer in renderers)
+            {
+                renderer.material.color = UnityEngine.Color.white;
+            }
+        }
+    }
+
+
+
+
+
+    private void ResetLastLocation()        //기존좌표로 사용하ㅣ
     {
         lastPosition = new Vector2Int(-1, -1);
         lastRotation = -1;
     }
-
-
 }
+

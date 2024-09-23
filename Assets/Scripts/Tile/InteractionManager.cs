@@ -13,11 +13,17 @@ using UnityEngine.UI;
 //카메라 설정 재작업 후 모바일 환경 내에서의 입력도 고려합니다.
 //드래그 작업 시 클릭된 오브젝트의 유무에 따라 카메라 또는 오브젝트의 이동을 결정합니다. ***
 
-//PlaceableManager와 입력 작업을 분리하여 다른 탭 사용 중 입력 작업으로 인한 연산을 줄입니다.
+//PlaceableManager와 입력 작업을 분리, 다른 탭 사용 시 해당 스크립트 비활성화
 public class InteractionManager : MonoBehaviour       //해당 작업은 다른 탭을 이용 중일 때 비활성화 되어야합니다. -> 따라서 PlaceableManager와 분리합니다.
 {
     public EventSystem eventSystem;
-    public GameObject editOptionButton;
+
+    public GameObject TileMapMainOptionUI; //ModeOptionUI,EditOptionUI 그룹
+        public GameObject ModeOptionUI; // edit, minimizeUI 버튼 그룹
+        public GameObject EditOptionUI; // moveEdit, chest 버튼 그룹
+    public GameObject selectOptionUI; //Move(시작), Pack 버튼 그룹
+    public GameObject MoveOptionUI; // confirm, rotate, cancle 버튼 그룹
+    public GameObject PlaceableChestUI; //placeableChest(보관함) UI 그룹
 
     private bool isDrag;                //드래그 상태를 확인하는데 사용합니다.
     private Vector3 mouseDownPosition;  //클릭 된 위치를 기억합니다. (입력작업 관련 메소드 내 중복 시 삭제)
@@ -31,43 +37,49 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
     void Update()
     {
         InputMouse();
+        if (PlaceableManager.Instance.isMoveEdit)
+        {
+            PlaceableManager.Instance.ChangePlaceableColor();
+        }
     }
 
 
     void InputMouse()
     {
-        if (Input.GetMouseButtonDown(0))    //마우스 클릭될 때...
+        if (!PlaceableManager.Instance.isChestEdit)
         {
-            startClickPosition = Input.mousePosition;
-            clickStartTime = Time.time;
-            isDrag = false;
-        }
-        else if (Input.GetMouseButton(0))
-        {
-
-
-            Vector3 currentMousePosition = Input.mousePosition;
-            float distance = Vector3.Distance(startClickPosition, Input.mousePosition);
-
-            if (!isDrag && distance > dragThreshold)
+            if (Input.GetMouseButtonDown(0))    //마우스 클릭될 때...
             {
-                isDrag = true;
+                startClickPosition = Input.mousePosition;
+                clickStartTime = Time.time;
+                isDrag = false;
             }
-
-            if (isDrag)
+            else if (Input.GetMouseButton(0))
             {
-                OnDrag();
-            }
+                Vector3 currentMousePosition = Input.mousePosition;
+                float distance = Vector3.Distance(startClickPosition, Input.mousePosition);
 
-        }
-        else if (Input.GetMouseButtonUp(0))      //클릭이 취소될 때...
-        {
-            float clickDuration = Time.time - clickStartTime;
-            if (!isDrag && clickDuration < clickCheckTime)
+                if (!isDrag && distance > dragThreshold)
+                {
+                    isDrag = true;
+                }
+
+                if (isDrag)
+                {
+                    OnDrag();
+                }
+
+            }
+            else if (Input.GetMouseButtonUp(0))      //클릭이 취소될 때...
             {
-                OnClick();
+                float clickDuration = Time.time - clickStartTime;
+                if (!isDrag && clickDuration < clickCheckTime)
+                {
+                    OnClick();
+                }
             }
         }
+
 
     }
 
@@ -83,7 +95,7 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
         }
         else                                                // 편집대상 이동
         {
-            if (PlaceableManager.Instance.selectedItem != null)
+            if (PlaceableManager.Instance.selectedPlaceable != null)
             {
                 MovePlaceable();
             }
@@ -103,7 +115,7 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
         }
         else                                                // 편집대상 이동
         {
-            if (PlaceableManager.Instance.selectedItem != null)     //실시간 이동으로....
+            if (PlaceableManager.Instance.selectedPlaceable != null)     //실시간 이동으로....
             {
                 MovePlaceable();
             }
@@ -132,9 +144,9 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
 
                 // 결과 출력
                 Debug.Log($"Clicked Point: {hitPoint}, Nearest Integer Coordinates: ({nearestX}, {nearestZ})");
-                if (PlaceableManager.Instance.selectedItem != null)
+                if (PlaceableManager.Instance.selectedPlaceable != null)
                 {
-                    GameObject selectedObject = PlaceableManager.Instance.selectedItem;
+                    GameObject selectedObject = PlaceableManager.Instance.selectedPlaceable;
                     Placeable placeable = selectedObject.GetComponent<Placeable>();
                     Vector3 newPosition = new Vector3(nearestX, 0f, nearestZ);
                     placeable.position = new Vector2Int (nearestX, nearestZ);
@@ -145,21 +157,21 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
         }
     }
 
-
-    public void RotatePlaceable()
+    /*
+    public void RotatePlaceable()       //현재 SelectedPlaceable을 회전 (이관예정)
     {
-        if (PlaceableManager.Instance.selectedItem.TryGetComponent<Placeable>(out Placeable selectedPlaceable))
+        if (PlaceableManager.Instance.selectedPlaceable.TryGetComponent<Placeable>(out Placeable selectedPlaceable))
         {
             selectedPlaceable.rotation++;
             if (selectedPlaceable.rotation > 3) selectedPlaceable.rotation = 0;
             //오브젝트 회전을 placeable 스크립트 rotation*90으로 변경
-            PlaceableManager.Instance.selectedItem.transform.rotation = Quaternion.Euler(0f,selectedPlaceable.rotation*90f,0f);
+            PlaceableManager.Instance.selectedPlaceable.transform.rotation = Quaternion.Euler(0f,selectedPlaceable.rotation*90f,0f);
         }
         else
         {
             Debug.Log("There is no selectedPlaceable");
         }
-    }
+    }*/
 
 
 
@@ -178,7 +190,7 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
         return false;
     }
 
-    void SelectObject()
+    void SelectObject()             //마우스로 클릭한 오브젝트를 선택(selectedPlaceable로 지정) 후 관련 UI 설정 
     {
         Vector3 mousePosition = Input.mousePosition;
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);
@@ -191,54 +203,106 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
             // 객체의 태그를 확인하여 특정 태그인 경우에만 처리
             if (clickedObject.CompareTag("Placeable"))
             {
-                if(PlaceableManager.Instance.selectedItem != null)  //기존의 선택된 
-                {
+                PlaceableManager.Instance.selectedPlaceable = clickedObject;
+                Debug.Log(PlaceableManager.Instance.selectedPlaceable.name + " has been selected.");
+                Debug.Log(PlaceableManager.Instance.selectedPlaceable.name + " has been selected.");
 
-                }
-                PlaceableManager.Instance.selectedItem = clickedObject;
-                Debug.Log(PlaceableManager.Instance.selectedItem.name + " has been selected.");
-                Debug.Log(PlaceableManager.Instance.selectedItem.name + " has been selected.");
-
-                if (editOptionButton != null)
+                if (selectOptionUI != null)
                 {
-                    editOptionButton.SetActive(true);
+                    selectOptionUI.SetActive(true);
                 }
             }
-        }else
+        }else                       //클릭된 오브젝트가 없으면 selectedObject를 null로 하고 관련 UI 비활성
         {
-            LoseSelectedItem();
+            LoseSelectedPlaceable();
         }
 
     }
     
-    public void ConfirmEditButton()
+    public void UnpackPlaceable(int itemcode)   //PlacealbeChest로부터 오브젝트를 꺼내 타일맵에 오브젝트 배치
+    {                                           //해당 Placeable가 보관함에 남아있는지 검증(보관함&수량 미구현으로 보류)(미완성)
+        if (PlaceableManager.Instance.UnpackPlaceable(itemcode))  
+        {
+            OffPlaceableChest();
+            OnMoveSelectedPlaceable();
+        }
+    }
+
+    public void PackPlaceable()                 //타일맵에 배치된 오브젝트 제거
+    {
+        if (PlaceableManager.Instance.PackPlaceable())
+        {
+            selectOptionUI.SetActive(false);
+        }
+    }
+
+    public void ClickConfirmEdit()              //SelectedPlaceable 편집상태 시작
     {
         if (PlaceableManager.Instance.ConfirmEdit())
         {
-            //버튼 꺼지게
+            OffMoveSelectedPlaceable(); //버튼 꺼지게
         }
         else{ Debug.Log("no"); }
     }
-
-    public void LoseSelectedItem()     //UI가 클릭되었는지 아닌지를 확인하는 절차가 필요
-    {                           //상기 절차로 ClickableUI tag를 가지는 UI 클릭시 해당 메소드 미실행
-        PlaceableManager.Instance.selectedItem = null; 
-        if (editOptionButton != null)
-        { editOptionButton.SetActive(false); }
-    }
     
-    public void OnMoveSelectedItem()
+    public void ClickCancleEdit()               //SelectedPlaceable 편집상태 종료
     {
-        if(PlaceableManager.Instance.selectedItem != null)
+        PlaceableManager.Instance.CancleEdit();
+        OffMoveSelectedPlaceable();
+    }
+
+    public void LoseSelectedPlaceable()         //UI가 클릭되었는지 아닌지를 확인하는 절차 PhysicsRaycast 및 창 단계를 나타내는 변수로 컨트롤
+    {                           
+        PlaceableManager.Instance.selectedPlaceable = null; 
+        if (selectOptionUI != null)
+        { selectOptionUI.SetActive(false); }
+    }
+
+    public void OnMoveSelectedPlaceable()       //SelectedPlaceable 편집상태 진입 시 변수 및 UI 조작을 위해 사용
+    {
+        if(PlaceableManager.Instance.selectedPlaceable != null)
         {
+            TileMapMainOptionUI.SetActive(false);
+            MoveOptionUI.SetActive(true);
+            selectOptionUI.SetActive(false);
             PlaceableManager.Instance.OnIsMoveEdit();
         }
     } 
-    public void OffMoveSelectedItem()
+    public void OffMoveSelectedPlaceable()      //SelectedPlaceable 편집 중 편집 사항 확인/취소 시 변수 및 UI 조작을 위해 사용
     {
-        if(PlaceableManager.Instance.selectedItem != null)
+        if(PlaceableManager.Instance.selectedPlaceable != null)
         {
             PlaceableManager.Instance.OffIsMoveEdit();
+            MoveOptionUI.SetActive(false);
+            TileMapMainOptionUI.SetActive(true);
         }
+    }
+
+    public void ClickRotate()                   //SelectedPlaceable 편집 중 해당 Placaeable 90도 회전(시계방향), 관련 변수 수정
+    {
+        PlaceableManager.Instance.RotatePlaceable();
+    }
+    public void ClickEdit()                     //우측 상단 편집시작(Pen모양) 버튼 클릭 시 사용
+    {
+        PlaceableManager.Instance.OnIsEdit();
+        EditOptionUI.SetActive(true);
+        ModeOptionUI.SetActive(false);
+    }
+    public void ClickEndEdit()                  //우측 상단 편집종료(Undo모양) 버튼 클릭 시 사용
+    {
+        PlaceableManager.Instance.OffIsEdit();
+        EditOptionUI.SetActive(false);
+        ModeOptionUI.SetActive(true);
+    }
+    public void ClickPlaceableChest()           //PlaceableChest UI 실행 버튼에 사용
+    {
+        PlaceableManager.Instance.OnisChestEdit();
+        PlaceableChestUI.SetActive(true);
+        selectOptionUI.SetActive(false);
+    }
+    public void OffPlaceableChest()             //PlaceableChest 외부의 투명한 UI 등 PlaceableChestUI를 종료할 때 사용
+    {
+        PlaceableChestUI.SetActive(false);
+        PlaceableManager.Instance.OffisChestEdit();
     }
 }

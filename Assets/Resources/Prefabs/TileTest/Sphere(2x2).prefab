@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1406735507360574484}
   m_Layer: 0
   m_Name: Sphere(2x2)
-  m_TagString: Untagged
+  m_TagString: Placeable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -48,8 +48,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   size: {x: 2, y: 2}
   position: {x: 0, y: 0}
-  prePosition: {x: 0, y: 0}
   rotation: 0
+  originColor: {r: 0, g: 0, b: 0, a: 0}
   isPlaced: 0
 --- !u!135 &1406735507360574484
 SphereCollider:
@@ -133,7 +133,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 681f40bc096b8c847be6205469fe845e, type: 2}
+  - {fileID: 2100000, guid: 4c3a6515cde31ac4db929f14ce8687d2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

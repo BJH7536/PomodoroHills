@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6097123203458940164}
   m_Layer: 0
   m_Name: Cube(1x2)
-  m_TagString: Untagged
+  m_TagString: Placeable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -48,8 +48,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   size: {x: 1, y: 2}
   position: {x: 0, y: 0}
-  prePosition: {x: 0, y: 0}
   rotation: 0
+  originColor: {r: 0, g: 0, b: 0, a: 0}
   isPlaced: 0
 --- !u!65 &6097123203458940164
 BoxCollider:
