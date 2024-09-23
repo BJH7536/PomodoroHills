@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 /// <summary>
 /// 팝업을 생성하는 팩토리 클래스입니다.
@@ -43,7 +44,7 @@ public static class PopupFactory
         }
 
         // 팝업 인스턴스 생성
-        GameObject popupInstance = GameObject.Instantiate(prefab);
+        GameObject popupInstance = Object.Instantiate(prefab);
         return popupInstance.GetComponent<T>();
     }
 }
