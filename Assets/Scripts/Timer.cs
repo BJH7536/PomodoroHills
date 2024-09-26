@@ -5,48 +5,48 @@ using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
-    [SerializeField] public TextMeshProUGUI timerText;           // Å¸ÀÌ¸Ó¸¦ Ç¥½ÃÇÒ UI Text ¿ä¼Ò
-    [SerializeField] private float timer;                        // °æ°ú ½Ã°£ ÀúÀå º¯¼ö
-    [SerializeField] private bool isRunning;                     // Å¸ÀÌ¸Ó ÀÛµ¿ ¿©ºÎ
+    [SerializeField] public TextMeshProUGUI timerText;           // íƒ€ì´ë¨¸ë¥¼ í‘œì‹œí•  UI Text ìš”ì†Œ
+    [SerializeField] private float timer;                        // ê²½ê³¼ ì‹œê°„ ì €ì¥ ë³€ìˆ˜
+    [SerializeField] private bool isRunning;                     // íƒ€ì´ë¨¸ ì‘ë™ ì—¬ë¶€
 
     void Start()
     {
-        timer = 0f;             // Å¸ÀÌ¸Ó ÃÊ±âÈ­
-        isRunning = false;      // Å¸ÀÌ¸Ó ÃÊ±â »óÅÂ¸¦ Á¤Áö·Î ¼³Á¤
+        timer = 0f;             // íƒ€ì´ë¨¸ ì´ˆê¸°í™”
+        isRunning = false;      // íƒ€ì´ë¨¸ ì´ˆê¸° ìƒíƒœë¥¼ ì •ì§€ë¡œ ì„¤ì •
     }
 
     void Update()
     {
         if (isRunning)
         {
-            timer += Time.deltaTime; // Å¸ÀÌ¸Ó ¾÷µ¥ÀÌÆ®
-            UpdateTimerText();       // Å¸ÀÌ¸Ó ÅØ½ºÆ® ¾÷µ¥ÀÌÆ®
+            timer += Time.deltaTime; // íƒ€ì´ë¨¸ ì—…ë°ì´íŠ¸
+            UpdateTimerText();       // íƒ€ì´ë¨¸ í…ìŠ¤íŠ¸ ì—…ë°ì´íŠ¸
         }
     }
 
     void UpdateTimerText()
     {
-        int hours = Mathf.FloorToInt(timer / 3600f);      //½Ã °è»ê
-        int minutes = Mathf.FloorToInt(timer / 60f);    // ºĞ °è»ê
-        int seconds = Mathf.FloorToInt(timer % 60f);    // ÃÊ °è»ê
+        int hours = Mathf.FloorToInt(timer / 3600f);      //ì‹œ ê³„ì‚°
+        int minutes = Mathf.FloorToInt(timer / 60f);    // ë¶„ ê³„ì‚°
+        int seconds = Mathf.FloorToInt(timer % 60f);    // ì´ˆ ê³„ì‚°
 
-        // Å¸ÀÌ¸Ó ¹®ÀÚ¿­ Çü½ÄÈ­ ¹× UI ÅØ½ºÆ® ¾÷µ¥ÀÌÆ®
+        // íƒ€ì´ë¨¸ ë¬¸ìì—´ í˜•ì‹í™” ë° UI í…ìŠ¤íŠ¸ ì—…ë°ì´íŠ¸
         timerText.text = string.Format("{0:00}:{1:00}:{2:00}", hours, minutes, seconds);
     }
 
-    // Å¸ÀÌ¸Ó ½ÃÀÛ/Á¤Áö Åä±Û ÇÔ¼ö
+    // íƒ€ì´ë¨¸ ì‹œì‘/ì •ì§€ í† ê¸€ í•¨ìˆ˜
     public void ToggleTimer(bool isOn)
     {
         isRunning = isOn;
     }
 
-    // Å¸ÀÌ¸Ó ÀÏ½ÃÁ¤Áö ÇÔ¼ö
+    // íƒ€ì´ë¨¸ ì¼ì‹œì •ì§€ í•¨ìˆ˜
     public void PauseTimer()
     {
         isRunning = false;
     }
 
-    // Å¸ÀÌ¸Ó Àç°³ ÇÔ¼ö
+    // íƒ€ì´ë¨¸ ì¬ê°œ í•¨ìˆ˜
     public void ResumeTimer()
     {
         isRunning = true;
