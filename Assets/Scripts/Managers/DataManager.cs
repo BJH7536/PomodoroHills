@@ -29,7 +29,7 @@ namespace DataManagement
         // 캐싱된 아이템 리스트
         private List<Item> cachedItems = new List<Item>();
 
-        // 이벤트 선언
+        // 인벤토리에서 사용할 이벤트 선언 (아이템이 추가될 때, 아이템이 삭제될 때)
         public event Action<Item> OnItemAdded;
         public event Action<string> OnItemDeleted;
         

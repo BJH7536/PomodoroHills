@@ -43,7 +43,7 @@ public class TodoListPopup : Popup
     {
         // 첫 번째 트윈: 투명도를 1에서 0으로 서서히 줄이기
         await canvasGroup.DOFade(0f, 1f).ToUniTask();
-        canvasGroup.DOFade(1f, 1f);
+        canvasGroup.DOFade(1f, 1f).ToUniTask().Forget();
     }
 
     // 투명도를 0에서 1로 서서히 늘리기

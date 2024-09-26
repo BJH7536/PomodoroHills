@@ -5843,7 +5843,6 @@ GameObject:
   - component: {fileID: 105320374266489072}
   - component: {fileID: 7806520083202310321}
   - component: {fileID: 1954207336591672003}
-  - component: {fileID: 6750857805850960356}
   m_Layer: 5
   m_Name: Checkbox
   m_TagString: Untagged
@@ -5926,38 +5925,8 @@ MonoBehaviour:
   m_Group: {fileID: 7668586929211165909}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6750857805850960356}
-        m_TargetAssemblyTypeName: CheckboxButtonController, Assembly-CSharp
-        m_MethodName: OnToggled
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_IsOn: 1
---- !u!114 &6750857805850960356
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2749934646022935294}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23e60b5b53e006a45a719aa6cadffa2c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  buttons:
-  - {fileID: 7568916165968374825}
-  - {fileID: 8160720320044426760}
-  texts:
-  - {fileID: 3840188273760538599}
-  - {fileID: 8696155973012796526}
 --- !u!1 &2801198844873925395
 GameObject:
   m_ObjectHideFlags: 0
@@ -14074,7 +14043,6 @@ GameObject:
   - component: {fileID: 5028254345701023960}
   - component: {fileID: 8229955122921364291}
   - component: {fileID: 8721945268067137755}
-  - component: {fileID: 7646887810992342449}
   m_Layer: 5
   m_Name: Checkbox
   m_TagString: Untagged
@@ -14157,38 +14125,8 @@ MonoBehaviour:
   m_Group: {fileID: 7668586929211165909}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7646887810992342449}
-        m_TargetAssemblyTypeName: CheckboxButtonController, Assembly-CSharp
-        m_MethodName: OnToggled
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_IsOn: 0
---- !u!114 &7646887810992342449
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6096951645625742477}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23e60b5b53e006a45a719aa6cadffa2c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  buttons:
-  - {fileID: 7568916165968374825}
-  - {fileID: 8160720320044426760}
-  texts:
-  - {fileID: 3840188273760538599}
-  - {fileID: 8696155973012796526}
 --- !u!1 &6170919992472397408
 GameObject:
   m_ObjectHideFlags: 0
@@ -16877,7 +16815,7 @@ GameObject:
   - component: {fileID: 6592337091254956617}
   - component: {fileID: 6489665975017061307}
   m_Layer: 5
-  m_Name: PlusButton
+  m_Name: Button_MakeNowTodoItemCaller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

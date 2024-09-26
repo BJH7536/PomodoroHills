@@ -25,6 +25,11 @@ public class MakeNewTodoItemCaller : MonoBehaviour
         oriAP = targetRectT.anchoredPosition;
     }
 
+    public void OnEnable()
+    {
+        MakeNewTodoItem.SetActive(false);
+    }
+
     public void OpenMakeNewTodoItem()
     {
         MakeNewTodoItem.SetActive(true);
