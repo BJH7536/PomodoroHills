@@ -185,9 +185,57 @@ public class TileMapManager : MonoBehaviour
         tileMap[position].Occupy();
     }
 
+    public void FreeEveryTile(Vector2Int size, Vector2Int prePosition, int preRotation)
+    {
+        switch (preRotation)
+        {
+            case 0: // 기본 회전 (0도)
+                for (int x = prePosition.x; x < prePosition.x + size.x; x++)
+                {
+                    for (int y = prePosition.y; y < prePosition.y + size.y; y++)
+                    {
+                        FreeTile(new Vector2Int(x, y));
+                    }
+                }
+                break;
+            case 1: // 회전 90도
+                for (int x = prePosition.x; x < prePosition.x + size.y; x++)
+                {
+                    for (int y = prePosition.y - size.x + 1; y <= prePosition.y; y++)
+                    {
+                        FreeTile(new Vector2Int(x, y));
+                    }
+                }
+                break;
+            case 2: // 회전 180도
+                for (int x = prePosition.x; x > prePosition.x - size.x; x--)
+                {
+                    for (int y = prePosition.y; y > prePosition.y - size.y; y--)
+                    {
+                        FreeTile(new Vector2Int(x, y));
+                    }
+                }
+                break;
+            case 3: // 회전 90도
+                for (int x = prePosition.x - size.y + 1; x <= prePosition.x; x++)
+                {
+                    for (int y = prePosition.y; y < prePosition.y + size.x; y++)
+                    {
+                        FreeTile(new Vector2Int(x, y));
+                    }
+                }
+                break;
+            default:
+                Debug.LogWarning("Invalid rotation value: " + preRotation);
+                break;
+        }
+    }
     public void FreeTile(Vector2Int position)       //타일점유 해제
     {
-        tileMap[position].Free();
+        if (tileMap.ContainsKey(position))
+        {
+            tileMap[position].Free();
+        }
     }
 
 
