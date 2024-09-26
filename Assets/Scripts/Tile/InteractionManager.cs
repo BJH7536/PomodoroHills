@@ -105,11 +105,11 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
 
     private void OnDrag()
     {
-        if (!PlaceableManager.Instance.isEdit)              // 터치 상호작용...
+        if (!PlaceableManager.Instance.isEdit)              // 카메라 이동
         {
 
         }
-        else if (!PlaceableManager.Instance.isMoveEdit)     // 편집대상 선택
+        else if (!PlaceableManager.Instance.isMoveEdit)     // 카메라 이동
         {
 
         }
@@ -204,7 +204,6 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
             if (clickedObject.CompareTag("Placeable"))
             {
                 PlaceableManager.Instance.selectedPlaceable = clickedObject;
-                Debug.Log(PlaceableManager.Instance.selectedPlaceable.name + " has been selected.");
                 Debug.Log(PlaceableManager.Instance.selectedPlaceable.name + " has been selected.");
 
                 if (selectOptionUI != null)

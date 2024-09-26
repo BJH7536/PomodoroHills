@@ -34,13 +34,12 @@ public class PlaceableManager : MonoBehaviour
     private void Awake()
     {
         ResetLastLocation();
-        itemDB = GetComponent<ItemDB>(); //임시 사용 itemDB
-        if (Instance == null)
+        itemDB = GetComponent<ItemDB>(); //임시 PlaceablePrefabTable -> 차후 DB 연동 후 삭제
+        if (Instance == null)           //싱글톤 선언
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-        }   //싱글톤 으로
-
+        }
         else
         {
             Destroy(gameObject);
@@ -72,13 +71,19 @@ public class PlaceableManager : MonoBehaviour
     }
 
 
-    void FirstLoadForTest()
+    void LoadSavedPlaceable()
     {
+        //리스트불러오기
+        while (false)
+        {
+            
+        }
+        //unpack 과정과 유사하게 작성 select하는 UI안되게
+    }
 
-    }//미완
-
-    private void LoadPlaceable()//
+    private void LoadPlaceable(int PlaceableCode, Vector2Int position, int rotation)//
     {
+        //수량 체크 후 -1
 
     }
 
@@ -128,7 +133,7 @@ public class PlaceableManager : MonoBehaviour
         return null;
     }
 
-    public bool UnpackPlaceable(int placeableCode)   //인벤토리에서 배치요소를 꺼내는 메소드
+    public bool UnpackPlaceable(int placeableCode)   //인벤토리에서 배치요소를 꺼내는 메소드     //Gameobject 반환하도록 수정 초기 저장된 배치 불러오기와 통합 (미완성)
     {
         OnIsNewEdit();
         ResetLastLocation();//불필요하게 반복되는 부분이나 만약을 위해 작성
@@ -294,7 +299,7 @@ public class PlaceableManager : MonoBehaviour
         //Renderer renderer = selectedPlaceable.GetComponent<Renderer>();
         //OriginColor = renderer.material.color;
     }
-    public void ChangePlaceableColor()
+    public void ChangePlaceableColor()  //배치가능,불가능 여부를 녹/적색으로 나타내기 위한 코드입니다. 컬러값이 따로 지정된 마테리얼을 사용하는 경우 StartColor()에서 기존 색을 저장해야 합니다.
     {
         if (selectedPlaceable != null)
         {
@@ -320,7 +325,7 @@ public class PlaceableManager : MonoBehaviour
         }
 
     }
-    public void EndColor()
+    public void EndColor()  //변경된 색을 원래대로 바꿉니다. ChangePlaceableColor()의 주석 참고바랍니다.
     {
         if (selectedPlaceable != null)
         {
@@ -337,7 +342,7 @@ public class PlaceableManager : MonoBehaviour
 
 
 
-    private void ResetLastLocation()        //기존좌표로 사용하ㅣ
+    private void ResetLastLocation()        //좌표 초기화
     {
         lastPosition = new Vector2Int(-1, -1);
         lastRotation = -1;
