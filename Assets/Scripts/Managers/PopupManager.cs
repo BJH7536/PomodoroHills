@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 /// <summary>
@@ -160,5 +161,31 @@ public class PopupManager : MonoBehaviour
             popupPool[popupType] = new Stack<Popup>();
         }
         popupPool[popupType].Push(popupToClose); // 팝업을 풀에 추가
+    }
+
+    public ErrorPopup ShowErrorPopup(string message)
+    {
+        ErrorPopup errorPopup = ShowPopup<ErrorPopup>();
+
+        if (errorPopup != null)
+        {
+            errorPopup.SetErrorMessage(message);
+            return errorPopup;
+        }
+
+        return null;
+    }
+
+    public ConfirmPopup ShowConfirmPopup(string title, string message, UnityAction onConfirm)
+    {
+        ConfirmPopup confirmPopup = ShowPopup<ConfirmPopup>();
+
+        if (confirmPopup != null)
+        {
+            confirmPopup.Setup(title, message, onConfirm);
+            return confirmPopup;
+        }
+
+        return null;
     }
 }

@@ -44,5 +44,16 @@ namespace Ricimi
 		{
 			OptionText.text = Options[selectedOption];
 		}
+
+		public void InitializeToFirstValue()
+		{
+			selectedOption = 0;
+			ChangeSelection();
+		}
+
+		public string GetCurrentValue()
+		{
+			return Options[selectedOption];
+		}
 	}
 }

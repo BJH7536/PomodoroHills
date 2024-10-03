@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class DatePickerCaller : MonoBehaviour
 {
-    [SerializeField] private TodoListPopup_DatePicker todoListPopupDatePicker;
     [SerializeField] private TMP_Text callerText;
 
     private DateTime _dateTime;
@@ -29,7 +28,7 @@ public class DatePickerCaller : MonoBehaviour
         callerText.text = $"{dateTime:yyyy.MM.dd}";
     }
 
-    public DateTime GetDateTime(DateTime dateTime)
+    public DateTime GetDateTime()
     {
         return _dateTime;
     }

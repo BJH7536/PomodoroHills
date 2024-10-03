@@ -36,7 +36,7 @@ public class CheckboxButtonController : MonoBehaviour
             foreach (var t in texts)
             {
                 t.alpha = 0.5f;
-                t.text = $"{DateTime.Today:yyyy.MM.dd}";
+                //t.text = $"{DateTime.Today:yyyy.MM.dd}";
             }
         }
     }

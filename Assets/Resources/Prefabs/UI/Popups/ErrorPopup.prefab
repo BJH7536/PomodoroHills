@@ -386,6 +386,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   errorMessageText: {fileID: 7214395034394285505}
+  canvasGroup: {fileID: 958862227819202449}
 --- !u!1 &6125391808867592198
 GameObject:
   m_ObjectHideFlags: 0
@@ -398,6 +399,7 @@ GameObject:
   - component: {fileID: 2094850110123106159}
   - component: {fileID: 5264852449569213755}
   - component: {fileID: 2148158451656853067}
+  - component: {fileID: 958862227819202449}
   m_Layer: 0
   m_Name: Panel
   m_TagString: Untagged
@@ -479,3 +481,15 @@ MonoBehaviour:
   Color1: {r: 0.95686275, g: 0.74756294, b: 0.64492553, a: 1}
   Color2: {r: 0.9568628, g: 0.54901963, b: 0.34901962, a: 1}
   Angle: -45
+--- !u!225 &958862227819202449
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6125391808867592198}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
