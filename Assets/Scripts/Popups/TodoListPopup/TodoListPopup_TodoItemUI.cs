@@ -54,13 +54,13 @@ public class TodoListPopup_TodoItemUI : MonoBehaviour
         {
             recurrenceWeekly.SetActive(true);
 
-            // ¸ğµç ¿äÀÏ ¹öÆ°À» ºñÈ°¼ºÈ­
+            // ëª¨ë“  ìš”ì¼ ë²„íŠ¼ì„ ë¹„í™œì„±í™”
             for (int i = 0; i < recurrenceWeekly.transform.childCount; i++)
             {
                 recurrenceWeekly.transform.GetChild(i).gameObject.SetActive(false);
             }
 
-            // ¼³Á¤µÈ ¿äÀÏ¸¸ È°¼ºÈ­
+            // ì„¤ì •ëœ ìš”ì¼ë§Œ í™œì„±í™”
             foreach (var day in _todoItem.RecurrenceDays)
             {
                 recurrenceWeekly.transform.GetChild((int)day).gameObject.SetActive(true);
@@ -70,23 +70,21 @@ public class TodoListPopup_TodoItemUI : MonoBehaviour
     
     public void ShowDeleteConfirmPopup()
     {
-        // ·ÕÇÁ·¹½º°¡ °¨ÁöµÇ¸é »èÁ¦ È®ÀÎ ÆË¾÷ È£Ãâ
+        // ë¡±í”„ë ˆìŠ¤ê°€ ê°ì§€ë˜ë©´ ì‚­ì œ í™•ì¸ íŒì—… í˜¸ì¶œ
         PopupManager.Instance.ShowConfirmPopup(
-            title: "»èÁ¦ È®ÀÎ",
-            message: $"'{_todoItem.Name}' ÇÒ ÀÏÀ» »èÁ¦ÇÏ½Ã°Ú½À´Ï±î?",
+            title: "ì‚­ì œ í™•ì¸",
+            message: $"'{_todoItem.Name}' í•  ì¼ì„ ì‚­ì œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?",
             onConfirm: DeleteTodoItem
         );
     }
 
     private void DeleteTodoItem()
     {
-        // TodoItem »èÁ¦ ·ÎÁ÷
+        // TodoItem ì‚­ì œ ë¡œì§
         TodoManager.Instance.DeleteTodoItem(_todoItem);
         
+        // UIì—ì„œ í•´ë‹¹ TodoItem ì‚­ì œ
         _todoItemUIPool.ReturnTodoItemUI(gameObject);
-        
-        // UI¿¡¼­ ÇØ´ç TodoItem »èÁ¦
-        // Destroy(gameObject);  
     }
     
 }

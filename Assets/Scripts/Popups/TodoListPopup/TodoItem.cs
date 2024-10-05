@@ -42,6 +42,11 @@ namespace TodoList
     [Serializable]
     public class TodoItem
     {
+        /// <summary>
+        /// 진척도로 Todo항목의 완료 여부를 검사할 tolerance값
+        /// </summary>
+        static float completeTolerance = 0.01f;
+        
         // 기본 정보
         public string Name;            // 이름
         public string Description;     // 설명
@@ -99,7 +104,7 @@ namespace TodoList
             Status = status;
             RecurrenceDays = recurrenceDays ?? new List<DayOfWeek>();
             ReminderTime = reminderTime?.ToString("yyyy-MM-dd HH:mm:ss");
-
+ 
             // 시간형 할 일 초기화
             DurationInMinutes = durationInMinutes;
             OriginalDurationInMinutes = durationInMinutes;
@@ -162,6 +167,9 @@ namespace TodoList
         /// <param name="minutes">수행한 작업량 (분 단위)</param>
         public void AddProgress(DateTime date, int minutes)
         {
+            // 이미 완료된 항목이라면 아무것도 안한다.
+            if (Status == Status.Completed) return;
+            
             if (Type != ItemType.TimeBased)
             {
                 Debug.LogWarning("시간형이 아닌 할 일은 작업량을 기록할 수 없습니다.");
@@ -176,11 +184,18 @@ namespace TodoList
 
             LoadDailyProgressDict();
 
+            
             if (!dailyProgressDict.TryAdd(date.Date, minutes))
             {
                 dailyProgressDict[date.Date] += minutes;
             }
 
+            // 상태 변환
+            if (Math.Abs(GetProgressPercentage() - 100) < completeTolerance)
+                Status = Status.Completed;
+            else if (Status == Status.Pending) 
+                Status = Status.InProgress;
+            
             SaveDailyProgressDict();
         }
 
@@ -190,6 +205,9 @@ namespace TodoList
         /// <param name="date">작업을 완료한 날짜</param>
         public void MarkAsCompletedOnDate(DateTime date)
         {
+            // 이미 완료된 항목이라면 아무것도 안한다.
+            if (Status == Status.Completed) return;
+            
             if (Type != ItemType.CheckBased)
             {
                 Debug.LogWarning("확인형이 아닌 할 일은 완료 상태를 표시할 수 없습니다.");
@@ -202,10 +220,19 @@ namespace TodoList
                 return;
             }
 
+            // 상태 변환
+            if (Status == Status.Pending) Status = Status.InProgress;
+            
             LoadCompletedDatesSet();
 
             completedDatesSet.Add(date.Date);
 
+            // 상태 변환
+            if (Math.Abs(GetProgressPercentage() - 100) < completeTolerance)
+                Status = Status.Completed;
+            else if (Status == Status.Pending) 
+                Status = Status.InProgress;
+            
             SaveCompletedDatesSet();
         }
 

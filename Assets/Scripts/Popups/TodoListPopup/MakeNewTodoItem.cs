@@ -77,9 +77,9 @@ public class MakeNewTodoItem : MonoBehaviour
         Recurrence recurrence = Recurrence.None;
         if (recurrenceNoneToggle.isOn)
             recurrence = Recurrence.None;
-        else if (recurrenceDailyToggle)
+        else if (recurrenceDailyToggle.isOn)
             recurrence = Recurrence.Daily;
-        else if (recurrenceWeeklyToggle)
+        else if (recurrenceWeeklyToggle.isOn)
             recurrence = Recurrence.Weekly;
         
         List<DayOfWeek> recurrenceDays = null;
