@@ -45,6 +45,12 @@ public static class PopupFactory
 
         // 팝업 인스턴스 생성
         GameObject popupInstance = Object.Instantiate(prefab);
+        
+        RectTransform rect = popupInstance.GetComponent<RectTransform>();
+        rect.SetAnchor(AnchorPresets.StretchAll);
+        rect.offsetMin = new Vector2(0, 0);
+        rect.offsetMax = new Vector2(-0,-0);
+        
         return popupInstance.GetComponent<T>();
     }
 }
