@@ -2253,7 +2253,7 @@ GameObject:
   - component: {fileID: 963380170365034742}
   - component: {fileID: 1810520655946624145}
   - component: {fileID: 7913659100848604408}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: InventoryPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2269,7 +2269,7 @@ RectTransform:
   m_GameObject: {fileID: 2366462047576967583}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8336080833353277337}
@@ -3128,7 +3128,7 @@ GameObject:
   - component: {fileID: 818611710624267912}
   - component: {fileID: 3371778302027964141}
   - component: {fileID: 4094409273822328230}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: PanelOpeningEndPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5753,7 +5753,7 @@ GameObject:
   - component: {fileID: 8777769313232393378}
   - component: {fileID: 360831093655986393}
   - component: {fileID: 3989207132836474637}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7612,7 +7612,7 @@ GameObject:
   - component: {fileID: 8129260579242330779}
   - component: {fileID: 8671654867960050322}
   - component: {fileID: 348905864579650970}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: PanelOpeningStartPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}

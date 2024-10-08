@@ -43,20 +43,11 @@
         },
         "DrawableResources": [
             {
-                "Id": "icon_0",
+                "Id": "timer",
                 "Type": 0,
                 "Asset": {
                     "fileID": 2800000,
-                    "guid": "a6984c3f1c9b6c64db4859f1795cc12f",
-                    "type": 3
-                }
-            },
-            {
-                "Id": "icon_1",
-                "Type": 1,
-                "Asset": {
-                    "fileID": 2800000,
-                    "guid": "2c9f410184750984cb6e5d1f40ca2987",
+                    "guid": "8505d7c8f1ade2f438ee0b906c0fc2d3",
                     "type": 3
                 }
             }

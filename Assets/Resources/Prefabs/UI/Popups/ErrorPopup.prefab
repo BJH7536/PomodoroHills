@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2140370767444484860}
   - component: {fileID: 7364711543322100320}
   - component: {fileID: 5303395131382175048}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75,8 +75,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4291100670
+  m_fontColor: {r: 0.99607843, g: 1, b: 0.76862746, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -146,7 +146,7 @@ GameObject:
   - component: {fileID: 4521147961059254999}
   - component: {fileID: 5506634193576949159}
   - component: {fileID: 7214395034394285505}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text (TMP) (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -283,7 +283,7 @@ GameObject:
   - component: {fileID: 4967112524238741404}
   - component: {fileID: 4622783357742345064}
   - component: {fileID: 7800111484468783919}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ErrorPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -400,7 +400,7 @@ GameObject:
   - component: {fileID: 5264852449569213755}
   - component: {fileID: 2148158451656853067}
   - component: {fileID: 958862227819202449}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}

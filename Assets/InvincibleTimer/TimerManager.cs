@@ -21,26 +21,8 @@ public class TimerManager : MonoBehaviour
     /// <summary>
     /// 싱글톤 인스턴스에 접근하기 위한 프로퍼티
     /// </summary>
-    public static TimerManager Instance
-    {
-        get
-        {
-            // 인스턴스가 없으면 새로 생성하고 반환
-            if (instance == null)
-            {
-                instance = FindObjectOfType<TimerManager>();
-                if (instance == null)
-                {
-                    GameObject go = new GameObject("TimerManager");
-                    instance = go.AddComponent<TimerManager>();
-                    DontDestroyOnLoad(go); // 씬 전환 시 오브젝트가 파괴되지 않도록 설정
-                    Debug.Log("TimerManager 인스턴스가 생성되었습니다.");
-                }
-            }
-            return instance;
-        }
-    }
-
+    public static TimerManager Instance => instance;
+    
     #endregion
 
     #region Events
@@ -99,6 +81,7 @@ public class TimerManager : MonoBehaviour
             _isTimerRunning = false;
             _cancellationTokenSource?.Cancel();
             SaveTimerState();
+            NotificationManager.Instance.CancelAllNotifications();      // 알림 취소
             Debug.Log("타이머가 일시정지되었습니다.");
         }
     }
@@ -113,6 +96,7 @@ public class TimerManager : MonoBehaviour
             _isTimerRunning = true;
             _cancellationTokenSource = new CancellationTokenSource();
             UpdateTimer(_cancellationTokenSource.Token).Forget();
+            NotificationManager.Instance.ScheduleNotification(_remainingTimeInSeconds, "타이머 완료", "설정하신 타이머가 완료되었습니다."); // 알림 예약
             Debug.Log("타이머가 재개되었습니다.");
         }
     }
@@ -127,7 +111,7 @@ public class TimerManager : MonoBehaviour
             _isTimerRunning = false;
             _remainingTimeInSeconds = 0;
             _cancellationTokenSource?.Cancel();
-            CancelNotification();
+            NotificationManager.Instance.CancelAllNotifications(); // 알림 취소
             
             OnTimeUpdated?.Invoke(_remainingTimeInSeconds);
             
@@ -153,6 +137,9 @@ public class TimerManager : MonoBehaviour
             
             OnTimeUpdated?.Invoke(_remainingTimeInSeconds);
             OnTimerCompleted?.Invoke();
+            
+            // 타이머 완료 시 예약된 알림 취소
+            NotificationManager.Instance.CancelAllNotifications();
         }
     }
     
@@ -227,6 +214,24 @@ public class TimerManager : MonoBehaviour
         OnTimerCompleted.AddListener(()=> Debug.Log("타이머가 완료되었습니다."));
     }
 
+    /// <summary>
+    /// 게임 오브젝트가 활성화될 때 호출됩니다.
+    /// 싱글톤 인스턴스를 설정하고, 데이터를 로드합니다.
+    /// </summary>
+    private async void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject); // 씬 전환 시 오브젝트가 파괴되지 않도록 설정
+        }
+        else
+        {
+            Destroy(gameObject); // 이미 인스턴스가 존재하면 중복 오브젝트를 파괴
+            return;
+        }
+    }
+    
     public void OnApplicationPause(bool isPaused)
     {
         Debug.Log($"앱 일시정지됨 {isPaused}");
@@ -240,14 +245,14 @@ public class TimerManager : MonoBehaviour
                 // 남은 시간과 타임스탬프를 저장
                 SaveTimerState();  
                 // 알림 예약
-                ScheduleNotification(_remainingTimeInSeconds);
+                NotificationManager.Instance.ScheduleNotification(_remainingTimeInSeconds, "타이머 완료", "설정하신 타이머가 완료되었습니다.");
             }
         }
         // 게임이 재개되면 (켜지는 경우 포함)
         else
         {
             // 알림 취소
-            CancelNotification();
+            NotificationManager.Instance.CancelAllNotifications();
             // 타이머 복구
             RestoreTimerState();
         }
@@ -259,25 +264,9 @@ public class TimerManager : MonoBehaviour
         if (_isTimerRunning)
         {
             SaveTimerState();  // 타이머 상태와 함께 현재 시각 저장
-            ScheduleNotification(_remainingTimeInSeconds);
+            NotificationManager.Instance.ScheduleNotification(_remainingTimeInSeconds, "타이머 완료", "설정하신 타이머가 완료되었습니다.");
         }
     }
     
-    #endregion
-    
-    #region Notification Handling
-
-    public void ScheduleNotification(int remainingTimeInSeconds)
-    {
-        Debug.Log($"알림이 {remainingTimeInSeconds}초 후에 예약되었습니다.");
-        // TODO: 안드로이드 및 iOS 플랫폼에 맞는 알림 설정 코드로 대체
-    }
-
-    public void CancelNotification()
-    {
-        Debug.Log("예약된 알림이 취소되었습니다.");
-        // TODO: 안드로이드 및 iOS 플랫폼에 맞는 알림 취소 코드로 대체
-    }
-
     #endregion
 }

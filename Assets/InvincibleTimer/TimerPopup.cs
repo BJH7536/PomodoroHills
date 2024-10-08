@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TimerPopup : MonoBehaviour
+public class TimerPopup : Popup
 {
     [SerializeField] private TMP_Text timeText;
     [SerializeField] private TMP_InputField timeInputField;
@@ -14,7 +14,6 @@ public class TimerPopup : MonoBehaviour
     
     private void Start()
     {
-
         startButton.onClick.AddListener(StartTimer);
         pauseButton.onClick.AddListener(PauseTimer);
         resumeButton.onClick.AddListener(ResumeTimer);
@@ -62,5 +61,10 @@ public class TimerPopup : MonoBehaviour
     private void OnTimerCompleted()
     {
         timeText.text = "Completed!";
+    }
+
+    public void Close()
+    {
+        PopupManager.Instance.HidePopup();
     }
 }

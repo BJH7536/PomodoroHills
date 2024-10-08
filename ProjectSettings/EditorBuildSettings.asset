@@ -7,7 +7,7 @@ EditorBuildSettings:
   m_Scenes:
   - enabled: 1
     path: Assets/InvincibleTimer/TimerTest.unity
-    guid: 896f200ac6706ae4bb8c00f1fda99c44
+    guid: d0b75f283afb4d74d82ec449c43ccd4b
   - enabled: 1
     path: Assets/Scenes/PopupTest.unity
     guid: b3f48809d9940e04eae56253456f4c8a

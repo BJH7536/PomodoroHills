@@ -21,4 +21,9 @@ public class TimerWidget : MonoBehaviour
         TimeSpan time = TimeSpan.FromSeconds(remainingTimeInSeconds);
         timeText.text = $"{time.Minutes:D2}:{time.Seconds:D2}";
     }
+
+    public void ShowTimerPopup()
+    {
+        PopupManager.Instance.ShowPopup<TimerPopup>();
+    }
 }
