@@ -98,7 +98,7 @@ public class MakeNewTodoItem : MonoBehaviour
             priority: priority,
             recurrence: recurrence,
             status: Status.Pending,
-            durationInMinutes: durationInMinutes,
+            remainingDurationInMinutes: durationInMinutes,
             recurrenceDays: recurrenceDays
         );
 

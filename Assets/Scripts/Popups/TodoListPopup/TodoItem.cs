@@ -5,39 +5,7 @@ using UnityEngine;
 namespace TodoSystem
 {
     /// <summary>
-    /// Todo 항목의 종류를 정의하는 열거형입니다.
-    /// </summary>
-    [Serializable]
-    public enum ItemType
-    {
-        TimeBased,  // 시간형
-        CheckBased  // 확인형
-    }
-
-    /// <summary>
-    /// Todo 항목의 반복 여부를 정의하는 열거형입니다.
-    /// </summary>
-    [Serializable]
-    public enum Recurrence
-    {
-        None,   // 반복 없음
-        Daily,  // 매일 반복
-        Weekly  // 매주 반복
-    }
-
-    /// <summary>
-    /// Todo 항목의 상태를 정의하는 열거형입니다.
-    /// </summary>
-    [Serializable]
-    public enum Status
-    {
-        Pending,    // 대기 중
-        InProgress, // 진행 중
-        Completed   // 완료됨
-    }
-
-    /// <summary>
-    /// 개별 Todo 항목을 나타내는 클래스입니다.
+    /// 개별 Todo항목을 나타내는 클래스.
     /// </summary>
     [Serializable]
     public class TodoItem
@@ -58,12 +26,12 @@ namespace TodoSystem
         public Status Status;          // 상태 (대기 중, 진행 중, 완료됨)
 
         // 시간형 할 일에 필요한 추가 정보
-        public int DurationInMinutes;           // 소요 시간 (분 단위)
-        public List<DayOfWeek> RecurrenceDays;  // 반복 요일 (주간 반복 시)
-        public string ReminderTime;             // 알림 시간 ("yyyy-MM-dd HH:mm:ss" 형식의 문자열)
+        public int DailyTargetDurationInMinutes;    // 매일의 목표 시간
+        public int RemainingDurationInMinutes;      // 오늘의 남아있는 시간
+        public List<DayOfWeek> RecurrenceDays;      // 반복 요일 (주간 반복 시)
+        public string ReminderTime;                 // 알림 시간 ("yyyy-MM-dd HH:mm:ss" 형식의 문자열)
 
         // 진행 상황 추적을 위한 필드
-        [SerializeField] private int OriginalDurationInMinutes; // 초기 소요 시간 (분 단위)
 
         // 시간형 할 일의 날짜별 작업량 (분 단위)
         [SerializeField]
@@ -89,7 +57,8 @@ namespace TodoSystem
             int priority,
             Recurrence recurrence,
             Status status,
-            int durationInMinutes = 0,
+            int dailyTargetDurationInMinutes = 0,
+            int remainingDurationInMinutes = 0,
             List<DayOfWeek> recurrenceDays = null,
             DateTime? reminderTime = null)
         {
@@ -106,8 +75,8 @@ namespace TodoSystem
             ReminderTime = reminderTime?.ToString("yyyy-MM-dd HH:mm:ss");
  
             // 시간형 할 일 초기화
-            DurationInMinutes = durationInMinutes;
-            OriginalDurationInMinutes = durationInMinutes;
+            DailyTargetDurationInMinutes = dailyTargetDurationInMinutes;
+            RemainingDurationInMinutes = remainingDurationInMinutes;
 
             // 진행 상황 초기화
             dailyProgressList = new List<DateProgress>();
@@ -118,6 +87,22 @@ namespace TodoSystem
             completedDatesSet = new HashSet<DateTime>();
         }
 
+        /// <summary>
+        /// 매일 새로운 날이 시작될 때 RemainingDurationInMinutes를 초기화하는 메서드.
+        /// </summary>
+        public void UpdateDailyTask(DateTime currentDate)
+        {
+            // 오늘의 작업이 예정되어 있다면
+            if (IsTaskScheduledForDate(currentDate))
+            {
+                // 마지막 업데이트된 날짜와 비교하여 오늘이 새로운 날이면 RemainingDurationInMinutes를 초기화
+                if (!dailyProgressDict.ContainsKey(currentDate.Date))
+                {
+                    RemainingDurationInMinutes = DailyTargetDurationInMinutes;
+                }
+            }
+        }
+        
         #region 날짜 변환 메서드
 
         /// <summary>
@@ -183,13 +168,15 @@ namespace TodoSystem
             }
 
             LoadDailyProgressDict();
-
             
             if (!dailyProgressDict.TryAdd(date.Date, minutes))
             {
                 dailyProgressDict[date.Date] += minutes;
             }
 
+            // 오늘 남아있는 시간 감소
+            RemainingDurationInMinutes = Mathf.Max(RemainingDurationInMinutes - minutes, 0);
+            
             // 상태 변환
             if (Math.Abs(GetProgressPercentage() - 100) < completeTolerance)
                 Status = Status.Completed;
@@ -200,7 +187,7 @@ namespace TodoSystem
         }
 
         /// <summary>
-        /// 특정 날짜에 작업을 완료로 표시합니다. (확인형 할 일)
+        /// 특정 날짜의 작업을 완료로 표시한다. (확인형 할 일)
         /// </summary>
         /// <param name="date">작업을 완료한 날짜</param>
         public void MarkAsCompletedOnDate(DateTime date)
@@ -290,9 +277,8 @@ namespace TodoSystem
             if (Type == ItemType.TimeBased)
             {
                 LoadDailyProgressDict();
-
-                int completedMinutes = dailyProgressDict.GetValueOrDefault(today.Date, 0);
-                return completedMinutes >= OriginalDurationInMinutes;
+                
+                return RemainingDurationInMinutes <= 0;
             }
             
             if (Type == ItemType.CheckBased)
@@ -376,7 +362,7 @@ namespace TodoSystem
                 return 0;
 
             int scheduledDaysCount = GetAllScheduledDates().Count;
-            return scheduledDaysCount * OriginalDurationInMinutes;
+            return scheduledDaysCount * DailyTargetDurationInMinutes;
         }
 
         /// <summary>
@@ -516,7 +502,7 @@ namespace TodoSystem
                 _ => "알 수 없음"
             };
 
-            string durationInfo = Type == ItemType.TimeBased && DurationInMinutes > 0 ? $"소요 시간: {DurationInMinutes}분" : "";
+            string durationInfo = Type == ItemType.TimeBased && RemainingDurationInMinutes > 0 ? $"소요 시간: {RemainingDurationInMinutes}분" : "";
             string reminderInfo = !string.IsNullOrEmpty(ReminderTime) ? $"알림 시간: {ReminderTime}" : "";
 
             return $"이름: {Name}\n" +

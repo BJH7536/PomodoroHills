@@ -28,7 +28,7 @@ namespace TodoSystem
             }
         }
         
-        // Todo 리스트
+        // TodoList
         public List<TodoItem> TodoList { get; private set; } = new List<TodoItem>();
         
         public event Action<TodoItem> OnTodoItemAdded;
@@ -53,18 +53,19 @@ namespace TodoSystem
             // 파일 경로 설정 (예: Application.persistentDataPath는 영구 저장 경로)
             _filePath = Path.Combine(Application.persistentDataPath, "todoList.json");
 
-            // Todo 리스트 로드
+            // TodoList 로드
             LoadOrCreateSampleTodoItems();
             
-            // 오늘의 할 일 필터링
+            // 오늘의 할 일 필터링 및 업데이트
+            UpdateDailyTasks(DateTime.Today);
             List<TodoItem> todaysTasks = FilterTodoItemsForToday(TodoList, DateTime.Today);
             
-            Debug.Log("불러온 Todo 항목들:");         // 불러온 Todo 항목 출력
+            Debug.Log("불러온 Todo 항목들:");         // 불러온 Todo항목 출력
             foreach (var todo in TodoList)
             {
                 Debug.Log(todo.ToString());
             }
-            Debug.Log("오늘의 할 일:");              // 오늘의 Todo 항목 출력
+            Debug.Log("오늘의 할 일:");              // 오늘의 Todo항목 출력
             foreach (var todo in todaysTasks)
             {
                 Debug.Log(todo.ToString());
@@ -96,7 +97,7 @@ namespace TodoSystem
         }
         
         /// <summary>
-        /// 샘플 Todo 항목들을 생성합니다.
+        /// 샘플 Todo항목들을 생성.
         /// </summary>
         List<TodoItem> CreateSampleTodoItems()
         {
@@ -111,7 +112,8 @@ namespace TodoSystem
                 priority: 5,
                 recurrence: Recurrence.Daily,
                 status: Status.Pending,
-                durationInMinutes: 90
+                dailyTargetDurationInMinutes: 90,
+                remainingDurationInMinutes: 90
             );
             
             codingStudy.AddProgress(today.AddDays(-2), 90);
@@ -151,7 +153,8 @@ namespace TodoSystem
                 priority: 6,
                 recurrence: Recurrence.Weekly,
                 status: Status.Pending,
-                durationInMinutes: 60,
+                dailyTargetDurationInMinutes: 60,
+                remainingDurationInMinutes: 60,
                 recurrenceDays: new List<DayOfWeek> { DayOfWeek.Tuesday, DayOfWeek.Thursday }
             );
             
@@ -167,7 +170,7 @@ namespace TodoSystem
         #region Save&Load
 
         /// <summary>
-        /// Todo 리스트를 JSON 파일로 저장합니다.
+        /// TodoList를 JSON 파일로 저장.
         /// </summary>
         void SaveTodoListToJson(List<TodoItem> todoList, string filePath)
         {
@@ -180,7 +183,7 @@ namespace TodoSystem
         }
 
         /// <summary>
-        /// JSON 파일에서 Todo 리스트를 불러옵니다.
+        /// JSON 파일에서 TodoList를 로드.
         /// </summary>
         List<TodoItem> LoadTodoListFromJson(string filePath)
         {
@@ -215,7 +218,7 @@ namespace TodoSystem
         #endregion
 
         /// <summary>
-        /// 특정 날짜에 해당하는 Todo 항목을 필터링합니다.
+        /// 특정 날짜에 해당하는 TodoItem 필터링.
         /// </summary>
         public List<TodoItem> FilterTodoItemsForToday(List<TodoItem> todoList, DateTime today)
         {
@@ -232,6 +235,17 @@ namespace TodoSystem
             return filteredList;
         }
 
+        /// <summary>
+        /// 매일 새로운 날이 시작될 때 각 Todo 항목의 `RemainingDurationInMinutes`를 초기화합니다.
+        /// </summary>
+        public void UpdateDailyTasks(DateTime currentDate)
+        {
+            foreach (var todoItem in TodoList)
+            {
+                todoItem.UpdateDailyTask(currentDate);
+            }
+        }
+        
         #region Add&Delete
 
         /// <summary>
@@ -266,5 +280,37 @@ namespace TodoSystem
         }
 
         #endregion
+    }
+    
+    /// <summary>
+    /// Todo항목의 종류를 정의하는 enum.
+    /// </summary>
+    [Serializable]
+    public enum ItemType
+    {
+        TimeBased,  // 시간형
+        CheckBased  // 확인형
+    }
+
+    /// <summary>
+    /// Todo항목의 반복 여부를 정의하는 enum.
+    /// </summary>
+    [Serializable]
+    public enum Recurrence
+    {
+        None,   // 반복 없음
+        Daily,  // 매일 반복
+        Weekly  // 매주 반복
+    }
+
+    /// <summary>
+    /// Todo항목의 상태를 정의하는 enum.
+    /// </summary>
+    [Serializable]
+    public enum Status
+    {
+        Pending,    // 대기 중
+        InProgress, // 진행 중
+        Completed   // 완료됨
     }
 }
