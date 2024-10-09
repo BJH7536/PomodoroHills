@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/InvincibleTimer/TimerTest.unity
+    path: Assets/Scenes/TimerTest.unity
     guid: d0b75f283afb4d74d82ec449c43ccd4b
   - enabled: 1
     path: Assets/Scenes/PopupTest.unity

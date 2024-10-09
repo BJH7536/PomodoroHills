@@ -67,7 +67,18 @@ public class TodoListPopup_TodoItemUI : MonoBehaviour
             }
         }
     }
-    
+
+    private void Start()
+    {
+        Button button = GetComponent<Button>();
+        button.onClick.AddListener(ShowTimerPopupForTest);
+    }
+
+    public void ShowTimerPopupForTest()
+    {
+        PopupManager.Instance.ShowPopup<TimerPopup>();
+    }
+
     public void ShowDeleteConfirmPopup()
     {
         // 롱프레스가 감지되면 삭제 확인 팝업 호출

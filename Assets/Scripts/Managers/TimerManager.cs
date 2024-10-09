@@ -218,7 +218,7 @@ public class TimerManager : MonoBehaviour
     /// 게임 오브젝트가 활성화될 때 호출됩니다.
     /// 싱글톤 인스턴스를 설정하고, 데이터를 로드합니다.
     /// </summary>
-    private async void Awake()
+    private void Awake()
     {
         if (instance == null)
         {
