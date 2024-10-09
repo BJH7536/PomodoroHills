@@ -1,9 +1,13 @@
 using System;
 using TMPro;
-using TodoList;
+using TodoSystem;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// TodoListPopup에서 TodoItem을 목록 중 하나의 UI항목으로 시각화하기 위한 스크립트.
+/// TodoItem의 UI버전.
+/// </summary>
 public class TodoListPopup_TodoItemUI : MonoBehaviour
 {
     [SerializeField] private TMP_Text nameText;

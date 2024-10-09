@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TodoList
+namespace TodoSystem
 {
     /// <summary>
     /// Todo 항목의 종류를 정의하는 열거형입니다.

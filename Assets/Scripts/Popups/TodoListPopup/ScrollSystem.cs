@@ -27,7 +27,7 @@ public class ScrollSystem : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     private float itemHeight;                                       // 항목의 높이
     private int previousIndex = -1;                                 // 이전에 선택된 항목의 인덱스
 
-    private const int BufferItemCount = 2;                  // 화면 밖에 추가로 생성할 버퍼 항목 수.
+    [SerializeField] private const int BufferItemCount = 4; // 화면 밖에 추가로 생성할 버퍼 항목 수.
     private const float CheckInterval = 0.1f;               // 스크롤 체크 간격.
     private float lastCheckTime = 0;                        // 마지막 체크 시간.
     private int itemCount;                                  // 총 항목 수.
@@ -105,11 +105,7 @@ public class ScrollSystem : MonoBehaviour, IBeginDragHandler, IEndDragHandler
             scrollRect.velocity = new Vector2(scrollRect.velocity.x, clampedSpeed);
         }
     }
-
-    /// <summary>
-    /// 드래그 시작 시 호출됨.
-    /// </summary>
-    /// <param name="eventData">드래그 이벤트 데이터</param>
+    
     public void OnBeginDrag(PointerEventData eventData)
     {
         // 스크롤 중이던 애니메이션을 즉시 중지
