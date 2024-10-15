@@ -54,7 +54,7 @@ public class TodoListPopup_DatePicker : Popup
     private void InitializeYearScroll()
     {
         yearScrollSystem.Setup(2024, 2100, OnYearSelected, selectedYear);
-        yearScrollSystem.SetInitialScrollPosition(selectedYear);
+        //yearScrollSystem.SetInitialScrollPosition(selectedYear);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class TodoListPopup_DatePicker : Popup
     private void InitializeMonthScroll()
     {
         monthScrollSystem.Setup(1, 12, OnMonthSelected, selectedMonth);
-        monthScrollSystem.SetInitialScrollPosition(selectedMonth);
+        //monthScrollSystem.SetInitialScrollPosition(selectedMonth);
     }
 
     /// <summary>
@@ -72,7 +72,7 @@ public class TodoListPopup_DatePicker : Popup
     private void InitializeDayScroll()
     {
         UpdateDayScrollSystem();
-        dayScrollSystem.SetInitialScrollPosition(selectedDay);
+        //dayScrollSystem.SetInitialScrollPosition(selectedDay);
     }
     
     /// <summary>

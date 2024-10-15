@@ -149,6 +149,8 @@ public class ScrollSystem : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     /// <param name="initialValue">초기 설정할 값</param>
     public void SetInitialScrollPosition(int initialValue)
     {
+        Canvas.ForceUpdateCanvases();
+        
         // initialValue가 범위 내에 있는지 확인하고 유효한 인덱스를 계산
         int targetIndex = Mathf.Clamp((initialValue - minValue), 0, maxValue - minValue) + (itemCount / 3);
         float positionYForInitialValue = targetIndex * itemHeight - (scrollRect.viewport.rect.height / 2) + (itemHeight / 2);
