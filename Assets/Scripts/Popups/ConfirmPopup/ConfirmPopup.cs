@@ -1,3 +1,6 @@
+using System;
+using DG.Tweening;
+using LeTai.Asset.TranslucentImage;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -10,9 +13,22 @@ public class ConfirmPopup : Popup
     [SerializeField] private Button cancelButton;
     [SerializeField] private Button confirmButton;
 
+    [SerializeField] private TranslucentImage blur;
+    [SerializeField] private CanvasGroup _canvasGroup;
+    [SerializeField] private Transform panel;
+    
     private UnityAction onConfirmAction;
 
-    public void Setup(string title, string message, UnityAction onConfirm)
+    private void OnEnable()
+    {
+        _canvasGroup.alpha = 0;
+        _canvasGroup.DOFade(1, 0.5f);
+
+        panel.localScale = Vector3.zero;
+        panel.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
+    }
+
+    public void Setup(string title, string message, UnityAction ConfirmAction, TranslucentImageSource translucentImageSource)
     {
         if (!string.IsNullOrEmpty(title))
         {
@@ -24,7 +40,9 @@ public class ConfirmPopup : Popup
             messageText.text = message;
         }
 
-        onConfirmAction = onConfirm;
+        blur.source = translucentImageSource;
+        
+        onConfirmAction = ConfirmAction;
 
         confirmButton.onClick.RemoveAllListeners(); // 기존 리스너 제거
         confirmButton.onClick.AddListener(OnConfirmButtonClicked);

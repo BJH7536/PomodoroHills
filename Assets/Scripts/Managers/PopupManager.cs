@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using DG.Tweening;
+using LeTai.Asset.TranslucentImage;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -35,6 +37,8 @@ public class PopupManager : MonoBehaviour
     /// </summary>
     private Dictionary<Type, Stack<Popup>> popupPool = new Dictionary<Type, Stack<Popup>>();
 
+    [SerializeField] private TranslucentImageSource _translucentImageSource;
+    
     /// <summary>
     /// 게임 오브젝트가 활성화될 때 호출됩니다.
     /// 싱글톤 인스턴스를 설정하고, 팝업 캔버스를 초기화합니다.
@@ -54,6 +58,9 @@ public class PopupManager : MonoBehaviour
 
         // PopupCanvas 초기화
         InitializePopupCanvas();
+
+        // DOTween 초기화
+        DOTween.Init(true, true, LogBehaviour.ErrorsOnly);
     }
 
     /// <summary>
@@ -65,7 +72,7 @@ public class PopupManager : MonoBehaviour
         if (popupCanvas != null) return;
 
         int referenceWidth = 1080; // 기준 해상도 너비
-        int referenceHeight = 2205; // 기준 해상도 높이
+        int referenceHeight = 1920; // 기준 해상도 높이
 
         // 씬 내에서 "PopupCanvas"라는 이름의 캔버스를 찾습니다.
         Canvas foundCanvas = GameObject.Find("PopupCanvas")?.GetComponent<Canvas>();
@@ -81,13 +88,16 @@ public class PopupManager : MonoBehaviour
 
         // Canvas 컴포넌트 추가 및 설정
         Canvas canvasComponent = newCanvas.AddComponent<Canvas>();
-        canvasComponent.renderMode = RenderMode.ScreenSpaceOverlay; // 화면 공간 오버레이 모드
-
+        canvasComponent.renderMode = RenderMode.ScreenSpaceCamera; // 화면 공간 오버레이 모드
+        canvasComponent.worldCamera = Camera.main;
+        canvasComponent.sortingOrder = 1000;
+        
         // CanvasScaler 컴포넌트 추가 및 설정
         CanvasScaler canvasScaler = newCanvas.AddComponent<CanvasScaler>();
         canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize; // 화면 크기에 따라 스케일 조정
         canvasScaler.referenceResolution = new Vector2(referenceWidth, referenceHeight); // 기준 해상도 설정
-
+        canvasScaler.matchWidthOrHeight = 0.5f;
+        
         // GraphicRaycaster 컴포넌트 추가
         newCanvas.AddComponent<GraphicRaycaster>();
 
@@ -101,7 +111,7 @@ public class PopupManager : MonoBehaviour
     /// </summary>
     /// <typeparam name="T">표시할 팝업의 타입</typeparam>
     /// <returns>생성된 팝업 인스턴스</returns>
-    public T ShowPopup<T>() where T : Popup
+    public T ShowPopup<T>(bool blur = false) where T : Popup
     {
         Type popupType = typeof(T);
         T popup = null;
@@ -128,7 +138,10 @@ public class PopupManager : MonoBehaviour
             popup = PopupFactory.CreatePopup<T>();
             if (popup != null)
             {
-                popup.transform.SetParent(popupCanvas, false); // PopupCanvas를 부모로 설정
+                if(blur)
+                    popup.transform.SetParent(null, false); 
+                else
+                    popup.transform.SetParent(popupCanvas, false); // PopupCanvas를 부모로 설정
             }
         }
 
@@ -176,13 +189,26 @@ public class PopupManager : MonoBehaviour
         return null;
     }
 
-    public ConfirmPopup ShowConfirmPopup(string title, string message, UnityAction onConfirm)
+    public ConfirmPopup ShowConfirmPopup(string title, string message, UnityAction confirmAction)
     {
-        ConfirmPopup confirmPopup = ShowPopup<ConfirmPopup>();
-
+        ConfirmPopup confirmPopup = ShowPopup<ConfirmPopup>(true);
+        
         if (confirmPopup != null)
         {
-            confirmPopup.Setup(title, message, onConfirm);
+            confirmPopup.Setup(title, message, confirmAction, _translucentImageSource);
+            return confirmPopup;
+        }
+
+        return null;
+    }
+
+    public AlertPopup ShowAlertPopup(string title, string message)
+    {
+        AlertPopup confirmPopup = ShowPopup<AlertPopup>(true);
+        
+        if (confirmPopup != null)
+        {
+            confirmPopup.Setup(title, message, _translucentImageSource);
             return confirmPopup;
         }
 
