@@ -101,7 +101,7 @@ public class NotificationManager : MonoBehaviour
         
         // 알림 채널 등록
         AndroidNotificationCenter.RegisterNotificationChannel(channel);
-        Debug.Log("[Android] 알림 채널이 초기화되었습니다.");
+        DebugEx.Log("[Android] 알림 채널이 초기화되었습니다.");
     }
     
     /// <summary>
@@ -160,7 +160,7 @@ public class NotificationManager : MonoBehaviour
     /// </summary>
     private void HandlePermissionGranted(string permissionName)
     {
-        Debug.Log($"{permissionName} 권한이 승인됨");
+        DebugEx.Log($"{permissionName} 권한이 승인됨");
         // 알림 관련 작업을 계속 진행
     }
 
@@ -169,7 +169,7 @@ public class NotificationManager : MonoBehaviour
     /// </summary>
     private void HandlePermissionDenied(string permissionName)
     {
-        Debug.Log($"{permissionName} 권한이 거부되었습니다. 알림 기능을 사용할 수 없습니다.");
+        DebugEx.Log($"{permissionName} 권한이 거부되었습니다. 알림 기능을 사용할 수 없습니다.");
         // 알림 관련 기능 비활성화 또는 다른 대체 기능 제공
     }
 
@@ -178,7 +178,7 @@ public class NotificationManager : MonoBehaviour
     /// </summary>
     private void HandlePermissionDeniedPermanently(string permissionName)
     {
-        Debug.Log($"{permissionName} 권한이 영구적으로 거부되었습니다. 설정에서 수동으로 권한을 활성화해야 합니다.");
+        DebugEx.Log($"{permissionName} 권한이 영구적으로 거부되었습니다. 설정에서 수동으로 권한을 활성화해야 합니다.");
         // 사용자가 설정에서 권한을 수동으로 활성화하도록 안내
     }
     
@@ -221,7 +221,7 @@ public class NotificationManager : MonoBehaviour
         // 알림 예약
         AndroidNotificationCenter.SendNotification(notification, AndroidChannelId);
 
-        Debug.Log($"[Android] 알림이 {remainingTimeInSeconds}초 후에 예약되었습니다.");
+        DebugEx.Log($"[Android] 알림이 {remainingTimeInSeconds}초 후에 예약되었습니다.");
     }
 
     /// <summary>
@@ -233,7 +233,7 @@ public class NotificationManager : MonoBehaviour
         AndroidNotificationCenter.CancelAllScheduledNotifications();
         // 이미 표시된 알림 제거
         AndroidNotificationCenter.CancelAllDisplayedNotifications();
-        Debug.Log("[Android] 모든 알림이 취소되었습니다.");
+        DebugEx.Log("[Android] 모든 알림이 취소되었습니다.");
     }
 
     #endregion

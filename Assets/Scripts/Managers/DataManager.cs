@@ -112,7 +112,7 @@ namespace DataManagement
         {
             if (newItem == null)
             {
-                Debug.LogWarning("AddItem 호출 시 null 아이템이 전달되었습니다.");
+                DebugEx.LogWarning("AddItem 호출 시 null 아이템이 전달되었습니다.");
                 return;
             }
 
@@ -127,14 +127,14 @@ namespace DataManagement
             }
             catch (Exception ex)
             {
-                Debug.LogError($"AddItemAsync: 아이템 저장 중 오류 발생: {ex.Message}");
+                DebugEx.LogError($"AddItemAsync: 아이템 저장 중 오류 발생: {ex.Message}");
                 return;
             }
 
             // 이벤트 발생
             OnItemAdded?.Invoke(newItem);
     
-            Debug.Log($"Added Item: {newItem.Name}, Type: {newItem.Type}, Quantity: {newItem.Quantity}");
+            DebugEx.Log($"Added Item: {newItem.Name}, Type: {newItem.Type}, Quantity: {newItem.Quantity}");
         }
 
         /// <summary>
@@ -154,17 +154,17 @@ namespace DataManagement
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogError($"DeleteItemAsync: 아이템 저장 중 오류 발생: {ex.Message}");
+                    DebugEx.LogError($"DeleteItemAsync: 아이템 저장 중 오류 발생: {ex.Message}");
                     return;
                 }
 
                 // 이벤트 발생
                 OnItemDeleted?.Invoke(itemID);
-                Debug.Log($"Deleted Item: {itemToRemove.Name}, Type: {itemToRemove.Type}, Quantity: {itemToRemove.Quantity}");
+                DebugEx.Log($"Deleted Item: {itemToRemove.Name}, Type: {itemToRemove.Type}, Quantity: {itemToRemove.Quantity}");
             }
             else
             {
-                Debug.LogWarning($"DeleteItemAsync: 해당 ID의 아이템을 찾을 수 없습니다: {itemID}");
+                DebugEx.LogWarning($"DeleteItemAsync: 해당 ID의 아이템을 찾을 수 없습니다: {itemID}");
             }
         }
         

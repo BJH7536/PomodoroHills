@@ -55,7 +55,7 @@ public class SessionManager : MonoBehaviour
     {
         string jsonData = await UnityWebRequestGet();
 
-        Debug.Log($"Received jsonData : {jsonData}");
+        DebugEx.Log($"Received jsonData : {jsonData}");
         
         // Information을 파싱하기 전에 address는 string으로 받아야 함
         Information info = JsonConvert.DeserializeObject<Information>(jsonData);
@@ -98,7 +98,7 @@ public class SessionManager : MonoBehaviour
         
         if (uwr.result is UnityWebRequest.Result.ConnectionError or UnityWebRequest.Result.ProtocolError)
         {
-            Debug.LogError("ERROR: " + uwr.error);
+            DebugEx.LogError("ERROR: " + uwr.error);
             loading.SetActive(false);
             return string.Empty;
         }
@@ -135,7 +135,7 @@ public class SessionManager : MonoBehaviour
         };
 
         string jsonData = JsonConvert.SerializeObject(info);
-        Debug.Log(jsonData);
+        DebugEx.Log(jsonData);
         
         // UnityWebRequest.Post 사용
         UnityWebRequest request = UnityWebRequest.PostWwwForm(postUrl, jsonData);
@@ -149,11 +149,11 @@ public class SessionManager : MonoBehaviour
         
         if (request.result == UnityWebRequest.Result.Success)
         {
-            Debug.Log("데이터 전송 성공");
+            DebugEx.Log("데이터 전송 성공");
         }
         else
         {
-            Debug.LogError("데이터 전송 실패: " + request.error);
+            DebugEx.LogError("데이터 전송 실패: " + request.error);
         }
     }
 
@@ -186,7 +186,7 @@ public class SessionManager : MonoBehaviour
 
         // JSON 데이터 직렬화
         string jsonData = JsonConvert.SerializeObject(info);
-        Debug.Log(jsonData);
+        DebugEx.Log(jsonData);
     
         // UnityWebRequest 사용하여 PUT 요청
         UnityWebRequest request = UnityWebRequest.Put($"{postUrl}/{inputField_user_id.text}", jsonData);
@@ -199,11 +199,11 @@ public class SessionManager : MonoBehaviour
 
         if (request.result == UnityWebRequest.Result.Success)
         {
-            Debug.Log("데이터 갱신 성공");
+            DebugEx.Log("데이터 갱신 성공");
         }
         else
         {
-            Debug.LogError("데이터 갱신 실패: " + request.error);
+            DebugEx.LogError("데이터 갱신 실패: " + request.error);
         }
     }
     

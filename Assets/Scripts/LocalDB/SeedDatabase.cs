@@ -54,7 +54,7 @@ public class SeedDatabase : ScriptableObject
         {
             if (!_seedDictionary.TryAdd(seed.Name, seed))
             {
-                Debug.LogWarning($"중복된 씨앗 이름: {seed.Name} / 씨앗 이름은 고유해야 합니다.");
+                DebugEx.LogWarning($"중복된 씨앗 이름: {seed.Name} / 씨앗 이름은 고유해야 합니다.");
             }
         }
     }
@@ -77,7 +77,7 @@ public class SeedDatabase : ScriptableObject
         }
         else
         {
-            Debug.LogWarning($"이름이 {seedName}인 씨앗을 찾을 수 없습니다.");
+            DebugEx.LogWarning($"이름이 {seedName}인 씨앗을 찾을 수 없습니다.");
             return null;
         }
     }
@@ -130,7 +130,7 @@ public class SeedDatabase : ScriptableObject
         foreach (var seed in _seeds)
         {
             string tags = string.Join(", ", seed.Tags);
-            Debug.Log($"씨앗 이름: {seed.Name}, 성장 시간: {seed.GrowthTime}일, 태그: [{tags}]");
+            DebugEx.Log($"씨앗 이름: {seed.Name}, 성장 시간: {seed.GrowthTime}일, 태그: [{tags}]");
         }
     }
 }

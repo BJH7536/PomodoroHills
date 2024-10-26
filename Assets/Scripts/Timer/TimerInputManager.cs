@@ -71,7 +71,7 @@ public class TimerInputManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("they can't be zero");            //두 타이머 값이 0이면 타이머 설정 거부
+            DebugEx.Log("they can't be zero");            //두 타이머 값이 0이면 타이머 설정 거부
         }
             
     }

@@ -47,7 +47,7 @@ public class TodoItemUIPool : MonoBehaviour
         }
 
         // 풀에 더 이상 남은 UI가 없는 경우 새로 생성
-        Debug.LogWarning("TodoItemUIPool: 풀에 아이템이 부족합니다. 새로 생성합니다.");
+        DebugEx.LogWarning("TodoItemUIPool: 풀에 아이템이 부족합니다. 새로 생성합니다.");
         ExpandPool(initialPoolSize); // 풀 사이즈를 초기 풀 사이즈만큼 늘림
         return GetTodoItemUI(); // 다시 시도하여 새로운 UI 반환
     }
@@ -64,7 +64,7 @@ public class TodoItemUIPool : MonoBehaviour
             todoItemUIPool.Add(itemUI);
         }
 
-        Debug.Log($"TodoItemUIPool: 풀 크기를 {amount}만큼 확장했습니다.");
+        DebugEx.Log($"TodoItemUIPool: 풀 크기를 {amount}만큼 확장했습니다.");
     }
 
     /// <summary>

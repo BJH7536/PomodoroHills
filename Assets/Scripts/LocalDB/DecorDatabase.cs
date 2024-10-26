@@ -57,7 +57,7 @@ public class DecorDatabase : ScriptableObject
         {
             if (!_decorDictionary.TryAdd(decor.Name, decor))
             {
-                Debug.LogWarning($"중복된 장식품 이름: {decor.Name} / 장식품 이름은 고유해야 합니다.");
+                DebugEx.LogWarning($"중복된 장식품 이름: {decor.Name} / 장식품 이름은 고유해야 합니다.");
             }
         }
     }
@@ -80,7 +80,7 @@ public class DecorDatabase : ScriptableObject
         }
         else
         {
-            Debug.LogWarning($"이름이 {decorName}인 장식품을 찾을 수 없습니다.");
+            DebugEx.LogWarning($"이름이 {decorName}인 장식품을 찾을 수 없습니다.");
             return null;
         }
     }
@@ -133,7 +133,7 @@ public class DecorDatabase : ScriptableObject
         foreach (var decor in _decors)
         {
             string tags = string.Join(", ", decor.Tags);
-            Debug.Log($"장식품 이름: {decor.Name}, 크기: {decor.SizeX}x{decor.SizeZ}, 태그: [{tags}]");
+            DebugEx.Log($"장식품 이름: {decor.Name}, 크기: {decor.SizeX}x{decor.SizeZ}, 태그: [{tags}]");
         }
     }
 }

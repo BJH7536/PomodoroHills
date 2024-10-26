@@ -49,7 +49,7 @@ public class CameraManager : MonoBehaviour
         cinemachineBlendListCamera.m_Instructions[1].m_Hold = 1.0f;
         
         float time2 = Time.realtimeSinceStartup;
-        Debug.Log($"Camera Blended into {toCam.name} | duration {time2 - time1}");
+        DebugEx.Log($"Camera Blended into {toCam.name} | duration {time2 - time1}");
     }
 
     public void ZoomOut()

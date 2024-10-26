@@ -54,7 +54,7 @@ public class CropDatabase : ScriptableObject
         {
             if (!_cropDictionary.TryAdd(crop.Name, crop))
             {
-                Debug.LogWarning($"중복된 작물 이름: {crop.Name} / 작물 이름은 고유해야 합니다.");
+                DebugEx.LogWarning($"중복된 작물 이름: {crop.Name} / 작물 이름은 고유해야 합니다.");
             }
         }
     }
@@ -77,7 +77,7 @@ public class CropDatabase : ScriptableObject
         }
         else
         {
-            Debug.LogWarning($"이름이 {cropName}인 작물을 찾을 수 없습니다.");
+            DebugEx.LogWarning($"이름이 {cropName}인 작물을 찾을 수 없습니다.");
             return null;
         }
     }
@@ -130,7 +130,7 @@ public class CropDatabase : ScriptableObject
         foreach (var crop in _crops)
         {
             string tags = string.Join(", ", crop.Tags);
-            Debug.Log($"작물 이름: {crop.Name}, 수확 시간: {crop.HarvestTime}일, 태그: [{tags}]");
+            DebugEx.Log($"작물 이름: {crop.Name}, 수확 시간: {crop.HarvestTime}일, 태그: [{tags}]");
         }
     }
 }

@@ -26,7 +26,7 @@ namespace DataManagement
         {
             if (item == null)
             {
-                Debug.LogWarning("InventoryPopup_ItemUI Setup 호출 시 null 아이템이 전달되었습니다.");
+                DebugEx.LogWarning("InventoryPopup_ItemUI Setup 호출 시 null 아이템이 전달되었습니다.");
                 return;
             }
 
@@ -50,7 +50,7 @@ namespace DataManagement
                 if (iconSprite != null)
                     itemIconImage.sprite = iconSprite;
                 else
-                    Debug.LogWarning($"아이템 아이콘을 찾을 수 없습니다: {iconPath}");
+                    DebugEx.LogWarning($"아이템 아이콘을 찾을 수 없습니다: {iconPath}");
             }
         }
 

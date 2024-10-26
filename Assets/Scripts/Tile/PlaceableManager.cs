@@ -61,7 +61,7 @@ public class PlaceableManager : MonoBehaviour
             Vector2Int key = kvp.Key;
             TileMapManager.Instance.tileMap.TryGetValue(key, out Tile val);
             string value = val.isOccupied.ToString();
-            Debug.Log($"Key: ({key.x}, {key.y}), Value: {value}");
+            DebugEx.Log($"Key: ({key.x}, {key.y}), Value: {value}");
         }*/
 
     }
@@ -101,7 +101,7 @@ public class PlaceableManager : MonoBehaviour
         {
             if (!TileMapManager.Instance.GetEveryTileAvailable(size, position, rotation))
             {
-                Debug.Log("이미 타일을 누가 쓰고있어요");
+                DebugEx.Log("이미 타일을 누가 쓰고있어요");
             }
             else
             {
@@ -129,7 +129,7 @@ public class PlaceableManager : MonoBehaviour
             GameObject newObj = Instantiate(Prefab, Vector3.zero, Quaternion.identity);
             return newObj;
         }
-        Debug.Log("Can't Find placeableCode in Table");
+        DebugEx.Log("Can't Find placeableCode in Table");
         return null;
     }
 
@@ -151,7 +151,7 @@ public class PlaceableManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Unpack failed");
+            DebugEx.Log("Unpack failed");
             return false;
         }
 
@@ -183,7 +183,7 @@ public class PlaceableManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("There is no selectedPlaceable");
+            DebugEx.Log("There is no selectedPlaceable");
         }
     }
 
@@ -207,11 +207,11 @@ public class PlaceableManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("cant place there");
+                DebugEx.Log("cant place there");
                 return false;
             }
         }
-        Debug.Log("Cant find placeable");
+        DebugEx.Log("Cant find placeable");
         return false;
     }
 
@@ -222,7 +222,7 @@ public class PlaceableManager : MonoBehaviour
             // 인벤토리 구현시 해당 Placeable 수량 +1
             Destroy(selectedPlaceable);
             OffIsNewEdit();
-            Debug.Log("selectedPlaceable is newPlaceable, we pack it up");
+            DebugEx.Log("selectedPlaceable is newPlaceable, we pack it up");
         }
         else if (selectedPlaceable.TryGetComponent<Placeable>(out Placeable placeable))  //기존의 Placeable
         {
@@ -231,7 +231,7 @@ public class PlaceableManager : MonoBehaviour
             selectedPlaceable.transform.rotation = Quaternion.Euler(0, lastRotation * 90f, 0);
             placeable.position = lastPosition;
             placeable.rotation = lastRotation;
-            Debug.Log("oldob");
+            DebugEx.Log("oldob");
         }
     }
 

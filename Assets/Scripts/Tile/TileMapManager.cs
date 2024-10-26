@@ -110,7 +110,7 @@ public class TileMapManager : MonoBehaviour
                 }
                 break;
             default:
-                Debug.LogWarning("Invalid rotation value: " + rotation);
+                DebugEx.LogWarning("Invalid rotation value: " + rotation);
                 break;
         }
         return true;
@@ -120,12 +120,12 @@ public class TileMapManager : MonoBehaviour
         if (tileMap.ContainsKey(position))
         {
             tileMap.TryGetValue(position, out Tile tile);
-            //Debug.Log($"Checking tile at position {position}: Occupied = {tile.isOccupied}");
+            //DebugEx.Log($"Checking tile at position {position}: Occupied = {tile.isOccupied}");
             return !tile.isOccupied;
         }
         else
         {
-            Debug.Log($"Tile not found at position {position}");
+            DebugEx.Log($"Tile not found at position {position}");
             return false;
         }
     }
@@ -171,7 +171,7 @@ public class TileMapManager : MonoBehaviour
                 }
                 break;
             default:
-                Debug.LogWarning("Invalid rotation value: " + rotation);
+                DebugEx.LogWarning("Invalid rotation value: " + rotation);
                 break;
         }
     }
@@ -226,7 +226,7 @@ public class TileMapManager : MonoBehaviour
                 }
                 break;
             default:
-                Debug.LogWarning("Invalid rotation value: " + preRotation);
+                DebugEx.LogWarning("Invalid rotation value: " + preRotation);
                 break;
         }
     }

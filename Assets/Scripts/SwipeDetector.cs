@@ -5,7 +5,7 @@ public class SwipeDetector : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 {
     private Vector2 startTouchPosition;
     private Vector2 endTouchPosition;
-    private bool isSwiping = false;
+    private bool isSwiping;
 
     // 스와이프를 감지할 최소 거리를 설정
     public float swipeThreshold = 50f;
@@ -53,14 +53,14 @@ public class SwipeDetector : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     // 위로 스와이프 동작이 감지되었을 때 실행되는 함수
     private void OnSwipeUp()
     {
-        Debug.Log("위로 스와이프 감지됨");
+        DebugEx.Log("위로 스와이프 감지됨");
         // 위로 스와이프 동작 처리
     }
 
     // 아래로 스와이프 동작이 감지되었을 때 실행되는 함수
     private void OnSwipeDown()
     {
-        Debug.Log("아래로 스와이프 감지됨");
+        DebugEx.Log("아래로 스와이프 감지됨");
         // 아래로 스와이프 동작 처리
     }
 }

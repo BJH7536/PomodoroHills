@@ -159,7 +159,7 @@ public class BuildingManager : MonoBehaviour
     {
         if (gridManager == null)
         {
-            Debug.Log("GridManager가 초기화되지 않았습니다.");
+            DebugEx.Log("GridManager가 초기화되지 않았습니다.");
             return;
         }
 
@@ -171,6 +171,6 @@ public class BuildingManager : MonoBehaviour
             sb.AppendLine($"Grid Position: {grid.Key}, Occupied: {grid.Value}");
         }
 
-        Debug.Log(sb.ToString());
+        DebugEx.Log(sb.ToString());
     }
 }

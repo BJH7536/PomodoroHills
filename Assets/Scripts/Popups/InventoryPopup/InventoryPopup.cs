@@ -302,7 +302,7 @@ public class InventoryPopup : Popup
 
         if (currentItems == null || currentItems.Count == 0)
         {
-            Debug.LogWarning("No items found to populate.");
+            DebugEx.LogWarning("No items found to populate.");
             return;
         }
 
@@ -315,7 +315,7 @@ public class InventoryPopup : Popup
 
             if (itemGO == null)
             {
-                Debug.LogError($"Failed to get item UI for type: {item.Type}");
+                DebugEx.LogError($"Failed to get item UI for type: {item.Type}");
                 continue;
             }
 
@@ -327,7 +327,7 @@ public class InventoryPopup : Popup
             }
             else
             {
-                Debug.LogError("InventoryPopup_ItemUI component missing from the item UI prefab.");
+                DebugEx.LogError("InventoryPopup_ItemUI component missing from the item UI prefab.");
             }
         }
 
@@ -353,7 +353,7 @@ public class InventoryPopup : Popup
         List<DataManagement.Item> currentItems = DataManager.Instance.GetItems();
         if (currentItems == null || currentItems.Count == 0)
         {
-            Debug.LogWarning("No items to display for the current tab.");
+            DebugEx.LogWarning("No items to display for the current tab.");
             return;
         }
 
@@ -365,7 +365,7 @@ public class InventoryPopup : Popup
 
             if (itemGO == null)
             {
-                Debug.LogError($"Failed to get item UI for type: {item.Type}");
+                DebugEx.LogError($"Failed to get item UI for type: {item.Type}");
                 continue;
             }
 
@@ -378,7 +378,7 @@ public class InventoryPopup : Popup
             }
             else
             {
-                Debug.LogError("InventoryPopup_ItemUI component is missing on the item UI prefab.");
+                DebugEx.LogError("InventoryPopup_ItemUI component is missing on the item UI prefab.");
             }
         }
 
@@ -411,7 +411,7 @@ public class InventoryPopup : Popup
             case ItemType.Crop:
                 return cropScrollRect.content;
             default:
-                Debug.LogWarning($"알 수 없는 아이템 타입: {type}");
+                DebugEx.LogWarning($"알 수 없는 아이템 타입: {type}");
                 return buildingScrollRect.content;
         }
     }
@@ -526,7 +526,7 @@ public class InventoryPopup : Popup
 
         if (!itemUIPool.isInitialized)
         {
-            Debug.LogError("ItemUIPool 초기화가 예상 시간 내에 완료되지 않았습니다.");
+            DebugEx.LogError("ItemUIPool 초기화가 예상 시간 내에 완료되지 않았습니다.");
         }
     }
 

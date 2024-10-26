@@ -1464,6 +1464,11 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-98581113d504464498b55939ece12999-1188245690-0
         - globalObjectIdString: GlobalObjectId_V1-2-98581113d504464498b55939ece12999-2117260701-0
         - globalObjectIdString: GlobalObjectId_V1-2-98581113d504464498b55939ece12999-892228529-0
+        - globalObjectIdString: GlobalObjectId_V1-2-98581113d504464498b55939ece12999-5907955053345265141-0
+        - globalObjectIdString: GlobalObjectId_V1-2-98581113d504464498b55939ece12999-4068292055816931446-0
+        - globalObjectIdString: GlobalObjectId_V1-2-98581113d504464498b55939ece12999-2123283408-0
+        - globalObjectIdString: GlobalObjectId_V1-2-98581113d504464498b55939ece12999-1434399520-0
+        - globalObjectIdString: GlobalObjectId_V1-2-98581113d504464498b55939ece12999-2056753148-0
         values:
         - colorIndex: 2
           iconNameOrGuid: Folder Icon
@@ -1588,6 +1593,16 @@ MonoBehaviour:
         - colorIndex: 6
           iconNameOrGuid: 
         - colorIndex: 2
+          iconNameOrGuid: 
+        - colorIndex: 7
+          iconNameOrGuid: 
+        - colorIndex: 7
+          iconNameOrGuid: 
+        - colorIndex: 1
+          iconNameOrGuid: 
+        - colorIndex: 2
+          iconNameOrGuid: 
+        - colorIndex: 8
           iconNameOrGuid: 
     - goDatas_byGlobalId:
         keys:

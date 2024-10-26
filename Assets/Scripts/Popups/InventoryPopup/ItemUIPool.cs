@@ -33,7 +33,7 @@ namespace DataManagement
                     pool.Add(itemUI);
                 }
 
-                Debug.Log($"ItemUIPool: Initializing pool for {type}");
+                DebugEx.Log($"ItemUIPool: Initializing pool for {type}");
                 itemUIPools.Add(type, pool);  // 각 ItemType에 대한 풀 등록
             }
 
@@ -47,7 +47,7 @@ namespace DataManagement
         {
             if (!itemUIPools.ContainsKey(type))
             {
-                Debug.LogError($"ItemUIPool: 풀을 찾을 수 없습니다: {type}");
+                DebugEx.LogError($"ItemUIPool: 풀을 찾을 수 없습니다: {type}");
                 return null;
             }
 
@@ -65,7 +65,7 @@ namespace DataManagement
             }
 
             // 풀에 더 이상 남은 UI가 없는 경우 새로 생성
-            Debug.LogWarning($"ItemUIPool: {type} 타입의 풀에 아이템이 부족합니다. 새로 생성합니다.");
+            DebugEx.LogWarning($"ItemUIPool: {type} 타입의 풀에 아이템이 부족합니다. 새로 생성합니다.");
             ExpandPool(type);  // 풀 사이즈 확장
             return GetItemUI(type);  // 다시 시도하여 새로운 UI 반환
         }
@@ -77,7 +77,7 @@ namespace DataManagement
         {
             if (!itemUIPools.ContainsKey(type))
             {
-                Debug.LogError($"ItemUIPool: 확장할 풀을 찾을 수 없습니다: {type}");
+                DebugEx.LogError($"ItemUIPool: 확장할 풀을 찾을 수 없습니다: {type}");
                 return;
             }
 
@@ -89,7 +89,7 @@ namespace DataManagement
                 itemUIPools[type].Add(itemUI);
             }
 
-            Debug.Log($"ItemUIPool: {type} 타입의 풀 크기를 10만큼 확장했습니다.");
+            DebugEx.Log($"ItemUIPool: {type} 타입의 풀 크기를 10만큼 확장했습니다.");
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace DataManagement
         {
             if (!itemUIPools.ContainsKey(type))
             {
-                Debug.LogError($"ItemUIPool: 반환할 풀을 찾을 수 없습니다: {type}");
+                DebugEx.LogError($"ItemUIPool: 반환할 풀을 찾을 수 없습니다: {type}");
                 return;
             }
 

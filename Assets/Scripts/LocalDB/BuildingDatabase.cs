@@ -56,7 +56,7 @@ public class BuildingDatabase : ScriptableObject
         {
             if (!_buildingDictionary.TryAdd(building.Name, building))
             {
-                Debug.LogWarning($"중복된 건물 이름: {building.Name} / 건물 이름은 고유해야 합니다.");
+                DebugEx.LogWarning($"중복된 건물 이름: {building.Name} / 건물 이름은 고유해야 합니다.");
             }
         }
     }
@@ -79,7 +79,7 @@ public class BuildingDatabase : ScriptableObject
         }
         else
         {
-            Debug.LogWarning($"이름이 {buildingName}인 건물을 찾을 수 없습니다.");
+            DebugEx.LogWarning($"이름이 {buildingName}인 건물을 찾을 수 없습니다.");
             return null;
         }
     }
@@ -132,7 +132,7 @@ public class BuildingDatabase : ScriptableObject
         foreach (var building in _buildings)
         {
             string tags = string.Join(", ", building.Tags);
-            Debug.Log($"건물 이름: {building.Name}, 크기: {building.SizeX}x{building.SizeZ}, 태그: [{tags}]");
+            DebugEx.Log($"건물 이름: {building.Name}, 크기: {building.SizeX}x{building.SizeZ}, 태그: [{tags}]");
         }
     }
 }

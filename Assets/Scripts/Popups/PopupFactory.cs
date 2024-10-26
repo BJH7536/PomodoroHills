@@ -35,7 +35,7 @@ public static class PopupFactory
             prefab = Resources.Load<GameObject>(prefabPath);
             if (prefab == null)
             {
-                Debug.LogError($"팝업 프리팹을 찾을 수 없습니다: {prefabPath}");
+                DebugEx.LogError($"팝업 프리팹을 찾을 수 없습니다: {prefabPath}");
                 return null;
             }
 

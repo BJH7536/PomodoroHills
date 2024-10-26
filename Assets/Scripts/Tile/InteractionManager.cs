@@ -99,7 +99,7 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
             {
                 MovePlaceable();
             }
-            else { Debug.Log("선택된 아이템이 없는데, 건물이동을 시도하고 있습니다."); }
+            else { DebugEx.Log("선택된 아이템이 없는데, 건물이동을 시도하고 있습니다."); }
         }
     }
 
@@ -143,7 +143,7 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
                 int nearestZ = Mathf.RoundToInt(hitPoint.z);
 
                 // 결과 출력
-                Debug.Log($"Clicked Point: {hitPoint}, Nearest Integer Coordinates: ({nearestX}, {nearestZ})");
+                DebugEx.Log($"Clicked Point: {hitPoint}, Nearest Integer Coordinates: ({nearestX}, {nearestZ})");
                 if (PlaceableManager.Instance.selectedPlaceable != null)
                 {
                     GameObject selectedObject = PlaceableManager.Instance.selectedPlaceable;
@@ -204,7 +204,7 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
             if (clickedObject.CompareTag("Placeable"))
             {
                 PlaceableManager.Instance.selectedPlaceable = clickedObject;
-                Debug.Log(PlaceableManager.Instance.selectedPlaceable.name + " has been selected.");
+                DebugEx.Log(PlaceableManager.Instance.selectedPlaceable.name + " has been selected.");
 
                 if (selectOptionUI != null)
                 {
@@ -241,7 +241,7 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
         {
             OffMoveSelectedPlaceable(); //버튼 꺼지게
         }
-        else{ Debug.Log("no"); }
+        else{ DebugEx.Log("no"); }
     }
     
     public void ClickCancleEdit()               //SelectedPlaceable 편집상태 종료
