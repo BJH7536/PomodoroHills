@@ -27,17 +27,17 @@ public class ScrollSystem : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     private float itemHeight;                                       // 항목의 높이
     private int previousIndex = -1;                                 // 이전에 선택된 항목의 인덱스
 
-    [SerializeField] private const int BufferItemCount = 4; // 화면 밖에 추가로 생성할 버퍼 항목 수.
+    [SerializeField] private int BufferItemCount = 1; // 화면 밖에 추가로 생성할 버퍼 항목 수.
     private const float CheckInterval = 0.1f;               // 스크롤 체크 간격.
     private float lastCheckTime = 0;                        // 마지막 체크 시간.
     private int itemCount;                                  // 총 항목 수.
     private int visibleItemCount;                           // 화면에 보이는 항목 수.
-
+    
     [SerializeField] private bool isScrolling = false;          // 스크롤 중인지 여부.
     [SerializeField] private bool isSnapping = false;           // 스냅 중인지 여부.
     [SerializeField] private bool isUserInteracting = false;    // 사용자가 드래그 중인지 여부.
-
-    private Action<int> onValueChanged;                         // 값 변경 시 호출되는 콜백.
+    
+    private event Action<int> onValueChanged;                   // 값 변경 시 호출되는 콜백.
 
     #endregion
 
@@ -66,7 +66,7 @@ public class ScrollSystem : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     #endregion
 
     #region Unity Lifecycle
-
+    
     /// <summary>
     /// Unity의 Update 메서드. 매 프레임마다 호출됨.
     /// 스크롤 속도 제한, 스냅 동작, 무한 스크롤을 처리함.
@@ -123,7 +123,7 @@ public class ScrollSystem : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         isUserInteracting = false;      // 드래그 중지
         isScrolling = true;             // 스크롤 중임을 표시
     }
-
+    
     #endregion
 
     #region Initialization
@@ -134,20 +134,25 @@ public class ScrollSystem : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     /// <param name="value">초기 선택할 값</param>
     private void Initialize(int value)
     {
-        itemHeight = itemPrefab.GetComponent<RectTransform>().rect.height;      // 항목 높이
-        itemCount = (maxValue - minValue + 1) * 3;                              // 항목 3배로 반복하여 무한 스크롤 구현
+        // PopulateItems();                                                // 항목 생성
+        // SetInitialScrollPosition(value);                                // 초기 스크롤 위치 설정
+        
+        itemHeight = itemPrefab.GetComponent<RectTransform>().rect.height;  // 항목 높이
+        itemCount = (maxValue - minValue + 1) * 3;                          // 항목 3배로 반복하여 무한 스크롤 구현
         visibleItemCount = Mathf.CeilToInt(scrollRect.viewport.rect.height / itemHeight) + BufferItemCount;
 
-        PopulateItems();                                                // 항목 생성
-        scrollRect.onValueChanged.AddListener(OnScrollValueChanged);    // 스크롤 이벤트 등록
-        SetInitialScrollPosition(value);                                // 초기 스크롤 위치 설정
+        PopulateItems();                                                    // 항목 생성
+        scrollRect.onValueChanged.RemoveAllAndAddListener(OnScrollValueChanged);        // 스크롤 이벤트 등록
+    
+        Canvas.ForceUpdateCanvases();  // 레이아웃 업데이트 후 초기 스크롤 위치 설정
+        SetInitialScrollPosition(value);                                    // 초기 스크롤 위치 설정
     }
     
     /// <summary>
     /// 특정 값을 받아 해당 값이 중앙에 위치하도록 스크롤 초기화.
     /// </summary>
     /// <param name="initialValue">초기 설정할 값</param>
-    public void SetInitialScrollPosition(int initialValue)
+    private void SetInitialScrollPosition(int initialValue)
     {
         Canvas.ForceUpdateCanvases();
         
@@ -197,6 +202,22 @@ public class ScrollSystem : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     /// </summary>
     private void UpdateVisibleItems()
     {
+        // float scrollY = scrollRect.content.anchoredPosition.y;
+        //
+        // for (int i = 0; i < visibleItemCount; i++)
+        // {
+        //     int index = Mathf.FloorToInt(scrollY / itemHeight) + i;
+        //     if (index < 0 || index >= itemCount) continue;
+        //
+        //     UpdateItem(i, index); // 해당 인덱스의 항목을 업데이트
+        // }
+        
+        if (items.Count == 0)
+        {
+            // items 리스트가 아직 초기화되지 않은 경우 업데이트를 중단
+            return;
+        }
+
         float scrollY = scrollRect.content.anchoredPosition.y;
 
         for (int i = 0; i < visibleItemCount; i++)
@@ -221,8 +242,10 @@ public class ScrollSystem : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         int value = minValue + (index % (maxValue - minValue + 1));
         itemText.text = value.ToString();
 
-        RectTransform itemRect = item.GetComponent<RectTransform>();
-        itemRect.anchoredPosition = new Vector2(0, itemHeight * -(index) - (itemHeight / 2));
+        if(item.TryGetComponent(out RectTransform itemRect))
+        {
+            itemRect.anchoredPosition = new Vector2(0, itemHeight * -(index) - (itemHeight / 2));
+        }
     }
 
     /// <summary>
@@ -326,9 +349,11 @@ public class ScrollSystem : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         ResetPreviousItem();
 
         TMP_Text currentItemText = itemTexts[index];
-        RectTransform currentItemRect = currentItemText.GetComponent<RectTransform>();
-        currentItemText.alpha = 1;
-        currentItemRect.localScale = Vector3.one;
+        if (currentItemText.TryGetComponent(out RectTransform currentItemRect))
+        {
+            currentItemText.alpha = 1;
+            currentItemRect.localScale = Vector3.one;
+        }
 
         previousIndex = index;
         selectedValue = int.Parse(currentItemText.text);
@@ -342,9 +367,11 @@ public class ScrollSystem : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         if (previousIndex >= 0 && previousIndex < items.Count)
         {
             TMP_Text previousItemText = itemTexts[previousIndex];
-            RectTransform previousItemRect = previousItemText.GetComponent<RectTransform>();
-            previousItemText.alpha = 0.7f;
-            previousItemRect.localScale = Vector3.one * 0.7f;
+            if (previousItemText.TryGetComponent(out RectTransform previousItemRect))
+            {
+                previousItemText.alpha = 0.7f;
+                previousItemRect.localScale = Vector3.one * 0.7f;
+            }
         }
     }
 

@@ -16,18 +16,18 @@ namespace TodoSystem
         static float completeTolerance = 0.01f;
         
         // 기본 정보
-        public string Name;            // 이름
-        public string Description;     // 설명
-        public string StartDate;       // 시작일 ("yyyy-MM-dd" 형식의 문자열)
-        public string EndDate;         // 종료일 ("yyyy-MM-dd" 형식의 문자열)
-        public ItemType Type;          // 종류 (시간형 또는 확인형)
-        public int Priority;           // 중요도 (1-10)
-        public Recurrence Recurrence;  // 반복 여부
-        public Status Status;          // 상태 (대기 중, 진행 중, 완료됨)
+        public string Id;                       // Guid 필드
+        public string Name;                     // 이름
+        public string Description;              // 설명
+        public string StartDate;                // 시작일 ("yyyy-MM-dd" 형식의 문자열)
+        public string EndDate;                  // 종료일 ("yyyy-MM-dd" 형식의 문자열)
+        public ItemType Type;                   // 종류 (시간형 또는 확인형)
+        public int Priority;                    // 중요도 (1-10)
+        public Recurrence Recurrence;           // 반복 여부
+        public Status Status;                   // 상태 (대기 중, 진행 중, 완료됨)
 
         // 시간형 할 일에 필요한 추가 정보
         public int DailyTargetDurationInMinutes;    // 매일의 목표 시간
-        public int RemainingDurationInMinutes;      // 오늘의 남아있는 시간
         public List<DayOfWeek> RecurrenceDays;      // 반복 요일 (주간 반복 시)
         public string ReminderTime;                 // 알림 시간 ("yyyy-MM-dd HH:mm:ss" 형식의 문자열)
 
@@ -46,9 +46,10 @@ namespace TodoSystem
         private HashSet<DateTime> completedDatesSet;
 
         /// <summary>
-        /// TodoItem 클래스의 생성자입니다.
+        /// OnTodoItemLink 클래스의 생성자입니다.
         /// </summary>
         public TodoItem(
+            string id, // 새로운 ID 파라미터 추가
             string name,
             string description,
             DateTime? startDate,
@@ -58,11 +59,11 @@ namespace TodoSystem
             Recurrence recurrence,
             Status status,
             int dailyTargetDurationInMinutes = 0,
-            int remainingDurationInMinutes = 0,
             List<DayOfWeek> recurrenceDays = null,
             DateTime? reminderTime = null)
         {
             // 기본 정보 초기화
+            Id = id;
             Name = name;
             Description = description;
             StartDate = startDate?.ToString("yyyy-MM-dd");
@@ -76,7 +77,6 @@ namespace TodoSystem
  
             // 시간형 할 일 초기화
             DailyTargetDurationInMinutes = dailyTargetDurationInMinutes;
-            RemainingDurationInMinutes = remainingDurationInMinutes;
 
             // 진행 상황 초기화
             dailyProgressList = new List<DateProgress>();
@@ -85,22 +85,6 @@ namespace TodoSystem
             // 내부 데이터 구조 초기화
             dailyProgressDict = new Dictionary<DateTime, int>();
             completedDatesSet = new HashSet<DateTime>();
-        }
-
-        /// <summary>
-        /// 매일 새로운 날이 시작될 때 RemainingDurationInMinutes를 초기화하는 메서드.
-        /// </summary>
-        public void UpdateDailyTask(DateTime currentDate)
-        {
-            // 오늘의 작업이 예정되어 있다면
-            if (IsTaskScheduledForDate(currentDate))
-            {
-                // 마지막 업데이트된 날짜와 비교하여 오늘이 새로운 날이면 RemainingDurationInMinutes를 초기화
-                if (!dailyProgressDict.ContainsKey(currentDate.Date))
-                {
-                    RemainingDurationInMinutes = DailyTargetDurationInMinutes;
-                }
-            }
         }
         
         #region 날짜 변환 메서드
@@ -157,13 +141,13 @@ namespace TodoSystem
             
             if (Type != ItemType.TimeBased)
             {
-                Debug.LogWarning("시간형이 아닌 할 일은 작업량을 기록할 수 없습니다.");
+                DebugEx.LogWarning("시간형이 아닌 할 일은 작업량을 기록할 수 없습니다.");
                 return;
             }
 
             if (!IsTaskScheduledForDate(date))
             {
-                Debug.LogWarning("해당 날짜에 작업이 예정되어 있지 않습니다.");
+                DebugEx.LogWarning("해당 날짜에 작업이 예정되어 있지 않습니다.");
                 return;
             }
 
@@ -173,9 +157,6 @@ namespace TodoSystem
             {
                 dailyProgressDict[date.Date] += minutes;
             }
-
-            // 오늘 남아있는 시간 감소
-            RemainingDurationInMinutes = Mathf.Max(RemainingDurationInMinutes - minutes, 0);
             
             // 상태 변환
             if (Math.Abs(GetProgressPercentage() - 100) < completeTolerance)
@@ -184,6 +165,8 @@ namespace TodoSystem
                 Status = Status.InProgress;
             
             SaveDailyProgressDict();
+            
+            TodoManager.Instance.SaveCurrentTodoList();         // 현재 시스템의 TodoList를 로컬 저장소에 저장
         }
 
         /// <summary>
@@ -197,13 +180,13 @@ namespace TodoSystem
             
             if (Type != ItemType.CheckBased)
             {
-                Debug.LogWarning("확인형이 아닌 할 일은 완료 상태를 표시할 수 없습니다.");
+                DebugEx.LogWarning("확인형이 아닌 할 일은 완료 상태를 표시할 수 없습니다.");
                 return;
             }
 
             if (!IsTaskScheduledForDate(date))
             {
-                Debug.LogWarning("해당 날짜에 작업이 예정되어 있지 않습니다.");
+                DebugEx.LogWarning("해당 날짜에 작업이 예정되어 있지 않습니다.");
                 return;
             }
 
@@ -221,6 +204,8 @@ namespace TodoSystem
                 Status = Status.InProgress;
             
             SaveCompletedDatesSet();
+            
+            TodoManager.Instance.SaveCurrentTodoList();         // 현재 시스템의 TodoList를 로컬 저장소에 저장
         }
 
         #endregion
@@ -276,9 +261,10 @@ namespace TodoSystem
 
             if (Type == ItemType.TimeBased)
             {
-                LoadDailyProgressDict();
-                
-                return RemainingDurationInMinutes <= 0;
+                if (GetRemainingTimeOfToday() > 0)
+                    return false;
+                else 
+                    return true;
             }
             
             if (Type == ItemType.CheckBased)
@@ -287,7 +273,34 @@ namespace TodoSystem
 
                 return completedDatesSet.Contains(today.Date);
             }
+            
             return false;
+        }
+
+        /// <summary>
+        /// 오늘 남은 시간을 구합니다. (시간형 할 일)
+        /// </summary>
+        /// <returns></returns>
+        public int GetRemainingTimeOfToday()
+        {
+            if (!IsTaskScheduledForDate(DateTime.Today))
+            {
+                return 0; // 오늘 할 일이 없으면 미완료로 간주
+            }
+
+            if (Type == ItemType.TimeBased) 
+            {
+                LoadDailyProgressDict();
+
+                // 딕셔너리에서 오늘자 진척도 찾기 - 있으면
+                if (dailyProgressDict.TryGetValue(DateTime.Today, out var value))
+                    return (int) MathF.Max(DailyTargetDurationInMinutes - value, 0);
+                // 없으면
+                else
+                    return DailyTargetDurationInMinutes;
+            }
+            
+            return 0;
         }
 
         #endregion
@@ -502,7 +515,7 @@ namespace TodoSystem
                 _ => "알 수 없음"
             };
 
-            string durationInfo = Type == ItemType.TimeBased && RemainingDurationInMinutes > 0 ? $"소요 시간: {RemainingDurationInMinutes}분" : "";
+            string durationInfo = Type == ItemType.TimeBased && DailyTargetDurationInMinutes > 0 ? $"소요 시간: {DailyTargetDurationInMinutes}분" : "";
             string reminderInfo = !string.IsNullOrEmpty(ReminderTime) ? $"알림 시간: {ReminderTime}" : "";
 
             return $"이름: {Name}\n" +

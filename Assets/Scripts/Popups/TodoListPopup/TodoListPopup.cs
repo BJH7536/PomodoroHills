@@ -46,10 +46,13 @@ public class TodoListPopup : Popup
     private void OnDisable()
     {
         // 활성화된 TodoItemUI를 모두 풀에 반환
-        ClearAllTodoItems();
+        ClearAllTodoItemsUI();
         
         // 이벤트 구독 해제
         TodoManager.Instance.OnTodoItemAdded -= OnTodoItemAdded;
+        
+        // TodoList 저장
+        TodoManager.Instance.SaveCurrentTodoList();
     }
     
     private void PlayAnimation()
@@ -67,12 +70,13 @@ public class TodoListPopup : Popup
         
         if (todoList == null || todoList.Count == 0)
         {
-            Debug.LogWarning("TodoListPopup: 표시할 할 일이 없습니다.");
+            DebugEx.LogWarning("TodoListPopup: 표시할 할 일이 없습니다.");
+            
             return;
         }
 
         // 기존 아이템 클리어
-        ClearAllTodoItems();
+        ClearAllTodoItemsUI();
 
         foreach (var todo in todoList)
         {
@@ -88,7 +92,7 @@ public class TodoListPopup : Popup
             }
             else
             {
-                Debug.LogError("TodoListPopup: TodoListPopup_TodoItemUI 컴포넌트를 찾을 수 없습니다.");
+                DebugEx.LogError("TodoListPopup: TodoListPopup_TodoItemUI 컴포넌트를 찾을 수 없습니다.");
             }
 
             // 활성화된 아이템 목록에 추가
@@ -102,7 +106,7 @@ public class TodoListPopup : Popup
     /// <summary>
     /// 활성화된 TodoItemUI를 모두 풀에 반환하고 리스트를 비웁니다.
     /// </summary>
-    private void ClearAllTodoItems()
+    private void ClearAllTodoItemsUI()
     {
         foreach (var itemGO in activeTodoItems)
         {
@@ -119,6 +123,17 @@ public class TodoListPopup : Popup
         LayoutRebuilder.ForceRebuildLayoutImmediate(scrollRect.content);
     }
 
+    public void UpdateAllTodoItemsUI()
+    {
+        foreach (var go in activeTodoItems)
+        {
+            if (go.TryGetComponent<TodoListPopup_TodoItemUI>(out var ui))
+            {
+                ui.UpdateProgressUI();
+            }
+        }
+    }
+    
     /// <summary>
     /// TodoItemUIPool의 초기화를 대기합니다.
     /// </summary>
@@ -136,7 +151,7 @@ public class TodoListPopup : Popup
 
         if (!todoItemUIPool.IsInitialized)
         {
-            Debug.LogError("TodoItemUIPool 초기화가 예상 시간 내에 완료되지 않았습니다.");
+            DebugEx.LogError("TodoItemUIPool 초기화가 예상 시간 내에 완료되지 않았습니다.");
         }
     }
     
@@ -153,7 +168,7 @@ public class TodoListPopup : Popup
         }
         else
         {
-            Debug.LogError("TodoListPopup: TodoListPopup_TodoItemUI 컴포넌트를 찾을 수 없습니다.");
+            DebugEx.LogError("TodoListPopup: TodoListPopup_TodoItemUI 컴포넌트를 찾을 수 없습니다.");
         }
 
         activeTodoItems.Add(itemGO);

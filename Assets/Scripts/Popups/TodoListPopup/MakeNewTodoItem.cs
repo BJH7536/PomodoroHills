@@ -57,7 +57,7 @@ public class MakeNewTodoItem : MonoBehaviour
         // 입력 데이터 수집 및 검증
         if (!ValidateInputs())
         {
-            Debug.LogWarning("입력 값이 유효하지 않습니다.");
+            DebugEx.LogWarning("입력 값이 유효하지 않습니다.");
             return;
         }
 
@@ -90,6 +90,7 @@ public class MakeNewTodoItem : MonoBehaviour
         
         // 새로운 TodoItem 객체 생성
         TodoItem newTodoItem = new TodoItem(
+            id : Guid.NewGuid().ToString(),
             name: name,
             description: description,
             startDate: startDate,
@@ -98,7 +99,7 @@ public class MakeNewTodoItem : MonoBehaviour
             priority: priority,
             recurrence: recurrence,
             status: Status.Pending,
-            remainingDurationInMinutes: durationInMinutes,
+            dailyTargetDurationInMinutes: durationInMinutes,
             recurrenceDays: recurrenceDays
         );
 
@@ -116,7 +117,7 @@ public class MakeNewTodoItem : MonoBehaviour
         {
             PopupManager.Instance.ShowErrorPopup("제목을 입력해주세요.");
             
-            Debug.LogWarning("제목을 입력해주세요.");
+            DebugEx.LogWarning("제목을 입력해주세요.");
             return false;
         }
         
@@ -124,7 +125,7 @@ public class MakeNewTodoItem : MonoBehaviour
         {
             PopupManager.Instance.ShowErrorPopup("시작일은 종료일보다 이전이어야 합니다.");
             
-            Debug.LogWarning("시작일은 종료일보다 이전이어야 합니다.");
+            DebugEx.LogWarning("시작일은 종료일보다 이전이어야 합니다.");
             return false;
         }
         
@@ -134,7 +135,7 @@ public class MakeNewTodoItem : MonoBehaviour
             {
                 PopupManager.Instance.ShowErrorPopup("소요 시간을 올바르게 입력해주세요.");
                 
-                Debug.LogWarning("소요 시간을 올바르게 입력해주세요.");
+                DebugEx.LogWarning("소요 시간을 올바르게 입력해주세요.");
                 return false;
             }
         }

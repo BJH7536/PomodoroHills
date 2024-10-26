@@ -1,8 +1,11 @@
 using System;
+using System.IO;
 using DataManagement;
+using TodoSystem;
 using UnityEngine;
+using ItemType = DataManagement.ItemType;
 
-public class DebugController  : MonoBehaviour
+public class DebugExController  : MonoBehaviour
 {
     // 인벤토리 팝업을 열기 위한 메서드
     public void OpenInventoryPopup()
@@ -51,7 +54,7 @@ public class DebugController  : MonoBehaviour
         }
         catch (Exception ex)
         {
-            Debug.LogError($"DebugController: AddItem 호출 중 오류 발생: {ex.Message}");
+            DebugEx.LogError($"DebugExController: AddItem 호출 중 오류 발생: {ex.Message}");
         }
     }
 
@@ -65,7 +68,7 @@ public class DebugController  : MonoBehaviour
 
         if (currentItems.Count == 0)
         {
-            Debug.LogWarning("DeleteItem 호출 시 인벤토리가 비어있습니다.");
+            DebugEx.LogWarning("DeleteItem 호출 시 인벤토리가 비어있습니다.");
             return;
         }
 
@@ -77,7 +80,7 @@ public class DebugController  : MonoBehaviour
         }
         catch (Exception ex)
         {
-            Debug.LogError($"DebugController: DeleteItem 호출 중 오류 발생: {ex.Message}");
+            DebugEx.LogError($"DebugExController: DeleteItem 호출 중 오류 발생: {ex.Message}");
         }
     }
 
@@ -90,4 +93,52 @@ public class DebugController  : MonoBehaviour
         Array values = Enum.GetValues(typeof(ItemType));
         return (ItemType)values.GetValue(UnityEngine.Random.Range(0, values.Length));
     }
+
+    public void DeleteAllData()
+    {
+        // persistentDataPath 경로 아래의 모든 파일과 폴더 삭제
+        string path = Application.persistentDataPath;
+        
+        if (Directory.Exists(path))
+        {
+            // 모든 파일 삭제
+            string[] files = Directory.GetFiles(path);
+            foreach (string file in files)
+            {
+                File.Delete(file);
+            }
+
+            // 모든 디렉토리 삭제
+            string[] directories = Directory.GetDirectories(path);
+            foreach (string directory in directories)
+            {
+                Directory.Delete(directory, true);
+            }
+        }
+        
+        // PlayerPrefs 초기화
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
+
+        // Todo항목들 불러오기 
+        TodoManager.Instance.LoadTodoList();
+        
+        DebugEx.Log("모든 데이터가 초기화되었습니다.");
+    }
+
+    public void ShowAlertPopup()
+    {
+        PopupManager.Instance.ShowAlertPopup("대충 제목", "대충 내용");
+    }
+    
+    public void ShowTimerInformation() {
+        
+        DebugEx.Log($"현재의 타이머 세션 종류는 : {TimerManager.Instance.CurrentSessionType}\n" +
+                    $"현재의 타이머 상태는 : {TimerManager.Instance.CurrentTimerState}\n" +
+                    $"현재의 타이머의 남은 사이클 수는 {TimerManager.Instance.remainingCycleCount}\n" +
+                    $"마지막 사이클은 {TimerManager.Instance.lastCycleTime}분 \n" +
+                    $"타이머의 남은 초단위 시간은 : {TimerManager.Instance.RemainingTimeInSeconds}\n" +
+                    $"타이머와 연동된 Todo항목은 : \n[{TimerManager.Instance.CurrentTodoItem}]\n");
+    }
+    
 }

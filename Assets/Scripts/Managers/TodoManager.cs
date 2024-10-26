@@ -30,6 +30,8 @@ namespace TodoSystem
         
         // TodoList
         public List<TodoItem> TodoList { get; private set; } = new List<TodoItem>();
+        // 검색용 딕셔너리
+        private Dictionary<string, TodoItem> todoDictionary = new Dictionary<string, TodoItem>();
         
         public event Action<TodoItem> OnTodoItemAdded;
         
@@ -56,19 +58,44 @@ namespace TodoSystem
             // TodoList 로드
             LoadOrCreateSampleTodoItems();
             
-            // 오늘의 할 일 필터링 및 업데이트
-            UpdateDailyTasks(DateTime.Today);
+            // Dictionary 초기화
+            InitializeTodoDictionary();
+            
+            // 오늘의 할 일 필터링
             List<TodoItem> todaysTasks = FilterTodoItemsForToday(TodoList, DateTime.Today);
             
-            Debug.Log("불러온 Todo 항목들:");         // 불러온 Todo항목 출력
+            DebugEx.Log("불러온 Todo 항목들:");         // 불러온 Todo항목 출력
             foreach (var todo in TodoList)
             {
-                Debug.Log(todo.ToString());
+                DebugEx.Log(todo.ToString());
             }
-            Debug.Log("오늘의 할 일:");              // 오늘의 Todo항목 출력
+            DebugEx.Log("오늘의 할 일:");              // 오늘의 Todo항목 출력
             foreach (var todo in todaysTasks)
             {
-                Debug.Log(todo.ToString());
+                DebugEx.Log(todo.ToString());
+            }
+        }
+
+        private void OnApplicationPause(bool pauseStatus)
+        {
+            if (pauseStatus)
+            {
+                SaveCurrentTodoList();
+            }
+        }
+
+        /// <summary>
+        /// Dictionary를 TodoList 기반으로 초기화.
+        /// </summary>
+        private void InitializeTodoDictionary()
+        {
+            todoDictionary.Clear();
+            foreach (var todoItem in TodoList)
+            {
+                if (!todoDictionary.TryAdd(todoItem.Id, todoItem))
+                {
+                    DebugEx.LogWarning($"중복된 Id 발견: {todoItem.Id}");
+                }
             }
         }
         
@@ -83,7 +110,7 @@ namespace TodoSystem
 
             if (loadedTodoList.Count == 0)
             {
-                Debug.LogWarning("파일이 비어있음. 샘플 데이터를 생성함");
+                DebugEx.LogWarning("파일이 비어있음. 샘플 데이터를 생성함");
                 
                 // 파일이 없거나 비어 있으면 샘플 데이터 생성
                 TodoList = CreateSampleTodoItems();
@@ -104,6 +131,7 @@ namespace TodoSystem
             DateTime today = DateTime.Today;
             
             TodoItem codingStudy = new TodoItem(
+                id : Guid.NewGuid().ToString(),
                 name: "코딩 공부",
                 description: "매일 90분씩 코딩 공부하기",
                 startDate: today.AddDays(-2),
@@ -112,8 +140,7 @@ namespace TodoSystem
                 priority: 5,
                 recurrence: Recurrence.Daily,
                 status: Status.Pending,
-                dailyTargetDurationInMinutes: 90,
-                remainingDurationInMinutes: 90
+                dailyTargetDurationInMinutes: 90
             );
             
             codingStudy.AddProgress(today.AddDays(-2), 90);
@@ -121,6 +148,7 @@ namespace TodoSystem
             codingStudy.AddProgress(today, 60);
             
             TodoItem drinkWater = new TodoItem(
+                id : Guid.NewGuid().ToString(),
                 name: "물 마시기",
                 description: "오늘 물 8잔 마시기",
                 startDate: today,
@@ -134,6 +162,7 @@ namespace TodoSystem
             drinkWater.MarkAsCompletedOnDate(today);
             
             TodoItem healthCheck = new TodoItem(
+                id : Guid.NewGuid().ToString(),
                 name: "건강 검진 받기",
                 description: "건강 검진 센터 방문",
                 startDate: today.AddDays(2),
@@ -145,6 +174,7 @@ namespace TodoSystem
             );
 
             TodoItem yogaClass = new TodoItem(
+                id : Guid.NewGuid().ToString(),
                 name: "요가 수업",
                 description: "매주 화요일과 목요일에 요가 수업 참석",
                 startDate: today.AddDays(-2),
@@ -154,7 +184,6 @@ namespace TodoSystem
                 recurrence: Recurrence.Weekly,
                 status: Status.Pending,
                 dailyTargetDurationInMinutes: 60,
-                remainingDurationInMinutes: 60,
                 recurrenceDays: new List<DayOfWeek> { DayOfWeek.Tuesday, DayOfWeek.Thursday }
             );
             
@@ -167,6 +196,22 @@ namespace TodoSystem
             };
         }
 
+        /// <summary>
+        /// 주어진 Id로 TodoItem을 검색하는 기능
+        /// </summary>
+        /// <param name="id">검색할 TodoItem의 Id</param>
+        /// <returns>해당 Id를 가진 OnTodoItemLink, 없으면 null</returns>
+        public TodoItem FindTodoItemById(string id)
+        {
+            if (todoDictionary.TryGetValue(id, out TodoItem todoItem))
+            {
+                return todoItem;
+            }
+        
+            DebugEx.LogWarning($"Id {id}로 TodoItem을 찾을 수 없습니다.");
+            return null;
+        }
+        
         #region Save&Load
 
         /// <summary>
@@ -179,7 +224,7 @@ namespace TodoSystem
             string jsonString = JsonUtility.ToJson(wrapper, prettyPrint: true);
             File.WriteAllText(filePath, jsonString);
 
-            Debug.Log($"Todo 리스트가 JSON 파일로 저장되었습니다: {filePath}");
+            DebugEx.Log($"Todo 리스트가 JSON 파일로 저장되었습니다: {filePath}");
         }
 
         /// <summary>
@@ -189,7 +234,7 @@ namespace TodoSystem
         {
             if (!File.Exists(filePath))
             {
-                Debug.LogWarning($"파일이 존재하지 않습니다: {filePath}");
+                DebugEx.LogWarning($"파일이 존재하지 않습니다: {filePath}");
                 return new List<TodoItem>();
             }
 
@@ -198,7 +243,7 @@ namespace TodoSystem
 
             if (wrapper != null && wrapper.TodoItems != null)
             {
-                Debug.Log($"Todo 리스트가 JSON 파일에서 불러와졌습니다: {filePath}");
+                DebugEx.Log($"Todo 리스트가 JSON 파일에서 불러와졌습니다: {filePath}");
 
                 // 로드한 후 내부 데이터 구조 초기화
                 foreach (var todo in wrapper.TodoItems)
@@ -210,15 +255,25 @@ namespace TodoSystem
             }
             else
             {
-                Debug.LogWarning("Todo 리스트를 불러오는 데 실패했습니다.");
+                DebugEx.LogWarning("Todo 리스트를 불러오는 데 실패했습니다.");
                 return new List<TodoItem>();
             }
         }
 
+        public void SaveCurrentTodoList()
+        {
+            SaveTodoListToJson(TodoList, _filePath);
+        }
+
+        public void LoadTodoList()
+        {
+            LoadOrCreateSampleTodoItems();
+        }
+        
         #endregion
 
         /// <summary>
-        /// 특정 날짜에 해당하는 TodoItem 필터링.
+        /// 특정 날짜에 해당하는 OnTodoItemLink 필터링.
         /// </summary>
         public List<TodoItem> FilterTodoItemsForToday(List<TodoItem> todoList, DateTime today)
         {
@@ -234,17 +289,6 @@ namespace TodoSystem
 
             return filteredList;
         }
-
-        /// <summary>
-        /// 매일 새로운 날이 시작될 때 각 Todo 항목의 `RemainingDurationInMinutes`를 초기화합니다.
-        /// </summary>
-        public void UpdateDailyTasks(DateTime currentDate)
-        {
-            foreach (var todoItem in TodoList)
-            {
-                todoItem.UpdateDailyTask(currentDate);
-            }
-        }
         
         #region Add&Delete
 
@@ -253,13 +297,19 @@ namespace TodoSystem
         /// </summary>
         public void AddTodoItem(TodoItem todoItem)
         {
-            TodoList.Add(todoItem);
-            SaveTodoListToJson(TodoList, _filePath);
-            
-            Debug.Log($"새로운 Todo 항목이 생겼습니다. {todoItem}");
-            
-            // 이벤트 호출
-            OnTodoItemAdded?.Invoke(todoItem);
+            if (!todoDictionary.ContainsKey(todoItem.Id))
+            {
+                TodoList.Add(todoItem);
+                todoDictionary[todoItem.Id] = todoItem;
+                SaveTodoListToJson(TodoList, _filePath);
+
+                DebugEx.Log($"새로운 Todo 항목이 생겼습니다. {todoItem}");
+                OnTodoItemAdded?.Invoke(todoItem);
+            }
+            else
+            {
+                DebugEx.LogWarning($"중복된 Id로 TodoItem을 추가할 수 없습니다: {todoItem.Id}");
+            }
         }
 
         /// <summary>
@@ -267,15 +317,17 @@ namespace TodoSystem
         /// </summary>
         public void DeleteTodoItem(TodoItem todoItem)
         {
-            if (TodoList.Contains(todoItem))
+            if (todoDictionary.ContainsKey(todoItem.Id))
             {
-                TodoList.Remove(todoItem);  // TodoItem 삭제
-                SaveTodoListToJson(TodoList, _filePath);  // 리스트 업데이트 후 저장
-                Debug.Log($"{todoItem.Name} 할 일이 삭제되었습니다.");
+                TodoList.Remove(todoItem);
+                todoDictionary.Remove(todoItem.Id);
+                SaveTodoListToJson(TodoList, _filePath);
+
+                DebugEx.Log($"{todoItem.Name} 할 일이 삭제되었습니다.");
             }
             else
             {
-                Debug.LogWarning("삭제하려는 TodoItem을 찾을 수 없습니다.");
+                DebugEx.LogWarning("삭제하려는 TodoItem을 찾을 수 없습니다.");
             }
         }
 

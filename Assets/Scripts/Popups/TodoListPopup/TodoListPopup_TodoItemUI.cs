@@ -20,7 +20,7 @@ public class TodoListPopup_TodoItemUI : MonoBehaviour
     [SerializeField] private GameObject recurrenceWeekly;
 
     private TodoItemUIPool _todoItemUIPool;
-    private TodoItem _todoItem;
+    private TodoItem _todoItem;                         // 실제 OnTodoItemLink 객체 
     
     public void SetUp(TodoItem todoItem, TodoItemUIPool pool)
     {
@@ -75,12 +75,14 @@ public class TodoListPopup_TodoItemUI : MonoBehaviour
     private void Start()
     {
         Button button = GetComponent<Button>();
-        button.onClick.AddListener(ShowTimerPopupForTest);
+        button.onClick.AddListener(ShowTimerPopup);
     }
 
-    public void ShowTimerPopupForTest()
+    public void ShowTimerPopup()
     {
-        PopupManager.Instance.ShowPopup<TimerPopup>();
+        // Todo항목을 짧게 터치하면 타이머에 연결하는 기능 추가 필요
+        TimerManager.Instance.LinkTodoItem(_todoItem);              // 이 ui 요소를 터치하면 TimerManager에 todoItem 객체를 연결시키고
+        PopupManager.Instance.ShowPopup<TimerPopup>();              // TimerPopup을 띄운다
     }
 
     public void ShowDeleteConfirmPopup()
@@ -89,17 +91,25 @@ public class TodoListPopup_TodoItemUI : MonoBehaviour
         PopupManager.Instance.ShowConfirmPopup(
             title: "삭제 확인",
             message: $"'{_todoItem.Name}' 할 일을 삭제하시겠습니까?",
-            onConfirm: DeleteTodoItem
+            confirmAction: DeleteTodoItem
         );
     }
 
     private void DeleteTodoItem()
     {
-        // TodoItem 삭제 로직
+        // OnTodoItemLink 삭제 로직
         TodoManager.Instance.DeleteTodoItem(_todoItem);
         
-        // UI에서 해당 TodoItem 삭제
+        // UI에서 해당 OnTodoItemLink 삭제
         _todoItemUIPool.ReturnTodoItemUI(gameObject);
     }
-    
+
+    /// <summary>
+    /// UI 업데이트
+    /// </summary>
+    public void UpdateProgressUI()
+    {
+        checkMark.enabled = _todoItem.IsTodayTaskCompleted(DateTime.Today);
+        percentageText.text = $"{_todoItem.GetProgressPercentage():F2}%";
+    }
 }
