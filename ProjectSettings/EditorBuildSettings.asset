@@ -6,15 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Timer&TodoTest.unity
+    path: Assets/Scenes/Timer&Todo.unity
     guid: 98581113d504464498b55939ece12999
-  - enabled: 1
-    path: Assets/Scenes/TimerTest.unity
-    guid: d0b75f283afb4d74d82ec449c43ccd4b
-  - enabled: 1
-    path: Assets/Scenes/PopupTest.unity
-    guid: b3f48809d9940e04eae56253456f4c8a
-  - enabled: 1
-    path: Assets/Scenes/Prototype.unity
-    guid: 729228b930199a244928a449a23be1ce
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0
