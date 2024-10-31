@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Cysharp.Threading.Tasks;
 using DataManagement;
 using TodoSystem;
 using UnityEngine;
@@ -139,6 +140,26 @@ public class DebugExController  : MonoBehaviour
                     $"마지막 사이클은 {TimerManager.Instance.lastCycleTime}분 \n" +
                     $"타이머의 남은 초단위 시간은 : {TimerManager.Instance.RemainingTimeInSeconds}\n" +
                     $"타이머와 연동된 Todo항목은 : \n[{TimerManager.Instance.CurrentTodoItem}]\n");
+    }
+
+    public void Add100Gold()
+    {
+        EconomyManager.Instance.AddCoinAsync(100).Forget();
+    }
+    
+    public void Subtract100Gold()
+    {
+        EconomyManager.Instance.SpendCoinAsync(100).Forget();
+    }
+    
+    public void Add100Gem()
+    {
+        EconomyManager.Instance.AddGemAsync(100).Forget();
+    }
+    
+    public void Subtract100Gem()
+    {
+        EconomyManager.Instance.SpendGemAsync(100).Forget();
     }
     
 }

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5463588518681569374}
   - component: {fileID: 935654862178583211}
   - component: {fileID: 1373077938454893883}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ground
   m_TagString: TileMap
   m_Icon: {fileID: 0}
@@ -59,6 +59,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
