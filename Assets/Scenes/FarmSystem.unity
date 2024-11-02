@@ -11942,6 +11942,7 @@ MonoBehaviour:
   OnTimerCompleted:
     m_PersistentCalls:
       m_Calls: []
+  TodoItemInitialized: 0
   focusMinute: 25
   relaxMinute: 5
   remainingCycleCount: 0
@@ -13518,8 +13519,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a40c608b09b5cf42a6f93a2f00b4947, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridX: 25
-  gridZ: 25
+  gridSize: 1
+  gridCountX: 25
+  gridCountZ: 25
 --- !u!1 &1387097470
 GameObject:
   m_ObjectHideFlags: 0
@@ -15330,7 +15332,7 @@ GameObject:
   - component: {fileID: 1635854252}
   - component: {fileID: 1635854251}
   m_Layer: 6
-  m_Name: Quad
+  m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35674,7 +35676,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2123283409
 MonoBehaviour:
   m_ObjectHideFlags: 0

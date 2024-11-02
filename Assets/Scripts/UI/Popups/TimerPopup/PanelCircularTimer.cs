@@ -3,9 +3,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using TMPro;
-using TodoSystem;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using VInspector;
 
@@ -148,7 +146,7 @@ public class PanelCircularTimer : MonoBehaviour
         TrySetTodoItemUI();  // TodoItem UI 설정
         
         // 타이머 상태에 따라 초기화 또는 수복 절차를 진행
-        DebugEx.Log($"TimerManager.Instance.CurrentTimerState {TimerManager.Instance.CurrentTimerState}");
+        DebugEx.Log($"OnEnable : TimerManager.Instance.CurrentTimerState {TimerManager.Instance.CurrentTimerState}");
         switch (TimerManager.Instance.CurrentTimerState)
         {
             case TimerState.Stopped:
@@ -228,6 +226,7 @@ public class PanelCircularTimer : MonoBehaviour
             circularProgressBar.SetTotalTime(TimerManager.Instance.relaxMinute);
             circularProgressBar.ChangeColorRelax();
         }
+        circularProgressBar.Fill();
         
         HidePlayButton();
         ShowPauseAndCancelButton();
@@ -249,7 +248,7 @@ public class PanelCircularTimer : MonoBehaviour
     /// <param name="todoItem"></param>
     public bool TrySetTodoItemUI()
     {
-        if (TimerManager.Instance.CurrentTodoItem is not null)
+        if (TimerManager.Instance.TodoItemInitialized)
         {
             todoItemUI.SetActive(true);
             currentTodoItemName.text = TimerManager.Instance.CurrentTodoItem.Name;
@@ -291,7 +290,7 @@ public class PanelCircularTimer : MonoBehaviour
     private async void ShowFocusMinuteSetter()
     {
         // TodoItem 연동이 안되어있다면 하는 대응
-        if (TimerManager.Instance.CurrentTodoItem == null)
+        if (!TimerManager.Instance.TodoItemInitialized)
         {
             needTodoItemSelect.SetActive(true);
             playButton.interactable = false;
@@ -500,7 +499,6 @@ public class PanelCircularTimer : MonoBehaviour
 
         int focusDurationInSeconds = durationInMinutes * 60;
         TimerManager.Instance.StartTimer(focusDurationInSeconds, SessionType.Focus);
-        circularProgressBar.Fill();
         circularProgressBar.ChangeColorFocus(); // 집중 세션 색상으로 변경
 
         HidePlayButton();               // playButton 숨기기
@@ -563,24 +561,23 @@ public class PanelCircularTimer : MonoBehaviour
         // 현재 세션이 집중 세션이었으면 휴식 세션을 시작, 휴식 세션이었으면 집중 세션을 시작
         if (TimerManager.Instance.CurrentSessionType == SessionType.Focus)
         {
-            if (TimerManager.Instance.remainingCycleCount > 0)      // 남은 사이클이 있을 때
+            if (TimerManager.Instance.remainingCycleCount > 0)
             {
                 TimerManager.Instance.remainingCycleCount--;
                 StartRelaxSession(TimerManager.Instance.relaxMinute);
             }
-            else if (TimerManager.Instance.lastCycleTime > 0)       // 남은 시간이 마지막 사이클을 위한 시간일 때
-            {
-                StartFocusSession(TimerManager.Instance.lastCycleTime);
-                TimerManager.Instance.lastCycleTime = 0;            // 마지막 사이클 이후로 더이상 사이클 없음
-            }
-            else // 모든 세션 종료
+            else // 전체 타이머 끝
             {
                 ResetTimerUI();
+                // TODO : 보상 주는 팝업 띄우기
+                
+                // 오늘 할 일을 다했음!
+                DebugEx.Log($"<color='red'> 오늘 할 일을 다했음! 이제 이 시점에 보상 팝업 띄워주면 됌!</color>");
             }
         }
         else if (TimerManager.Instance.CurrentSessionType == SessionType.Relax)
         {
-            if (TimerManager.Instance.remainingCycleCount > 0)          // 남은 사이클이 있을 때
+            if (TimerManager.Instance.remainingCycleCount > 1)          // 남은 사이클이 있을 때
             {
                 StartFocusSession(TimerManager.Instance.focusMinute);
             }
@@ -588,10 +585,6 @@ public class PanelCircularTimer : MonoBehaviour
             {
                 StartFocusSession(TimerManager.Instance.lastCycleTime);
                 TimerManager.Instance.lastCycleTime = 0;            // 마지막 사이클 이후로 더이상 사이클 없음
-            }
-            else // 모든 세션 종료
-            {
-                ResetTimerUI();
             }
         }
     }
