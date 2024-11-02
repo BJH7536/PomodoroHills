@@ -6,7 +6,6 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 /// <summary>
 /// 사용자의 재화 정보를 로컬 저장소에 저장하고 불러오는 기능을 제공하는 클래스.

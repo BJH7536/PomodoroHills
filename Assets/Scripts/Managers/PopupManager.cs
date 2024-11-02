@@ -38,6 +38,8 @@ public class PopupManager : MonoBehaviour
     private Dictionary<Type, Stack<Popup>> popupPool = new Dictionary<Type, Stack<Popup>>();
 
     [SerializeField] private TranslucentImageSource _translucentImageSource;
+
+    [SerializeField] private PomoPopupImages pomoPopupImages;
     
     /// <summary>
     /// 게임 오브젝트가 활성화될 때 호출됩니다.
@@ -60,7 +62,15 @@ public class PopupManager : MonoBehaviour
         InitializePopupCanvas();
 
         // DOTween 초기화
-        DOTween.Init(true, true, LogBehaviour.ErrorsOnly);
+        DOTween.Init(true, true, LogBehaviour.ErrorsOnly).SetCapacity(200, 50);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.Escape))
+        {
+            HandleBackButton();
+        }
     }
 
     /// <summary>
@@ -157,11 +167,11 @@ public class PopupManager : MonoBehaviour
 
     /// <summary>
     /// 현재 활성화된 팝업을 닫는 메서드입니다.
-    /// 가장 최근에 열린 팝업을 닫고 객체 풀에 반환합니다.
+    /// 가장 최근에 열린 팝업을 닫고 객체 풀에 반환한다.
     /// </summary>
-    public void HidePopup()
+    public bool HidePopup()
     {
-        if (activePopups.Count == 0) return;
+        if (activePopups.Count == 0) return false;      // 열려있는 팝업이 없었기에, 팝업을 끄는 데 실패했다.
 
         Popup popupToClose = activePopups.Pop(); // 활성 팝업 스택에서 팝업을 꺼냄
         popupToClose.OnClose(); // 팝업이 닫힐 때 추가 동작 수행
@@ -174,6 +184,8 @@ public class PopupManager : MonoBehaviour
             popupPool[popupType] = new Stack<Popup>();
         }
         popupPool[popupType].Push(popupToClose); // 팝업을 풀에 추가
+        
+        return true;        // 열려있는 팝업이 있었고, 그래서 팝업을 끌 수 있었다.
     }
 
     public ErrorPopup ShowErrorPopup(string message)
@@ -213,5 +225,15 @@ public class PopupManager : MonoBehaviour
         }
 
         return null;
+    }
+    
+    public void HandleBackButton()
+    {
+        // 팝업을 끄는 데 실패했다면,
+        // 게임 종료를 묻는 팝업이 켜진다.
+        if (!HidePopup())
+        {
+            ShowPopup<QuitGamePopup>(true);
+        }
     }
 }

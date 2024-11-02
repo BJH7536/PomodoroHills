@@ -64,8 +64,7 @@ public class GridManager
         }
         return true; // 모든 격자가 비어 있으면 건물 배치 가능
     }
-
-
+    
     // 해당 격자가 점유되었는지 확인하는 함수
     public bool IsGridOccupied(int x, int z)
     {

@@ -18,12 +18,6 @@ public class SwipeUpUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     [SerializeField] private bool touching = false;               // 터치 중 
     [SerializeField] private bool tweening = false;               // 트위닝 중
     
-    private void Start()
-    {
-        DOTween.Init().SetCapacity(100, 10);
-        
-    }
-    
     public void OnPointerDown(PointerEventData eventData)
     {
         touching = true;

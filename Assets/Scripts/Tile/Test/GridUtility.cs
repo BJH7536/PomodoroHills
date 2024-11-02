@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public static class Utility
+public static class GridUtility
 {
     // 월드 좌표를 격자에 맞추는 함수
     public static Vector3 SnapToGrid(Vector3 position, float gridSize)

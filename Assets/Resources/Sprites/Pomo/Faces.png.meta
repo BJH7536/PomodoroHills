@@ -1,0 +1,525 @@
+fileFormatVersion: 2
+guid: ed0f2950915e9fe45942ff3fb316ce19
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: grinning
+      rect:
+        serializedVersion: 2
+        x: 1206
+        y: 2167
+        width: 804
+        height: 714
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7b491ea657c44bb47a8b5baa0b5287e2
+      internalID: 1356400445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: crying
+      rect:
+        serializedVersion: 2
+        x: 2195
+        y: 2167
+        width: 804
+        height: 714
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9f528ecfc9e0c064687bc05c521f253d
+      internalID: -966158174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shocked
+      rect:
+        serializedVersion: 2
+        x: 3146
+        y: 2161
+        width: 804
+        height: 714
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c03a86443c2c6a24da6e94c92ce49102
+      internalID: -1234615516
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: relaxed
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 2167
+        width: 804
+        height: 714
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bed171ba12b88fb44ab28e597561d8be
+      internalID: -663521667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smile
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 1292
+        width: 804
+        height: 714
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 279a39369b99d5642819c41be4a54b05
+      internalID: 1107105567
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bored
+      rect:
+        serializedVersion: 2
+        x: 1206
+        y: 1287
+        width: 804
+        height: 714
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c05da4831b2d1a4ebbbed73e99605a1
+      internalID: -1948155169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sad
+      rect:
+        serializedVersion: 2
+        x: 2195
+        y: 1287
+        width: 804
+        height: 714
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 06eddf22746b0214d9ad6fa124124b55
+      internalID: -169749652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mad
+      rect:
+        serializedVersion: 2
+        x: 3146
+        y: 1287
+        width: 804
+        height: 714
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 178429dbd88a84e43b841ea09b99d0e1
+      internalID: 887861086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 88fe5e9b9c8d422489fbfddc63b6a1ba
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      4_0: -1315841878
+      4_1: -284756080
+      4_10: 1773837911
+      4_100: -1768010135
+      4_101: 188682689
+      4_102: 1576972700
+      4_103: 9805918
+      4_104: -951000494
+      4_105: -453594337
+      4_106: -2029196363
+      4_107: -377358876
+      4_108: -1888282234
+      4_109: -309336802
+      4_11: 466668234
+      4_110: 901345436
+      4_111: -1313554423
+      4_112: -2080796184
+      4_113: 1884030813
+      4_114: -939863615
+      4_115: 735020903
+      4_116: -1660114719
+      4_117: -851527830
+      4_118: -1001935498
+      4_119: 241432615
+      4_12: 890981240
+      4_120: 1494478004
+      4_121: 1107900192
+      4_122: 1297057797
+      4_123: -831586307
+      4_124: 2139571948
+      4_125: -578176334
+      4_126: -1976030877
+      4_127: 247485590
+      4_128: -858852554
+      4_129: -719532583
+      4_13: 1512831928
+      4_130: 583347196
+      4_131: 382347898
+      4_132: 1983978712
+      4_133: 934920080
+      4_134: 609406060
+      4_135: 1794666911
+      4_136: 496635325
+      4_137: 1624045014
+      4_138: 783695619
+      4_139: -473345591
+      4_14: 484193254
+      4_140: -1263413466
+      4_142: 771039836
+      4_144: 1168572140
+      4_145: 2026421381
+      4_146: 160080249
+      4_148: 1415176935
+      4_149: -1853006847
+      4_15: -1696640217
+      4_150: -299031185
+      4_152: -190767037
+      4_153: -1906432061
+      4_154: 1597881471
+      4_155: -1642518929
+      4_156: 1090120848
+      4_157: -1304523616
+      4_158: -1157860884
+      4_159: -637742324
+      4_16: -1332676417
+      4_160: 1424183459
+      4_161: -1013656665
+      4_162: -1703141411
+      4_163: -1535521235
+      4_164: -378524238
+      4_165: 1512706548
+      4_166: -1050212093
+      4_167: -245633035
+      4_168: 1141120062
+      4_169: 779001111
+      4_17: 1779730447
+      4_170: 194780369
+      4_171: 1240865482
+      4_172: 188191885
+      4_173: 785652626
+      4_174: 1759922243
+      4_175: -602246440
+      4_176: 1902517245
+      4_177: -299568294
+      4_178: -1741952852
+      4_179: 2119921504
+      4_18: 1312521917
+      4_180: -1986769529
+      4_181: 1867333211
+      4_182: -1104466603
+      4_183: -1064842381
+      4_184: -633574561
+      4_185: -1409266269
+      4_186: -751229859
+      4_187: 151424865
+      4_188: 103677641
+      4_189: -1481361132
+      4_19: 1492028385
+      4_190: 1033625020
+      4_191: 1397447210
+      4_192: -1065663619
+      4_193: 981314833
+      4_194: 768883396
+      4_195: -278718133
+      4_196: -776258169
+      4_197: -808872053
+      4_198: 1814041822
+      4_199: -1406489777
+      4_2: -1149686110
+      4_20: 512372259
+      4_200: 793509910
+      4_201: 781795605
+      4_202: -1037176742
+      4_203: 573676801
+      4_204: 646482562
+      4_205: 2137266792
+      4_21: 511976924
+      4_22: -2033362122
+      4_23: -2065014821
+      4_24: 248014312
+      4_25: 1365003422
+      4_26: -1226618798
+      4_27: -1180844234
+      4_28: -2138966791
+      4_29: -108034769
+      4_3: -2068978237
+      4_30: -636104072
+      4_31: -2095738246
+      4_32: -1819545713
+      4_33: -1638648227
+      4_34: 1908060712
+      4_35: -548326010
+      4_36: 1896095630
+      4_37: -788452840
+      4_38: 721753996
+      4_39: -338884628
+      4_4: 1021373386
+      4_40: 1097488731
+      4_41: 857719542
+      4_43: 1877649508
+      4_44: 495486208
+      4_45: 1972973923
+      4_47: 42339680
+      4_48: 45996065
+      4_49: -883066856
+      4_5: 1936504478
+      4_50: 1179967177
+      4_52: -799096701
+      4_54: -313127890
+      4_55: 2134574778
+      4_56: 1284097851
+      4_57: 2025386097
+      4_58: -940104646
+      4_59: -690642388
+      4_6: -260820487
+      4_60: 1538280116
+      4_61: -557609215
+      4_62: 197434764
+      4_63: -1463913621
+      4_64: -872437742
+      4_65: -845966430
+      4_66: 148950906
+      4_67: 990668436
+      4_68: 702541836
+      4_69: 1301532487
+      4_7: -525204905
+      4_70: 1339194092
+      4_71: 556263026
+      4_72: -1516432437
+      4_73: -1504523195
+      4_74: -1487851064
+      4_75: -6395637
+      4_76: 1124064912
+      4_77: 1656901310
+      4_78: -2119226744
+      4_79: -1780656668
+      4_8: 262224944
+      4_80: -1258780811
+      4_81: 1101581946
+      4_82: 403716160
+      4_83: -350302898
+      4_84: 1217052414
+      4_85: 1320595649
+      4_86: 1875800618
+      4_87: 1759990800
+      4_88: 1161216295
+      4_89: -1677772330
+      4_9: 1516412029
+      4_90: 1568596416
+      4_91: -524778916
+      4_92: -1139539650
+      4_93: 598127986
+      4_94: 1674758175
+      4_95: 162443000
+      4_96: 1032436306
+      4_97: 238749964
+      4_98: 1298263771
+      4_99: 1176530056
+      bored: -1948155169
+      crying: -966158174
+      grinning: 1356400445
+      mad: 887861086
+      relaxed: -663521667
+      sad: -169749652
+      shocked: -1234615516
+      smile: 1107105567
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

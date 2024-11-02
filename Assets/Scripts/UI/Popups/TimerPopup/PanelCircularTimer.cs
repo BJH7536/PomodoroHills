@@ -36,6 +36,8 @@ public class PanelCircularTimer : MonoBehaviour
     
     [SerializeField] private TMP_Text sessionText;
 
+    [SerializeField] private GameObject needTodoItemSelect;
+    
     [Tab("TodoItemUI")] 
     [SerializeField] private GameObject todoItemUI;
     [SerializeField] private TMP_Text currentTodoItemName;
@@ -165,6 +167,11 @@ public class PanelCircularTimer : MonoBehaviour
                 PrepareNextSession();       // 완료된 상태일 때 다음 세션 준비
                 break;
         }
+
+        if (TimerManager.Instance.CurrentTimerState == TimerState.Running)
+        {
+            sessionText.gameObject.SetActive(true);
+        }
     }
 
     private void OnTimerStateChanged(TimerState newState)
@@ -228,20 +235,10 @@ public class PanelCircularTimer : MonoBehaviour
     }
 
     /// <summary>
-    /// 다음 세션을 준비하는 절차를 수행합니다.
+    /// 다음 세션을 준비하는 절차를 수행.
     /// </summary>
     private void PrepareNextSession()
     {
-        // DebugEx.Log("<color='blue'>다음 세션 준비 절차 시작</color>");
-        // if (TimerManager.Instance.CurrentSessionType == SessionType.Focus)
-        // {
-        //     PrepareRelaxSession(relaxMinute);
-        // }
-        // else if (TimerManager.Instance.CurrentSessionType == SessionType.Relax)
-        // {
-        //     PrepareFocusSession(relaxMinute);
-        // }
-        
         TimerManager.Instance.PrepareNextSession(this);
     }
     
@@ -279,6 +276,12 @@ public class PanelCircularTimer : MonoBehaviour
         currentTodoItemName.text = string.Empty;
         currentTodoItemDescription.text = string.Empty;
     }
+
+    public void CloseAndOpenTodoListPopup()
+    {
+        PopupManager.Instance.HidePopup();
+        PopupManager.Instance.ShowPopup<TodoListPopup>();
+    }
     
     #region SettingsProcedures
 
@@ -287,6 +290,17 @@ public class PanelCircularTimer : MonoBehaviour
     /// </summary>
     private async void ShowFocusMinuteSetter()
     {
+        // TodoItem 연동이 안되어있다면 하는 대응
+        if (TimerManager.Instance.CurrentTodoItem == null)
+        {
+            needTodoItemSelect.SetActive(true);
+            playButton.interactable = false;
+            return;
+        }
+
+        needTodoItemSelect.SetActive(false);
+        playButton.interactable = true;
+        
         // 어지간한 UI는 다 꺼지도록
         sessionText.gameObject.SetActive(false);
         currentSessionTimerText.gameObject.SetActive(false);
@@ -348,8 +362,9 @@ public class PanelCircularTimer : MonoBehaviour
             
             // 사이클 계산해서 보여주기
             int remainingTimeOfToday = TimerManager.Instance.CurrentTodoItem.GetRemainingTimeOfToday(); // 남은 시간을 분 단위로 변환
-            TimerManager.Instance.remainingCycleCount = remainingTimeOfToday / TimerManager.Instance.focusMinute;
             TimerManager.Instance.lastCycleTime = remainingTimeOfToday % TimerManager.Instance.focusMinute;
+            TimerManager.Instance.remainingCycleCount = remainingTimeOfToday / TimerManager.Instance.focusMinute +
+                                                        ((TimerManager.Instance.lastCycleTime > 0) ? 1 : 0);
 
             message += "\n<color=yellow><size=80%>";
             message += $"오늘 할 남은 시간: {remainingTimeOfToday}분\n";
@@ -479,7 +494,7 @@ public class PanelCircularTimer : MonoBehaviour
     /// </summary>
     private void StartFocusSession(int durationInMinutes)
     {
-        DebugEx.Log($"<color='Red'>Start Focus Session!!! Duration: {durationInMinutes} minutes</color>");
+        DebugEx.Log($"<color='Red'>Start Focus Session : Duration: {durationInMinutes} minutes</color>");
 
         sessionText.gameObject.SetActive(true);
 
@@ -502,7 +517,7 @@ public class PanelCircularTimer : MonoBehaviour
     /// </summary>
     private void StartRelaxSession(int durationInMinutes)
     {
-        DebugEx.Log($"<color='Green'>Start Relax Session!!! Duration: {durationInMinutes} minutes</color>");
+        DebugEx.Log($"<color='Green'>Start Relax Session : Duration: {durationInMinutes} minutes</color>");
 
         sessionText.gameObject.SetActive(true);
 

@@ -52,7 +52,7 @@ public class BuildingManager : MonoBehaviour
         if (Physics.Raycast(ray, out var hit, Mathf.Infinity, LayerMask.GetMask("Ground")))
         {
             // 지면 위에 마우스가 있을 때만 미리보기 표시
-            Vector3 placementPosition = Utility.SnapToGrid(hit.point, gridSize);
+            Vector3 placementPosition = GridUtility.SnapToGrid(hit.point, gridSize);
             previewBuilding.SetActive(true); // 미리보기 건물을 활성화
             previewBuilding.transform.position = placementPosition;
 
@@ -72,7 +72,7 @@ public class BuildingManager : MonoBehaviour
 
         if (Physics.Raycast(ray, out var hit))
         {
-            Vector3 placementPosition = Utility.SnapToGrid(hit.point, gridSize);
+            Vector3 placementPosition = GridUtility.SnapToGrid(hit.point, gridSize);
             
             // 충돌 확인 후 건물 배치
             if (gridManager.CanPlaceBuilding(placementPosition, buildingPrefab))

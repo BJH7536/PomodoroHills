@@ -823,6 +823,15 @@ MonoBehaviour:
     - f77bb98c35715f12c51a3ad1f5785b2e
     - 69e85dbb9f18e409dd9d32a587bc4df5
     - ec5056f27b822ea169ef39cd96f2395b
+    - 1d4cfc07e8b81a929e21c7a84fecef20
+    - 141bdc1305a49520cf9ab6371a53e658
+    - 403554f1552b5203f8fcc83b19513ebd
+    - 955b8725a93376c37a2b28a74acc163d
+    - f0baf93c0cb8ab4b76120e1c82848d36
+    - 224bd92df889cc24aa87967ea2377804
+    - c8d0d5277be85b34fa2c81df0fd8d32c
+    - e769d736fdb09c94bbec3f783041e83d
+    - 41f001283593d1243a60ca3e1dc3d587
     values:
     - guid: 00000000000000001000000000000000
       iColor: 0
@@ -928,7 +937,7 @@ MonoBehaviour:
       iColor: 0
       autoIcon: 
       customIcon: 
-      autoIconDirty: 0
+      autoIconDirty: 1
     - guid: 0e0162ac614514845a377dee6a21ab99
       iColor: 0
       autoIcon: 
@@ -4867,5 +4876,50 @@ MonoBehaviour:
     - guid: ec5056f27b822ea169ef39cd96f2395b
       iColor: 0
       autoIcon: 
+      customIcon: 
+      autoIconDirty: 0
+    - guid: 1d4cfc07e8b81a929e21c7a84fecef20
+      iColor: 0
+      autoIcon: 
+      customIcon: 
+      autoIconDirty: 0
+    - guid: 141bdc1305a49520cf9ab6371a53e658
+      iColor: 0
+      autoIcon: 
+      customIcon: 
+      autoIconDirty: 0
+    - guid: 403554f1552b5203f8fcc83b19513ebd
+      iColor: 0
+      autoIcon: 
+      customIcon: 
+      autoIconDirty: 0
+    - guid: 955b8725a93376c37a2b28a74acc163d
+      iColor: 0
+      autoIcon: 
+      customIcon: 
+      autoIconDirty: 0
+    - guid: f0baf93c0cb8ab4b76120e1c82848d36
+      iColor: 0
+      autoIcon: 
+      customIcon: 
+      autoIconDirty: 0
+    - guid: 224bd92df889cc24aa87967ea2377804
+      iColor: 0
+      autoIcon: 
+      customIcon: 
+      autoIconDirty: 0
+    - guid: c8d0d5277be85b34fa2c81df0fd8d32c
+      iColor: 0
+      autoIcon: 
+      customIcon: 
+      autoIconDirty: 0
+    - guid: e769d736fdb09c94bbec3f783041e83d
+      iColor: 0
+      autoIcon: 
+      customIcon: 
+      autoIconDirty: 0
+    - guid: 41f001283593d1243a60ca3e1dc3d587
+      iColor: 0
+      autoIcon: ScriptableObject Icon
       customIcon: 
       autoIconDirty: 0

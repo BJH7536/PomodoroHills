@@ -161,5 +161,9 @@ public class DebugExController  : MonoBehaviour
     {
         EconomyManager.Instance.SpendGemAsync(100).Forget();
     }
-    
+
+    public void AndroidBackButton()
+    {
+        PopupManager.Instance.HandleBackButton();
+    }
 }

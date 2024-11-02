@@ -1,10 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Unity.Burst.CompilerServices;
-using Unity.VisualScripting;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 //<미해결>
 //이동편집모드 진입시 편집모드관련 UI가 사라질 필요가 있음
@@ -18,22 +14,21 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
 {
     public EventSystem eventSystem;
 
-    public GameObject TileMapMainOptionUI; //ModeOptionUI,EditOptionUI 그룹
-        public GameObject ModeOptionUI; // edit, minimizeUI 버튼 그룹
-        public GameObject EditOptionUI; // moveEdit, chest 버튼 그룹
-    public GameObject selectOptionUI; //Move(시작), Pack 버튼 그룹
-    public GameObject MoveOptionUI; // confirm, rotate, cancle 버튼 그룹
-    public GameObject PlaceableChestUI; //placeableChest(보관함) UI 그룹
+    public GameObject TileMapMainOptionUI;      //ModeOptionUI,EditOptionUI 그룹
+    public GameObject ModeOptionUI;             // edit, minimizeUI 버튼 그룹
+    public GameObject EditOptionUI;             // moveEdit, chest 버튼 그룹
+    public GameObject selectOptionUI;           //Move(시작), Pack 버튼 그룹
+    public GameObject MoveOptionUI;             // confirm, rotate, cancle 버튼 그룹
+    public GameObject PlaceableChestUI;         //placeableChest(보관함) UI 그룹
 
-    private bool isDrag;                //드래그 상태를 확인하는데 사용합니다.
-    private Vector3 mouseDownPosition;  //클릭 된 위치를 기억합니다. (입력작업 관련 메소드 내 중복 시 삭제)
+    private bool isDrag;                        //드래그 상태를 확인하는데 사용합니다.
+    private Vector3 mouseDownPosition;          //클릭 된 위치를 기억합니다. (입력작업 관련 메소드 내 중복 시 삭제)
     private Vector3 startClickPosition;
     private float dragSpeed = 0.1f;
     public float dragThreshold = 0.5f;
     private float clickCheckTime = 0.5f;
     public float clickStartTime = 0f;
 
-    // Update is called once per frame
     void Update()
     {
         InputMouse();
@@ -42,8 +37,7 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
             PlaceableManager.Instance.ChangePlaceableColor();
         }
     }
-
-
+    
     void InputMouse()
     {
         if (!PlaceableManager.Instance.isChestEdit)
@@ -79,8 +73,6 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
                 }
             }
         }
-
-
     }
 
     void OnClick()
@@ -121,10 +113,7 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
             }
         }
     }
-
-
-
-
+    
     void MovePlaceable()   // 선택한 오브젝트를 이동할때 선택된 오브젝트와 그 아래 그리드맵을 향해서만 클릭등의 입력을 받도록 제한하여 구현합니다. 이때 클릭이 UI의 영향을 받는 것을 고려합니다.
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -156,25 +145,7 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
             }
         }
     }
-
-    /*
-    public void RotatePlaceable()       //현재 SelectedPlaceable을 회전 (이관예정)
-    {
-        if (PlaceableManager.Instance.selectedPlaceable.TryGetComponent<Placeable>(out Placeable selectedPlaceable))
-        {
-            selectedPlaceable.rotation++;
-            if (selectedPlaceable.rotation > 3) selectedPlaceable.rotation = 0;
-            //오브젝트 회전을 placeable 스크립트 rotation*90으로 변경
-            PlaceableManager.Instance.selectedPlaceable.transform.rotation = Quaternion.Euler(0f,selectedPlaceable.rotation*90f,0f);
-        }
-        else
-        {
-            Debug.Log("There is no selectedPlaceable");
-        }
-    }*/
-
-
-
+    
     private bool IsMouseOnUI()      //마우스가 UI 위에 있는지 검증합니다. 오브젝트 조작과 UI 조작이 겹칠 경우의 조작을 유효하게 하기 위한 절차입니다.
     {
         PointerEventData pointerEventData = new PointerEventData(eventSystem)
@@ -215,7 +186,6 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
         {
             LoseSelectedPlaceable();
         }
-
     }
     
     public void UnpackPlaceable(int itemcode)   //PlacealbeChest로부터 오브젝트를 꺼내 타일맵에 오브젝트 배치

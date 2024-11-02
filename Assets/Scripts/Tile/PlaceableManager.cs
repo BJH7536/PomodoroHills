@@ -50,27 +50,13 @@ public class PlaceableManager : MonoBehaviour
     }
     void Start()
     {
-        PlaceTest(0, new Vector2Int(2, 2), 0);
-        PlaceTest(1, new Vector2Int(1, 2), 3);
-        PlaceTest(1, new Vector2Int(2, 1), 2);
-        PlaceTest(1, new Vector2Int(2, 3), 0);
-        PlaceTest(1, new Vector2Int(3, 2), 1);
-
-        /*foreach (var kvp in TileMapManager.Instance.tileMap)
-        {
-            Vector2Int key = kvp.Key;
-            TileMapManager.Instance.tileMap.TryGetValue(key, out Tile val);
-            string value = val.isOccupied.ToString();
-            DebugEx.Log($"Key: ({key.x}, {key.y}), Value: {value}");
-        }*/
-
+        Place(0, new Vector2Int(0, 0), 0);
+        Place(1, new Vector2Int(1, 2), 3);
+        Place(1, new Vector2Int(2, 1), 2);
+        Place(1, new Vector2Int(2, 3), 0);
+        Place(1, new Vector2Int(3, 2), 1);
     }
-
-    void Update()
-    {
-    }
-
-
+    
     void LoadSavedPlaceable()
     {
         //리스트불러오기
@@ -87,15 +73,14 @@ public class PlaceableManager : MonoBehaviour
 
     }
 
-    private void PlaceTest(int index, Vector2Int position, int rotation)
+    private void Place(int index, Vector2Int position, int rotation)
     {
-
         itemDB.itemTable.TryGetValue(index, out GameObject obj);
         Placeable placeable = obj.GetComponent<Placeable>();
-        PlacePlaceableTest(obj, placeable.size, position, rotation);
+        PlacePlaceable(obj, placeable.size, position, rotation);
     }
 
-    private void PlacePlaceableTest(GameObject Prefab, Vector2Int size, Vector2Int position, int rotation)
+    private void PlacePlaceable(GameObject Prefab, Vector2Int size, Vector2Int position, int rotation)
     {
         if (TileMapManager.Instance != null)
         {
@@ -118,8 +103,8 @@ public class PlaceableManager : MonoBehaviour
             }
         }
     }
+    
     //상기 두 메소드는 테스트용으로 작성된 코드임
-    //
     // 후술할 코드 목적 : 생성, 선택 등 의 분리
     
     public GameObject CreatePlaceable(int placeableCode) // 테이블에서 Placeable프리팹을 찾아서 생성
@@ -133,6 +118,11 @@ public class PlaceableManager : MonoBehaviour
         return null;
     }
 
+    /// <summary>
+    /// 인벤토리랑 연동 (인벤토리 내 수량검증, 인벤토리 내 수량 감소 및 오브젝트 배치) 과정 구현 필요
+    /// </summary>
+    /// <param name="placeableCode"></param>
+    /// <returns></returns>
     public bool UnpackPlaceable(int placeableCode)   //인벤토리에서 배치요소를 꺼내는 메소드     //Gameobject 반환하도록 수정 초기 저장된 배치 불러오기와 통합 (미완성)
     {
         OnIsNewEdit();
@@ -140,8 +130,7 @@ public class PlaceableManager : MonoBehaviour
         selectedPlaceable = CreatePlaceable(placeableCode);
         if (selectedPlaceable != null)
         {
-            Vector2Int position 
-                = new Vector2Int(TileMapManager.Instance.gridX/2, TileMapManager.Instance.gridZ/2);
+            Vector2Int position = new Vector2Int(TileMapManager.Instance.gridCountX/2, TileMapManager.Instance.gridCountZ/2);
             Placeable placeable = selectedPlaceable.GetComponent<Placeable>();
             placeable.position = position;
             selectedPlaceable.transform.position = new Vector3(position.x, 0f,position.y) ;
@@ -154,9 +143,12 @@ public class PlaceableManager : MonoBehaviour
             DebugEx.Log("Unpack failed");
             return false;
         }
-
     }
 
+    /// <summary>
+    /// Placeable을 재포장(Pack)했을때 인벤토리에 수량을 늘려야함
+    /// </summary>
+    /// <returns></returns>
     public bool PackPlaceable()
     {
         if (selectedPlaceable != null)
@@ -187,6 +179,10 @@ public class PlaceableManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// UnpackPlaceable에서 Unpack과정을 수행할때, 인벤토리의 수량 감소 시점을 Unpack Placeable에 둘지, ComfirmEdit에 둘지 문제로 (미완성)이라고 표기
+    /// </summary>
+    /// <returns></returns>
     public bool ConfirmEdit()   //(미완성)
     {
         if (selectedPlaceable.TryGetComponent<Placeable>(out Placeable placeable))
@@ -234,8 +230,10 @@ public class PlaceableManager : MonoBehaviour
             DebugEx.Log("oldob");
         }
     }
-
-
+    
+    /// <summary>
+    /// DeletePlaceObject가 디버그용 빼고 쓸 이유가 없음, 아래 PackPlaceable이 실제로 사용되는 Placeable 삭제 기능 
+    /// </summary>
     void DeletePlaceableObject()//미완성
     {
         if (selectedPlaceable != null)
@@ -251,9 +249,7 @@ public class PlaceableManager : MonoBehaviour
             //PackObject로 기능 이관 후 디버그용으로 유지
         }
     }
-
-
-
+    
     //IsEdit이 true인 상태에서 타일맵 위의 Placeable을 클릭하면 주위로 UI가 활성화 되고 드래그하여 움직일 수 있다.
     //이때 확인, 회전, 보관(삭제)와 관련된 UI(버튼) 띄운다.
     public void OnIsEdit() { isEdit = true; }
@@ -281,8 +277,10 @@ public class PlaceableManager : MonoBehaviour
             isMoveEdit = true;
         }
     }
-
-    //
+    
+    /// <summary>
+    /// Color 변경 문제로 미완성, 나머지 이유는 뭐임?
+    /// </summary>
     public void OffIsMoveEdit() // 세분화(confirm, cancle 버튼 모두 이 메소드 사용중)(미완성)
     {                           // ConfirmEdit, CancleEdit,  해당 메소드가 제일 하위에 위치하도록 변경
 
@@ -290,15 +288,13 @@ public class PlaceableManager : MonoBehaviour
         EndColor();
         ResetLastLocation();
     }
-
-
-
     
     public void StartColor()    //(미사용)
     {
         //Renderer renderer = selectedPlaceable.GetComponent<Renderer>();
         //OriginColor = renderer.material.color;
     }
+    
     public void ChangePlaceableColor()  //배치가능,불가능 여부를 녹/적색으로 나타내기 위한 코드입니다. 컬러값이 따로 지정된 마테리얼을 사용하는 경우 StartColor()에서 기존 색을 저장해야 합니다.
     {
         if (selectedPlaceable != null)
@@ -337,11 +333,7 @@ public class PlaceableManager : MonoBehaviour
             }
         }
     }
-
-
-
-
-
+    
     private void ResetLastLocation()        //좌표 초기화
     {
         lastPosition = new Vector2Int(-1, -1);
