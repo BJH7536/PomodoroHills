@@ -5,8 +5,8 @@ using VInspector;
 public class CircularProgressBar : MonoBehaviour
 {
 	#region Fields
-
-	[Range(0,100)]
+	
+	[SerializeField]
 	public float Percentage = 0;
 
 	[SerializeField]
@@ -23,7 +23,7 @@ public class CircularProgressBar : MonoBehaviour
 	[SerializeField] private Color runningRelax;
 	[SerializeField] private Color paused;
 	
-	private int totalTimeInSeconds; // 전체 시간을 초 단위로 저장
+	[SerializeField] private int totalTimeInSeconds; // 전체 시간을 초 단위로 저장
 
 	#endregion
 	
@@ -79,6 +79,7 @@ public class CircularProgressBar : MonoBehaviour
 
 	private void UpdateProgress(float value)
 	{
+		Percentage = value;
 		float fillAmount = (value / 100.0f);
 		progressImage.fillAmount = fillAmount;
 		float angle = fillAmount * 360.0f;
@@ -93,6 +94,6 @@ public class CircularProgressBar : MonoBehaviour
 
 	public void Fill()
 	{
-		UpdateProgress(100);
+		UpdateByRemainingTime(totalTimeInSeconds);
 	}
 }

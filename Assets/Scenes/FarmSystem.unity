@@ -509,7 +509,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 1
   m_UpdateRectTransformForStandalone: 1
   m_SortingLayerID: 0
-  m_SortingOrder: 1000
+  m_SortingOrder: 32767
   m_TargetDisplay: 0
 --- !u!1 &31230595
 GameObject:
@@ -2972,7 +2972,7 @@ MonoBehaviour:
   _spread: 0
   _spreadLoop: 1
   _startDelay: 0
-  _radius: 140
+  _radius: 50
   _width: 280
   _height: 320
   _angle: 45
@@ -4116,7 +4116,7 @@ MonoBehaviour:
   _rateOverDistance: 0
   _bursts:
   - time: 0
-    count: 25
+    count: 9
     used: 0
   _particleTrailRenderer: {fileID: 0}
   _trailModule:
@@ -4324,7 +4324,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   moduleEmitterFoldout: 1
-  moduleParticleFoldout: 0
+  moduleParticleFoldout: 1
   moduleMovementFoldout: 1
   moduleEventsFoldout: 1
   moduleAdvancedFoldout: 1
@@ -5769,7 +5769,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1.5, y: 0.0058898926}
+  m_AnchoredPosition: {x: -1.5, y: 0.00024414062}
   m_SizeDelta: {x: 0, y: 250}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &528497780
@@ -5830,7 +5830,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &554524639
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11939,9 +11939,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a534a918ddbd844690ae36321f2ebe1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnTimerCompleted:
+  OnSessionCompleted:
     m_PersistentCalls:
       m_Calls: []
+  OnPpomodoroCompleted:
+    m_PersistentCalls:
+      m_Calls: []
+  PrevTimerState: 0
+  _currentTimerState: 0
   TodoItemInitialized: 0
   focusMinute: 25
   relaxMinute: 5
@@ -12611,6 +12616,7 @@ GameObject:
   - component: {fileID: 1305142105}
   - component: {fileID: 1305142109}
   - component: {fileID: 1305142110}
+  - component: {fileID: 1305142111}
   m_Layer: 6
   m_Name: Pomo
   m_TagString: Untagged
@@ -12658,7 +12664,7 @@ Transform:
   m_GameObject: {fileID: 1305142104}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -12699,6 +12705,28 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!195 &1305142111
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1305142104}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 1
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &1329429917
 GameObject:
   m_ObjectHideFlags: 0
@@ -15262,7 +15290,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1631976248}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
@@ -15331,6 +15359,7 @@ GameObject:
   - component: {fileID: 1635854253}
   - component: {fileID: 1635854252}
   - component: {fileID: 1635854251}
+  - component: {fileID: 1635854254}
   m_Layer: 6
   m_Name: Ground
   m_TagString: Untagged
@@ -15428,6 +15457,38 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1635854249}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1635854254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1635854249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: 9a3abaee25e7c6d4499034b72d32daec, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1 &1643856644
 GameObject:
   m_ObjectHideFlags: 0
@@ -33486,6 +33547,7 @@ GameObject:
   - component: {fileID: 1874377793}
   - component: {fileID: 1874377795}
   - component: {fileID: 1874377794}
+  - component: {fileID: 1874377796}
   m_Layer: 5
   m_Name: Background-Container
   m_TagString: Untagged
@@ -33550,6 +33612,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1874377792}
   m_CullTransparentMesh: 1
+--- !u!114 &1874377796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874377792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 675024213d3ca44038e1471b22348c0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Color1: {r: 1, g: 0.8713387, b: 0.6839622, a: 1}
+  Color2: {r: 1, g: 1, b: 1, a: 1}
+  Angle: -180
 --- !u!1 &1880502959
 GameObject:
   m_ObjectHideFlags: 0
@@ -33696,7 +33773,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Bae Junghoon
+  m_text: Mr.GosunJo
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5226ce3fb4de72949aa3b66daf1b7fa8, type: 2}
   m_sharedMaterial: {fileID: -1502461155355865226, guid: 5226ce3fb4de72949aa3b66daf1b7fa8,
@@ -35601,7 +35678,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 932359396}
   m_HandleRect: {fileID: 932359395}
   m_Direction: 2
-  m_Value: 0.99997705
+  m_Value: 1.0000001
   m_Size: 0.49999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -35986,7 +36063,7 @@ MonoBehaviour:
   _spread: 0
   _spreadLoop: 1
   _startDelay: 0
-  _radius: 140
+  _radius: 50
   _width: 280
   _height: 320
   _angle: 45
@@ -37130,7 +37207,7 @@ MonoBehaviour:
   _rateOverDistance: 0
   _bursts:
   - time: 0
-    count: 10
+    count: 30
     used: 0
   _particleTrailRenderer: {fileID: 0}
   _trailModule:

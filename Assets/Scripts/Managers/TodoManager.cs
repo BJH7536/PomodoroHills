@@ -145,7 +145,7 @@ namespace TodoSystem
             
             codingStudy.AddProgress(today.AddDays(-2), 90);
             codingStudy.AddProgress(today.AddDays(-1), 45);
-            codingStudy.AddProgress(today, 87);
+            codingStudy.AddProgress(today, 89);
             
             TodoItem drinkWater = new TodoItem(
                 id : Guid.NewGuid().ToString(),

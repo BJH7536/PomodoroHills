@@ -156,7 +156,7 @@ public class EconomyManager : MonoBehaviour
             return;
         }
 
-        attractorBurstCoin.SetBurst(0, 0, (int)(amount / 10));
+        attractorBurstCoin.SetBurst(0, 0, (int)(amount / 300));
         attractorBurstCoin.Play();
         coinAnimationStartTime = Time.time;
         

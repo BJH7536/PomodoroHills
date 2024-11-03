@@ -105,12 +105,6 @@ public class PanelCircularTimer : MonoBehaviour
             
             // 버튼 UI 변화
             pauseOrResumeButton.ShowPauseButton();
-
-            // 원형 진행도 UI 색 변화
-            if (TimerManager.Instance.CurrentSessionType == SessionType.Focus)
-                circularProgressBar.ChangeColorFocus();
-            else if (TimerManager.Instance.CurrentSessionType == SessionType.Relax)
-                circularProgressBar.ChangeColorRelax();
         });
         
         // 정지 버튼 - 확인 절차 거치기 
@@ -129,16 +123,14 @@ public class PanelCircularTimer : MonoBehaviour
                 }
             );
         });
-    }
-    
-    private void Start()
-    {
+
         // TimerManager OnTimeUpdated 이벤트 연결
         TimerManager.Instance.OnTimeUpdated += UpdateTimeDisplay;
-        TimerManager.Instance.OnTimerCompleted.AddListener(OnTimerCompleted);
         
         // 타이머 상태 변경 시 호출될 메서드 등록
         TimerManager.Instance.OnTimerStateChanged += OnTimerStateChanged;  
+        
+        TimerManager.Instance.OnSessionCompleted.AddListener(WhenSessionCompleted);
     }
     
     private void OnEnable()
@@ -146,52 +138,64 @@ public class PanelCircularTimer : MonoBehaviour
         TrySetTodoItemUI();  // TodoItem UI 설정
         
         // 타이머 상태에 따라 초기화 또는 수복 절차를 진행
-        DebugEx.Log($"OnEnable : TimerManager.Instance.CurrentTimerState {TimerManager.Instance.CurrentTimerState}");
+        DebugEx.Log($"OnEnable : CurrentTimerState {TimerManager.Instance.CurrentTimerState}");
         switch (TimerManager.Instance.CurrentTimerState)
         {
-            case TimerState.Stopped:
-                ShowFocusMinuteSetter();    // 타이머가 멈춰있으면 집중 시간 -> 휴식 시간 설정 절차 밟기
+            case TimerState.NeedToBeInitialized:
+                ShowFocusMinuteSetter();
                 break;
-            case TimerState.Initializing:
-                ShowFocusMinuteSetter();    // 타이머가 초기화 상태면 집중 시간 -> 휴식 시간 설정 절차 밟기
+            case TimerState.ReadyForFocusSession:      
+                PrepareFocusSession(TimerManager.Instance.focusMinute);
+                break;
+            case TimerState.ReadyForRelaxSession:
+                PrepareRelaxSession(TimerManager.Instance.relaxMinute);
+                break;
+            case TimerState.FocusSessionRunning or TimerState.RelaxSessionRunning:
+                UpdateRunningUI(TimerManager.Instance.CurrentTimerState);
                 break;
             case TimerState.Paused:
-                UpdatePausedUI();           // 일시정지된 상태 수복 시 UI 업데이트
+                UpdatePausedUI();
                 break;
-            case TimerState.Running:
-                UpdateRunningUI();          // 실행 중인 상태 수복 시 UI 업데이트
+            case TimerState.Stopped:
+                ShowFocusMinuteSetter();
                 break;
-            case TimerState.Completed:
-                PrepareNextSession();       // 완료된 상태일 때 다음 세션 준비
+            case TimerState.PpomodoroEnd:
+                ShowFocusMinuteSetter();
                 break;
-        }
-
-        if (TimerManager.Instance.CurrentTimerState == TimerState.Running)
-        {
-            sessionText.gameObject.SetActive(true);
         }
     }
 
     private void OnTimerStateChanged(TimerState newState)
     {
-        Debug.Log($"{nameof(OnTimerStateChanged)} : currentTimerState {newState.ToString()}");
+        Debug.Log($"{nameof(OnTimerStateChanged)} : CurrentTimerState {newState}");
         
         switch (newState)
         {
-            case TimerState.Initializing:
+            case TimerState.NeedToBeInitialized:
                 ShowFocusMinuteSetter();
                 break;
-            case TimerState.Running:
-                UpdateRunningUI();
+            case TimerState.ReadyForFocusSession:
+                PrepareFocusSession(TimerManager.Instance.focusMinute);
+                break;
+            case TimerState.ReadyForRelaxSession:
+                PrepareRelaxSession(TimerManager.Instance.relaxMinute);
+                break;
+            case TimerState.FocusSessionRunning:
+                UpdateRunningUI(newState);
+                StartFocusSession(TimerManager.Instance.focusMinute);
+                break;
+            case TimerState.RelaxSessionRunning:
+                UpdateRunningUI(newState);
+                StartRelaxSession(TimerManager.Instance.relaxMinute);
                 break;
             case TimerState.Paused:
                 UpdatePausedUI();
                 break;
-            case TimerState.Completed:
-                PrepareNextSession();
-                break;
             case TimerState.Stopped:
-                ResetTimerUI();
+                ShowFocusMinuteSetter();
+                break;
+            case TimerState.PpomodoroEnd:
+                ShowFocusMinuteSetter();
                 break;
         }
     }
@@ -209,36 +213,28 @@ public class PanelCircularTimer : MonoBehaviour
     }
 
     /// <summary>
-    /// 실행 중인 상태의 UI를 업데이트합니다.
+    /// 실행 중인 상태의 UI를 업데이트.
     /// </summary>
-    private void UpdateRunningUI()
+    private void UpdateRunningUI(TimerState state)
     {
-        DebugEx.Log("<color='red'>타이머 실행 중 상태로 UI 업데이트</color>");
+        DebugEx.Log("<color='red'>UpdateRunningUI : 타이머 실행 중 상태로 UI 업데이트</color>");
         pauseOrResumeButton.ShowPauseButton();
 
-        if (TimerManager.Instance.CurrentSessionType == SessionType.Focus)
+        if (state == TimerState.FocusSessionRunning)
         {
             circularProgressBar.SetTotalTime(TimerManager.Instance.focusMinute);
             circularProgressBar.ChangeColorFocus();
         }
-        else if (TimerManager.Instance.CurrentSessionType == SessionType.Relax)
+        else if (state == TimerState.RelaxSessionRunning)
         {
             circularProgressBar.SetTotalTime(TimerManager.Instance.relaxMinute);
             circularProgressBar.ChangeColorRelax();
         }
-        circularProgressBar.Fill();
         
+        sessionText.gameObject.SetActive(true);
+        currentSessionTimerTextRect.gameObject.SetActive(true);
         HidePlayButton();
         ShowPauseAndCancelButton();
-        currentSessionTimerTextRect.gameObject.SetActive(true);
-    }
-
-    /// <summary>
-    /// 다음 세션을 준비하는 절차를 수행.
-    /// </summary>
-    private void PrepareNextSession()
-    {
-        TimerManager.Instance.PrepareNextSession(this);
     }
     
     /// <summary>
@@ -323,6 +319,9 @@ public class PanelCircularTimer : MonoBehaviour
         // 레이아웃이 안정된 후 초기화 수행
         await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);  // 프레임 끝까지 기다림 (레이아웃 안정화)
         
+        ShowPlayButton();
+        HidePauseAndCancelButton();
+        
         // 그리고 버튼의 기능 변경
         playButton.onClick.RemoveAllAndAddListener(() =>
         {
@@ -384,6 +383,8 @@ public class PanelCircularTimer : MonoBehaviour
 
             PopupManager.Instance.ShowConfirmPopup("타이머 시작", message, async () =>
             {
+                // 팝업의 확인 버튼에 들어갈 기능들
+                
                 // playButton 숨기고
                 HidePlayButton();
                 // 일시정지랑 취소 버튼 활성화
@@ -399,7 +400,7 @@ public class PanelCircularTimer : MonoBehaviour
                 currentSessionTimerTextRect.DOScale(Vector3.one, 0.5f);
                 
                 // 첫번째 집중 세션 타이머 시작
-                StartFocusSession(TimerManager.Instance.focusMinute);
+                TimerManager.Instance.CurrentTimerState = TimerState.FocusSessionRunning;
 
                 // playButton의 기능을 모두 지우고
                 // (playButton 숨기기 & pauseButton 보이기 & cancelButton 보이기) 기능 연결
@@ -427,6 +428,7 @@ public class PanelCircularTimer : MonoBehaviour
     /// </summary>
     public void PrepareFocusSession(int focusMinute)
     {
+        sessionText.gameObject.SetActive(true);
         sessionText.text = "집중 세션 \n준비";
         
         TrySetTodoItemUI();  // TodoItem UI 설정
@@ -449,17 +451,23 @@ public class PanelCircularTimer : MonoBehaviour
         currentSessionTimerTextRect.DOScale(Vector3.one, 0.5f);
 
         //TimerManager.Instance.OnTimeUpdated -= UpdateTimeDisplay;
-        TimerManager.Instance.OnTimeUpdated += UpdateTimeDisplay;
+        //TimerManager.Instance.OnTimeUpdated += UpdateTimeDisplay;
         
         // playButton에 기능 다 빼고, 다음 세션 시작하는 기능만 넣기
-        playButton.onClick.RemoveAllAndAddListener(() => StartFocusSession(focusMinute));
+        HidePauseAndCancelButton();
+        ShowPlayButton();
+        playButton.onClick.RemoveAllAndAddListener(() =>
+        {
+            TimerManager.Instance.CurrentTimerState = TimerState.FocusSessionRunning;
+        });
     }
 
-    /// <summary>a
+    /// <summary>
     /// 바로 시작할 수 있도록 휴식 세션 준비
     /// </summary>
     public void PrepareRelaxSession(int relaxMinute)
     {
+        sessionText.gameObject.SetActive(true);
         sessionText.text = "휴식 세션 \n준비";
         
         TrySetTodoItemUI();  // TodoItem UI 설정
@@ -481,11 +489,13 @@ public class PanelCircularTimer : MonoBehaviour
         currentSessionTimerTextRect.localScale = Vector3.zero;
         currentSessionTimerTextRect.DOScale(Vector3.one, 0.5f);
         
-        //TimerManager.Instance.OnTimeUpdated -= UpdateTimeDisplay;
-        TimerManager.Instance.OnTimeUpdated += UpdateTimeDisplay;
-        
         // playButton에 기능 다 빼고, 다음 세션 시작하는 기능만 넣기
-        playButton.onClick.RemoveAllAndAddListener(() => StartRelaxSession(relaxMinute));
+        HidePauseAndCancelButton();
+        ShowPlayButton();
+        playButton.onClick.RemoveAllAndAddListener(() =>
+        {
+            TimerManager.Instance.CurrentTimerState = TimerState.RelaxSessionRunning;
+        });
     }
     
     /// <summary>
@@ -498,7 +508,7 @@ public class PanelCircularTimer : MonoBehaviour
         sessionText.gameObject.SetActive(true);
 
         int focusDurationInSeconds = durationInMinutes * 60;
-        TimerManager.Instance.StartTimer(focusDurationInSeconds, SessionType.Focus);
+        TimerManager.Instance.StartTimer(focusDurationInSeconds, TimerState.FocusSessionRunning);
         circularProgressBar.ChangeColorFocus(); // 집중 세션 색상으로 변경
 
         HidePlayButton();               // playButton 숨기기
@@ -520,7 +530,7 @@ public class PanelCircularTimer : MonoBehaviour
         sessionText.gameObject.SetActive(true);
 
         int relaxDurationInSeconds = durationInMinutes * 60;
-        TimerManager.Instance.StartTimer(relaxDurationInSeconds, SessionType.Relax);
+        TimerManager.Instance.StartTimer(relaxDurationInSeconds, TimerState.RelaxSessionRunning);
         circularProgressBar.Fill();
         circularProgressBar.ChangeColorRelax(); // 휴식 세션 색상으로 변경
 
@@ -535,58 +545,34 @@ public class PanelCircularTimer : MonoBehaviour
         // TimerManager에서 시간 업데이트 이벤트를 받을 때 호출됨
         TimeSpan time = TimeSpan.FromSeconds(remainingTimeInSeconds);
 
-        string _sessionText = "";
-        if(TimerManager.Instance.CurrentSessionType == SessionType.Focus)
-            _sessionText = "집중 세션" + 
-                           "\n진행 중";
-        else if(TimerManager.Instance.CurrentSessionType == SessionType.Relax)
-            _sessionText = "휴식 세션" + 
-                           "\n진행 중";
+        if (TimerManager.Instance.CurrentTimerState is TimerState.FocusSessionRunning or TimerState.RelaxSessionRunning)
+        {
+            sessionText.gameObject.SetActive(true);
+            
+            string _sessionText = string.Empty;
+            if(TimerManager.Instance.CurrentTimerState == TimerState.FocusSessionRunning)
+                _sessionText = "집중 세션" + 
+                               "\n진행 중";
+            else if(TimerManager.Instance.CurrentTimerState == TimerState.RelaxSessionRunning)
+                _sessionText = "휴식 세션" + 
+                               "\n진행 중";
+            
+            sessionText.text = _sessionText + string.Concat(Enumerable.Repeat(".", 4 - (remainingTimeInSeconds % 3 + 1)));
+        }
+        else
+        {
+            sessionText.gameObject.SetActive(false);
+        }
         
-        sessionText.text = _sessionText + string.Concat(Enumerable.Repeat(".", 4 - (remainingTimeInSeconds % 3 + 1)));
         currentSessionTimerText.text = $"{time.Minutes:D2}:{time.Seconds:D2}";
 
         circularProgressBar.UpdateByRemainingTime(remainingTimeInSeconds);
     }
 
-    private void OnTimerCompleted()
+    private void WhenSessionCompleted()
     {
-        currentSessionTimerText.text = "00:00";
+        //currentSessionTimerText.text = "00:00";
         sessionText.gameObject.SetActive(false);
-        
-        DebugEx.Log($"타이머가 끝남. ");
-        DebugEx.Log($"남은 사이클은 {TimerManager.Instance.remainingCycleCount} 사이클.");
-        DebugEx.Log($"마지막 사이클은 {TimerManager.Instance.lastCycleTime}분 ");
-        
-        // 현재 세션이 집중 세션이었으면 휴식 세션을 시작, 휴식 세션이었으면 집중 세션을 시작
-        if (TimerManager.Instance.CurrentSessionType == SessionType.Focus)
-        {
-            if (TimerManager.Instance.remainingCycleCount > 0)
-            {
-                TimerManager.Instance.remainingCycleCount--;
-                StartRelaxSession(TimerManager.Instance.relaxMinute);
-            }
-            else // 전체 타이머 끝
-            {
-                ResetTimerUI();
-                // TODO : 보상 주는 팝업 띄우기
-                
-                // 오늘 할 일을 다했음!
-                DebugEx.Log($"<color='red'> 오늘 할 일을 다했음! 이제 이 시점에 보상 팝업 띄워주면 됌!</color>");
-            }
-        }
-        else if (TimerManager.Instance.CurrentSessionType == SessionType.Relax)
-        {
-            if (TimerManager.Instance.remainingCycleCount > 1)          // 남은 사이클이 있을 때
-            {
-                StartFocusSession(TimerManager.Instance.focusMinute);
-            }
-            else if (TimerManager.Instance.lastCycleTime > 0)       // 남은 시간이 마지막 사이클을 위한 시간일 때
-            {
-                StartFocusSession(TimerManager.Instance.lastCycleTime);
-                TimerManager.Instance.lastCycleTime = 0;            // 마지막 사이클 이후로 더이상 사이클 없음
-            }
-        }
     }
     
     private void ResetTimerUI()
@@ -616,14 +602,14 @@ public class PanelCircularTimer : MonoBehaviour
 
     public void ShowPauseAndCancelButton()
     {
-        MoveAndFadeRect(pauseOrResumeButtonRect, pauseOrResumeButtonEndPos.position, pauseButtonCanvasGroup, true, ref pauseButtonTween);
-        MoveAndFadeRect(cancelButtonRect, cancelButtonEndPos.position, cancelButtonCanvasGroup, true, ref cancelButtonTween);
+        MoveAndFadeRect(pauseOrResumeButtonRect, pauseOrResumeButtonEndPos.localPosition, pauseButtonCanvasGroup, true, ref pauseButtonTween);
+        MoveAndFadeRect(cancelButtonRect, cancelButtonEndPos.localPosition, cancelButtonCanvasGroup, true, ref cancelButtonTween);
     }
 
     public void HidePauseAndCancelButton()
     {
-        MoveAndFadeRect(pauseOrResumeButtonRect, pauseOrResumeButtonOriginPos.position, pauseButtonCanvasGroup, false, ref pauseButtonTween);
-        MoveAndFadeRect(cancelButtonRect, cancelButtonOriginPos.position, cancelButtonCanvasGroup, false, ref cancelButtonTween);
+        MoveAndFadeRect(pauseOrResumeButtonRect, pauseOrResumeButtonOriginPos.localPosition, pauseButtonCanvasGroup, false, ref pauseButtonTween);
+        MoveAndFadeRect(cancelButtonRect, cancelButtonOriginPos.localPosition, cancelButtonCanvasGroup, false, ref cancelButtonTween);
     }
 
     private void SetActiveRect(RectTransform rect, CanvasGroup canvasGroup, bool isActive)
@@ -646,7 +632,7 @@ public class PanelCircularTimer : MonoBehaviour
         
         // 새로운 트윈 시퀀스 생성 (SetAutoKill(false)로 재사용 가능하게 설정)
         currentTween = DOTween.Sequence()
-            .Append(rect.DOMove(targetPosition, buttonTweenDuration))
+            .Append(rect.DOLocalMove(targetPosition, buttonTweenDuration))
             .Join(canvasGroup.DOFade(show ? 1 : 0, buttonTweenDuration))
             .OnComplete(() =>
             {

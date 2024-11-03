@@ -11,7 +11,7 @@ public class PauseOrResumeButton : MonoBehaviour
     {
         switch (TimerManager.Instance.CurrentTimerState)
         {
-            case TimerState.Running:
+            case TimerState.RelaxSessionRunning or TimerState.FocusSessionRunning:
                 ShowPauseButton();
                 break;
             case TimerState.Paused:

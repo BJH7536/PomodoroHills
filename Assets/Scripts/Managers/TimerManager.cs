@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using TodoSystem;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 // MVC 패턴 활용
 // Model (TimerManager) : 타이머의 상태 및 로직 관리. 핵심 로직 처리
@@ -29,10 +30,13 @@ public class TimerManager : MonoBehaviour
     #region Events
 
     // 타이머가 남은 시간이 갱신될 때 호출되는 이벤트, 매 초마다 실행될 것을 고려해 가벼운 Action으로.
-    public event Action<int> OnTimeUpdated;
+    public Action<int> OnTimeUpdated;
     
     // 타이머가 완료되었을 때 호출되는 이벤트, 유니티 엔진에서 쉽게 연결할 수 있도록 UnityEvent로.
-    [SerializeField] public UnityEvent OnTimerCompleted;
+    [SerializeField] public UnityEvent OnSessionCompleted;
+    
+    // 전체 포모도로가 완료되었을 때 호출되는 이벤트, 유니티 엔진에서 쉽게 연결할 수 있도록 UnityEvent로.
+    [SerializeField] public UnityEvent OnPpomodoroCompleted;
     
     // 상태가 변할 때 호출되는 이벤트.
     public event Action<TimerState> OnTimerStateChanged;
@@ -41,16 +45,18 @@ public class TimerManager : MonoBehaviour
 
     #region Fields
 
-    private CancellationTokenSource _cancellationTokenSource;
+    public CancellationTokenSource CancellationTokenSource;
     
-    public SessionType CurrentSessionType { get; private set; }
+    public TimerState PrevTimerState = TimerState.NeedToBeInitialized;
     
-    private TimerState _currentTimerState = TimerState.Stopped;
+    public TimerState _currentTimerState = TimerState.NeedToBeInitialized;
     public TimerState CurrentTimerState
     {
         get => _currentTimerState;
-        private set
+        set
         {
+            PrevTimerState = _currentTimerState;
+            
             if (_currentTimerState != value)
             {
                 _currentTimerState = value;
@@ -65,36 +71,111 @@ public class TimerManager : MonoBehaviour
     public bool TodoItemInitialized = false;
     
     private int _remainingTimeInSeconds;        // 남은 시간 (초 단위)
-    public int RemainingTimeInSeconds => _remainingTimeInSeconds;
-    
+    public int RemainingTimeInSeconds
+    {
+        get => _remainingTimeInSeconds;
+        set => _remainingTimeInSeconds = value;
+    }
+
     public int focusMinute = 25;
     public int relaxMinute = 5;
     
     public int remainingCycleCount;             // 남은 사이클 수
     public int lastCycleTime;                   // 마지막 사이클 시간
-    
-    private const string TimerRemainsKey = "TimeRemains";
-    private const string TimeStampKey = "TimeStamp";
-    private const string TimerSessionKey = "CurrentSessionType";
-    
-    private const string CurrentTodoItemId = "CurrentTodoItemId";
-    private const string FocusMinuteKey = "FocusMinute";
-    private const string RelaxMinuteKey = "RelaxMinute";
-    
+
     #endregion
 
-    public void PrepareNextSession(PanelCircularTimer panelCircularTimer)
+    #region Application Lifecycle Methods
+    
+    /// <summary>
+    /// 싱글톤 인스턴스 설정.
+    /// </summary>
+    private void Awake()
     {
-        // 다음 세션이 휴식 세션이면 UI를 휴식 상태로 준비하고, 아니면 집중 상태로 준비한다.
-        if (CurrentSessionType == SessionType.Focus)
+        if (instance == null)
         {
-            panelCircularTimer.PrepareRelaxSession(relaxMinute);
+            instance = this;
+            DontDestroyOnLoad(gameObject); // 씬 전환 시 오브젝트가 파괴되지 않도록 설정
+            
         }
-        else if (CurrentSessionType == SessionType.Relax)
+        else
         {
-            panelCircularTimer.PrepareFocusSession(focusMinute);
+            Destroy(gameObject); // 이미 인스턴스가 존재하면 중복 오브젝트를 파괴
+            return;
+        }
+
+        OnTimerStateChanged += (state) =>
+        {
+            if(state == TimerState.PpomodoroEnd)
+                OnPpomodoroCompleted?.Invoke();
+        };
+        
+        OnPpomodoroCompleted.AddListener(() =>
+        {
+            string title = "할 일을 모두 완수했어요!";
+            string message = $"대단해요!\n총 {currentTodoItem.DailyTargetDurationInMinutes}분동안 집중했어요!";
+            int rewardCoin = currentTodoItem.DailyTargetDurationInMinutes * 100;
+            int rewardGem = currentTodoItem.DailyTargetDurationInMinutes * 1;
+
+            PopupManager.Instance.ShowRewardPopup(title, message, rewardCoin, rewardGem);
+            
+            CurrentTimerState = TimerState.NeedToBeInitialized;
+        });
+    }
+    
+    public void Start()
+    {
+        OnSessionCompleted.AddListener(WhenSessionCompleted);
+    }
+    
+    public void OnApplicationPause(bool isPaused)
+    {
+        DebugEx.Log($"앱 일시정지됨 {isPaused}");
+
+        // 게임이 일시정지되면
+        if (isPaused)
+        {
+            // 타이머가 동작중인 경우에는 
+            if (CurrentTimerState is TimerState.FocusSessionRunning or TimerState.RelaxSessionRunning)
+            {
+                // 타이머 상태 저장
+                TimerData timerData = GetCurrentTimerData();
+                TimerRestorationService.SaveTimerState(timerData);
+                
+                ScheduleNotification();
+            }
+        }
+        // 게임이 재개되면 (켜지는 경우 포함)
+        else
+        {
+            // 알림 취소
+            NotificationManager.Instance.CancelAllNotifications();
+            
+            // 타이머 복원
+            TimerData restoredData = TimerRestorationService.RestoreTimerState();
+            if (restoredData != null)
+            {
+                RestoreTimerState(restoredData);
+            }
         }
     }
+    
+    public void OnApplicationQuit()
+    {
+        // 게임이 종료될 때 타이머가 동작 중이면
+        // 타이머 수복을 위한 상태 저장과 함께 알림을 예약
+        if (CurrentTimerState is TimerState.FocusSessionRunning or TimerState.RelaxSessionRunning)
+        {
+            // 타이머 상태 저장
+            TimerData timerData = GetCurrentTimerData();
+            TimerRestorationService.SaveTimerState(timerData);
+
+            // 알림 예약
+            ScheduleNotification();
+        }
+    }
+    
+    #endregion
     
     #region TimerManagement
 
@@ -122,43 +203,43 @@ public class TimerManager : MonoBehaviour
         
         DebugEx.Log($"{nameof(TimerManager)} : TodoItem 연동이 해제되었습니다.");
     }
-    
+
     /// <summary>
     /// 타이머 시간 설정 및 시작
     /// </summary>
     /// <param name="durationInSeconds"></param>
-    /// <param name="sessionType">
-    /// </param>
-    public void StartTimer(int durationInSeconds, SessionType sessionType)
+    /// <param name="state"></param>
+    public void StartTimer(int durationInSeconds, TimerState state)
     {
         // 타이머가 실행 중인 경우, 중복 시작을 방지
-        if (CurrentTimerState == TimerState.Running)
-        {
-            DebugEx.LogWarning("타이머가 이미 실행 중입니다!");
-            return;
-        }
+        // if (CurrentTimerState == state)
+        // {
+        //     DebugEx.LogWarning("타이머가 이미 실행 중입니다!");
+        //     return;
+        // }
 
         // 남은 시간 설정
         _remainingTimeInSeconds = durationInSeconds;
-        // 현재 세션의 종류 (집중, 휴식) 지정
-        CurrentSessionType = sessionType;
-        // 타이머 실행 상태로 전환
-        CurrentTimerState = TimerState.Running;
+        // 타이머 상태 전환
+        CurrentTimerState = state;
         
-        _cancellationTokenSource = new CancellationTokenSource();
-        UpdateTimer(_cancellationTokenSource.Token).Forget();
+        CancellationTokenSource = new CancellationTokenSource();
+        UpdateTimer(CancellationTokenSource.Token).Forget();
     }
-
+    
     /// <summary>
     /// 타이머 일시정지
     /// </summary>
     public void PauseTimer()
     {
-        if (CurrentTimerState == TimerState.Running)
+        if (CurrentTimerState is TimerState.FocusSessionRunning or TimerState.RelaxSessionRunning)
         {
             CurrentTimerState = TimerState.Paused;
-            _cancellationTokenSource?.Cancel();
-            SaveTimerState();
+            CancellationTokenSource?.Cancel();
+
+            TimerData timerData = GetCurrentTimerData();
+            TimerRestorationService.SaveTimerState(timerData);
+            
             NotificationManager.Instance.CancelAllNotifications();      // 알림 취소
             DebugEx.Log("타이머가 일시정지되었습니다.");
         }
@@ -171,9 +252,9 @@ public class TimerManager : MonoBehaviour
     {
         if (CurrentTimerState == TimerState.Paused && _remainingTimeInSeconds > 0)
         {
-            CurrentTimerState = TimerState.Running;
-            _cancellationTokenSource = new CancellationTokenSource();
-            UpdateTimer(_cancellationTokenSource.Token).Forget();
+            CurrentTimerState = PrevTimerState;
+            CancellationTokenSource = new CancellationTokenSource();
+            UpdateTimer(CancellationTokenSource.Token).Forget();
             NotificationManager.Instance.ScheduleNotification(_remainingTimeInSeconds, "타이머 완료", "설정하신 타이머가 완료되었습니다."); // 알림 예약
             DebugEx.Log("타이머가 재개되었습니다.");
         }
@@ -188,7 +269,7 @@ public class TimerManager : MonoBehaviour
         {
             CurrentTimerState = TimerState.Stopped;
             _remainingTimeInSeconds = 0;
-            _cancellationTokenSource?.Cancel();
+            CancellationTokenSource?.Cancel();
             NotificationManager.Instance.CancelAllNotifications(); // 알림 취소
             
             OnTimeUpdated?.Invoke(_remainingTimeInSeconds);
@@ -200,16 +281,16 @@ public class TimerManager : MonoBehaviour
     /// <summary>
     /// 타이머 상태 갱신
     /// </summary>
-    private async UniTaskVoid UpdateTimer(CancellationToken token)
+    public async UniTaskVoid UpdateTimer(CancellationToken token)
     {
-        while (_remainingTimeInSeconds > 0 && CurrentTimerState == TimerState.Running && !token.IsCancellationRequested)
+        while (_remainingTimeInSeconds > 0 && !token.IsCancellationRequested && CurrentTimerState is TimerState.FocusSessionRunning or TimerState.RelaxSessionRunning)
         {
             OnTimeUpdated?.Invoke(_remainingTimeInSeconds);
             await UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: token);
             _remainingTimeInSeconds--;
             
             // 매 60초마다 TodoItem에 진행 상황을 기록
-            if (_remainingTimeInSeconds % 60 == 0 && currentTodoItem != null && CurrentSessionType == SessionType.Focus)
+            if (_remainingTimeInSeconds % 60 == 0 && currentTodoItem != null && CurrentTimerState is TimerState.FocusSessionRunning)
             {
                 currentTodoItem.AddProgress(DateTime.Today, 1); // 1분 단위로 기록
             }
@@ -217,340 +298,195 @@ public class TimerManager : MonoBehaviour
 
         if (_remainingTimeInSeconds <= 0)
         {
-            CurrentTimerState = TimerState.Completed;
-            
             OnTimeUpdated?.Invoke(_remainingTimeInSeconds);
-            OnTimerCompleted?.Invoke();
-            
-            // 타이머 완료 시 예약된 알림 취소
-            NotificationManager.Instance.CancelAllNotifications();
+            OnSessionCompleted?.Invoke();
         }
     }
     
-    #endregion
-
-    #region Save & Restore Timer
-
-    /// <summary>
-    /// 타이머 상태 저장
-    /// </summary>
-    private void SaveTimerState()
+    private TimerData GetCurrentTimerData()
     {
-        if (CurrentTimerState != TimerState.Running) return;
-        
-        PlayerPrefs.SetInt(TimerRemainsKey, _remainingTimeInSeconds);                               // 타이머의 남은 시간을 저장
-        PlayerPrefs.SetString(TimerSessionKey, CurrentSessionType.ToString());                      // 타이머의 세션 정보를 저장
-        PlayerPrefs.SetString(TimeStampKey, DateTime.Now.ToString(CultureInfo.CurrentCulture));     // 현재 시각을 저장
-        PlayerPrefs.SetInt(FocusMinuteKey, focusMinute);
-        PlayerPrefs.SetInt(RelaxMinuteKey, relaxMinute);
-        
-        if (currentTodoItem != null)
+        TimerData timerData = new TimerData
         {
-            PlayerPrefs.SetString(CurrentTodoItemId, currentTodoItem.Id);               // TodoItem의 id를 저장
-        }
-        
-        PlayerPrefs.Save();
-        DebugEx.Log("타이머 상태가 저장되었습니다.");
+            TimeStamp = DateTime.Now,
+            RemainingTimeInSeconds = _remainingTimeInSeconds,
+            CurrentTimerState = CurrentTimerState,
+            PrevTimerState = PrevTimerState,
+            RemainingCycleCount = remainingCycleCount,
+            LastCycleTime = lastCycleTime,
+            FocusMinute = focusMinute,
+            RelaxMinute = relaxMinute,
+            CurrentTodoItemId = TodoItemInitialized ? CurrentTodoItem.Id : null
+        };
+
+        return timerData;
     }
     
-    /// <summary>
-    /// 타이머 상태 복원
-    /// </summary>
-    private void RestoreTimerState()
+    private void RestoreTimerState(TimerData timerData)
     {
-        if (!PlayerPrefs.HasKey(TimerRemainsKey)) return;
+        // 경과 시간 계산
+        TimeSpan elapsed = DateTime.Now - timerData.TimeStamp;
+        int newRemainingSeconds = timerData.RemainingTimeInSeconds - (int)elapsed.TotalSeconds;
 
-        // 타이머 값 복원
-        RestoreSavedValues();
+        // 타이머 상태 복원
+        _remainingTimeInSeconds = newRemainingSeconds > 0 ? newRemainingSeconds : 0;
+        PrevTimerState = timerData.PrevTimerState;
+        _currentTimerState = timerData.CurrentTimerState;
         
-        var elapsed = CalculateElapsedTime();
-        int newRemainingSeconds = CalculateNewRemainingTime(elapsed);
-
-        HandlePreviousRunningState();
-        RestoreTodoItemProgress(elapsed);
-
-        // 남은 사이클 수와 마지막 사이클 시간 복원
-        int remainingTimeOfToday = CurrentTodoItem.GetRemainingTimeOfToday(); // 남은 시간을 분 단위로 변환
-        lastCycleTime = remainingTimeOfToday % focusMinute;
-        remainingCycleCount = remainingTimeOfToday / Instance.focusMinute + ((Instance.lastCycleTime > 0) ? 1 : 0);
-        DebugEx.Log($"복원된 남은 사이클 수: {remainingCycleCount}회, 마지막 사이클 시간: {lastCycleTime}분");
+        remainingCycleCount = timerData.RemainingCycleCount;
+        lastCycleTime = timerData.LastCycleTime;
         
-        // 세션이 아직 끝나기 전에 복귀할 때
-        if (newRemainingSeconds > 0)
+        focusMinute = timerData.FocusMinute;
+        relaxMinute = timerData.RelaxMinute;
+
+        // TodoItem 복원
+        if (!string.IsNullOrEmpty(timerData.CurrentTodoItemId))
         {
-            ResumeTimerWithRemainingTime(newRemainingSeconds);
+            TodoItem linkedTodoItem = TodoManager.Instance.FindTodoItemById(timerData.CurrentTodoItemId);
+            if (linkedTodoItem != null)
+            {
+                LinkTodoItem(linkedTodoItem);
+
+                if (CurrentTimerState == TimerState.FocusSessionRunning)
+                {
+                    int progressToAdd = (int)Math.Min(elapsed.TotalMinutes, focusMinute);
+                    currentTodoItem.AddProgress(DateTime.Today, progressToAdd);
+                    DebugEx.Log($"진척도 추가: {progressToAdd}분");
+                }
+            }
         }
-        // 세션이 끝난 후에 복귀할 때
+
+        // 복원 후의 타이머 상태는?
+        DebugEx.Log($"<color='green'>Timer Data After Restoration: {GetCurrentTimerData()}</color>");
+        
+        // 타이머 팝업 띄우기
+        PopupManager.Instance.ShowPopup<TimerPopup>();
+        
+        // 타이머가 아직 그 세션에서 벗어나지 않을 때
+        if (RemainingTimeInSeconds > 0)
+        {
+            // 타이머 재개
+            ResumeTimerWithRemainingTime(_remainingTimeInSeconds);
+        }
+        // 타이머가 그 세션에서 벗어날 때
         else
         {
-            // TODO : 남은 시간이 없으면 이 항목이 지금 하나의 세션만 지나친건지, 아니면 마지막 세션을 지나친건지 구분해야 한다.
-            // TODO : 마지막 세션을 지나친건가?
-
-            CompleteTimer();
+            // 경우의 수를 나열해보자, 방금 끝난 세션 CurrentTimerState 이 뭐였을까?
+            // *마지막 깍두기 세션은 있을수도, 없을 수도 있다. 
+            //  (= lastCycleTime > 0, lastCycleTime == 0)
             
-            // 마지막 사이클이면
-            if (remainingCycleCount == 1 && CurrentSessionType == SessionType.Relax)
+            if (CurrentTimerState == TimerState.FocusSessionRunning)        // 게임을 끌 때 집중 세션을 돌고있었더라면
             {
-                DebugEx.Log($"<color='red'> 이제 마지막 사이클임! 마지막 집중 세션</color>");
+                if (remainingCycleCount == 1)                               // 마지막 사이클이었더라면
+                {
+                    CurrentTimerState = TimerState.PpomodoroEnd;                // 뽀모도로 엔드
+                }
+                else                                                        // 마지막 사이클이 아니었더라면
+                {
+                    CurrentTimerState = TimerState.ReadyForRelaxSession;        // 휴식 세션을 준비시킨다.
+                }
+            }        
+            else if (CurrentTimerState == TimerState.RelaxSessionRunning)   // 게임을 끌 때 휴식 세션을 돌고있었더라면
+            {
+                remainingCycleCount--;                                  // 남은 사이클을 하나 차감하고
                 
-                focusMinute = lastCycleTime;
-            }
-            // 남은 사이클이 없으면
-            //else if (remainingCycleCount == 0) 
-            else if (lastCycleTime == 0) 
-            {
-                // 오늘 할 일을 다했음!
-                DebugEx.Log($"<color='red'> 오늘 할 일을 다했음! 이제 이 시점에 보상 팝업 띄워주면 됌!</color>");
+                if (remainingCycleCount == 1 && lastCycleTime > 0)           // 이번에 시작할 사이클이 깍두기라면
+                {
+                    focusMinute = lastCycleTime;                                    // 집중 시간을 깍두기로 바꾸고
+                }
                 
-                // TODO : 보상 주는 팝업 띄우기
-                
+                CurrentTimerState = TimerState.ReadyForFocusSession;         // 집중 세션을 준비시킨다.
             }
-        }
-        
-        PanelCircularTimer panelCircularTimer = PopupManager.Instance.ShowPopup<TimerPopup>().panelCircularTimer;
-
-        if (newRemainingSeconds <= 0)
-        {
-            string message = CurrentSessionType switch
-            {
-                SessionType.Focus => "집중 세션 종료",
-                SessionType.Relax => "휴식 세션 종료",
-                _ => ""
-            };
-
-            PopupManager.Instance.ShowAlertPopup("세션 종료", message);
-            PrepareNextSession(panelCircularTimer);
-        }
-        else
-        {
-            panelCircularTimer.HidePlayButton();
-            panelCircularTimer.ShowPauseAndCancelButton();
-        }
-        
-        DeleteStoredTimerState();
-    }
-
-    /// <summary>
-    /// 저장되어있는 타이머 상태를 복원한다.
-    /// 종료되는 시점의 세션 종류, 집중 시간, 휴식 시간, 남은 사이클 수, 마지막 사이클 시간 복원
-    /// </summary>
-    private void RestoreSavedValues()
-    {
-        // 세션 타입 복원
-        if (PlayerPrefs.HasKey(TimerSessionKey))
-        {
-            string sessionTypeStr = PlayerPrefs.GetString(TimerSessionKey);
-            if (Enum.TryParse(sessionTypeStr, out SessionType sessionType))
-            {
-                CurrentSessionType = sessionType;
-                DebugEx.Log($"복원된 세션 타입: {CurrentSessionType}");
-            }
-            else
-            {
-                DebugEx.LogWarning("세션 타입을 복원하는 데 실패했습니다.");
-            }
-        }
-
-        // focusMinute relaxMinute 복원
-        if (PlayerPrefs.HasKey(FocusMinuteKey) && PlayerPrefs.HasKey(RelaxMinuteKey))
-        {
-            focusMinute = PlayerPrefs.GetInt(FocusMinuteKey);
-            relaxMinute = PlayerPrefs.GetInt(RelaxMinuteKey);
-            DebugEx.Log($"복원된 집중 시간: {focusMinute}분, 휴식 시간: {relaxMinute}분");
-        }
-    }
-
-    /// <summary>
-    /// 저장되어있었던 시간으로부터 지금의 순간까지 흐른 시간을 계산
-    /// </summary>
-    /// <returns></returns>
-    private TimeSpan CalculateElapsedTime()
-    {
-        DateTime savedTimeStamp = DateTime.Parse(PlayerPrefs.GetString(TimeStampKey));
-        TimeSpan elapsed = DateTime.Now - savedTimeStamp;
-        DebugEx.Log($"elapsed : {elapsed}");
-        return elapsed;
-    }
-
-    private int CalculateNewRemainingTime(TimeSpan elapsed)
-    {
-        int savedTime = PlayerPrefs.GetInt(TimerRemainsKey);
-        DebugEx.Log($"savedTime : {savedTime}");
-        int newRemainingSeconds = savedTime - (int)elapsed.TotalSeconds;
-        DebugEx.Log($"newRemainingSeconds : {newRemainingSeconds}");
-        return newRemainingSeconds;
-    }
-
-    private void HandlePreviousRunningState()
-    {
-        // 기존 타이머 작업 취소 및 초기화
-        if (CurrentTimerState == TimerState.Running)
-        {
-            _cancellationTokenSource?.Cancel(); // 기존 타이머 작업 취소
-            CurrentTimerState = TimerState.Completed; // 타이머 상태 초기화
-        }
-    }
-
-    private void RestoreTodoItemProgress(TimeSpan elapsed)
-    {
-        if (!PlayerPrefs.HasKey(CurrentTodoItemId)) return;
-
-        TodoItemInitialized = true;
             
-        string currentTodoItemId = PlayerPrefs.GetString(CurrentTodoItemId);
-        TodoItem linkedTodoItem = TodoManager.Instance.FindTodoItemById(currentTodoItemId);
-        
-        DebugEx.Log($"elapsed {elapsed}");
-        
-        if (linkedTodoItem != null)
-        {
-            LinkTodoItem(linkedTodoItem);
-
-            if (CurrentSessionType == SessionType.Focus)
-            {
-                int progressToAdd = (int)Math.Min(elapsed.TotalMinutes, focusMinute);
-                currentTodoItem.AddProgress(DateTime.Today, progressToAdd);
-                DebugEx.Log($"진척도 추가: {progressToAdd}분");
-            }
+            // OnTimeUpdated?.Invoke(_remainingTimeInSeconds);
+            // OnSessionCompleted?.Invoke();
+            
+            //WhenSessionCompleted();
+            
+            DebugEx.Log("타이머가 복원되었으나 이미 만료되었습니다.");
         }
+        
+        // 저장된 타이머 상태 삭제
+        // TODO : 나중엔 주석 지우기
+        TimerRestorationService.DeleteStoredTimerState();
     }
-
+    
     private void ResumeTimerWithRemainingTime(int newRemainingSeconds)
     {
         _remainingTimeInSeconds = newRemainingSeconds;
-        _cancellationTokenSource = new CancellationTokenSource(); // 새 CancellationTokenSource 생성
-        CurrentTimerState = TimerState.Running;
+        CancellationTokenSource = new CancellationTokenSource();
 
-        // UI 즉시 업데이트
         OnTimeUpdated?.Invoke(_remainingTimeInSeconds);
 
         // 타이머 재개
-        UpdateTimer(_cancellationTokenSource.Token).Forget();
+        UpdateTimer(CancellationTokenSource.Token).Forget();
         DebugEx.Log("타이머가 복원되어 재개되었습니다.");
     }
-
-    private void CompleteTimer()
-    {
-        _remainingTimeInSeconds = 0;
-        CurrentTimerState = TimerState.Completed;
-        OnTimeUpdated?.Invoke(_remainingTimeInSeconds); // UI 즉시 업데이트
-        OnTimerCompleted?.Invoke(); // 타이머 완료 처리
-        DebugEx.Log("타이머가 복원되었으나 이미 만료되었습니다.");
-    }
-
-    private void DeleteStoredTimerState()
-    {
-        PlayerPrefs.DeleteKey(TimerRemainsKey);
-    }
     
-    #endregion
-    
-    #region Application Lifecycle Methods
-
-    public void Start()
-    {
-        OnTimerCompleted.AddListener(()=> DebugEx.Log("타이머가 완료되었습니다."));
-        //OnTimerCompleted.AddListener(UnlinkTodoItem);
-    }
-
     /// <summary>
-    /// 싱글톤 인스턴스 설정.
+    /// 타이머의 세션이 끝났을 때.
     /// </summary>
-    private void Awake()
+    private void WhenSessionCompleted()
     {
-        if (instance == null)
+        DebugEx.Log($"<color='red'> {nameof(WhenSessionCompleted)} </color>");        
+        
+        if (CurrentTimerState == TimerState.FocusSessionRunning)        // 집중 세션을 돌고있었더라면
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject); // 씬 전환 시 오브젝트가 파괴되지 않도록 설정
-        }
-        else
+            if (remainingCycleCount == 1)                               // 마지막 사이클이었더라면
+            {
+                CurrentTimerState = TimerState.PpomodoroEnd;                // 뽀모도로 엔드
+            }
+            else                                                        // 마지막 사이클이 아니었더라면
+            {
+                CurrentTimerState = TimerState.RelaxSessionRunning;        // 휴식 세션을 시작시킨다.
+            }
+        }        
+        else if (CurrentTimerState == TimerState.RelaxSessionRunning)   // 휴식 세션을 돌고있었더라면
         {
-            Destroy(gameObject); // 이미 인스턴스가 존재하면 중복 오브젝트를 파괴
-            return;
+            remainingCycleCount--;                                  // 남은 사이클을 하나 차감하고
+                
+            if (remainingCycleCount == 1 && lastCycleTime > 0)           // 이번에 시작할 사이클이 깍두기라면
+            {
+                focusMinute = lastCycleTime;                                    // 집중 시간을 깍두기로 바꾸고
+            }
+                
+            CurrentTimerState = TimerState.FocusSessionRunning;         // 집중 세션을 시작시킨다.
         }
-    }
-    
-    public void OnApplicationPause(bool isPaused)
-    {
-        DebugEx.Log($"앱 일시정지됨 {isPaused}");
+        
+        DebugEx.Log($"세션이 끝남. ");
+        DebugEx.Log($"남은 사이클은 {remainingCycleCount} 사이클.");
+        DebugEx.Log($"마지막 사이클은 {lastCycleTime}분 ");
 
-        // 게임이 일시정지되면
-        if (isPaused)
-        {
-            // 타이머가 동작중인 경우에는 
-            if (CurrentTimerState == TimerState.Running)
-            {
-                // 남은 시간과 타임스탬프를 저장
-                SaveTimerState();  
-                // 알림 예약
-                string title = "", message = "";
-                
-                switch (CurrentSessionType)
-                {
-                    case SessionType.Focus:
-                        title = "집중 세션 종료";
-                        message = "집중 세션이 종료되었습니다.";
-                        break;
-                    case SessionType.Relax:
-                        title = "휴식 세션 종료";
-                        message = "휴식 세션이 종료되었습니다.";
-                        break;
-                }
-                
-                NotificationManager.Instance.ScheduleNotification(_remainingTimeInSeconds, title, message);
-            }
-        }
-        // 게임이 재개되면 (켜지는 경우 포함)
-        else
-        {
-            // 알림 취소
-            NotificationManager.Instance.CancelAllNotifications();
-            // 타이머 복구
-            RestoreTimerState();
-        }
-    }
-    
-    public void OnApplicationQuit()
-    {
-        // 게임이 종료될 때 타이머가 동작 중이면
-        // 타이머 수복을 위한 상태 저장과 함께 알림을 예약
-        if (CurrentTimerState == TimerState.Running)
-        {
-            SaveTimerState();  // 타이머 상태와 함께 현재 시각 저장
-            
-            // 알림 예약
-            string title = "", message = "";
-                
-            switch (CurrentSessionType)
-            {
-                case SessionType.Focus:
-                    title = "집중 세션 종료";
-                    message = "집중 세션이 종료되었습니다.";
-                    break;
-                case SessionType.Relax:
-                    title = "휴식 세션 종료";
-                    message = "휴식 세션이 종료되었습니다.";
-                    break;
-            }
-            
-            NotificationManager.Instance.ScheduleNotification(_remainingTimeInSeconds, title, message);
-        }
+        if(RemainingTimeInSeconds != 0)
+            OnTimeUpdated?.Invoke(RemainingTimeInSeconds);
     }
     
     #endregion
-}
-
-public enum SessionType
-{
-    Focus,
-    Relax
+    
+    private void ScheduleNotification()
+    {
+        string title = string.Empty;
+        if (CurrentTimerState == TimerState.FocusSessionRunning)
+        {
+            title = "집중 세션 종료";
+        } 
+        else if (CurrentTimerState == TimerState.RelaxSessionRunning)
+        {
+            title = "휴식 세션 종료";
+        }
+        
+        string message = "설정하신 타이머가 완료되었습니다.";
+        NotificationManager.Instance.ScheduleNotification(_remainingTimeInSeconds, title, message);
+    }
 }
 
 public enum TimerState
 {
-    Stopped,        // 타이머가 완전히 멈춘 상태 (세션이 전혀 없는 상태)
-    Running,        // 타이머가 동작하는 상태 (세션이 진행 중)
-    Paused,         // 타이머 일시정지
-    Initializing,   // 타이머가 초기화 중인 상태 (세션 준비, UI 초기화)
-    Completed       // 세션이 완료된 상태
+    NeedToBeInitialized,        // 집중 세션과 휴식 세션을 정해야 하는 상태
+    ReadyForFocusSession,       // 집중 세션을 준비하는 상태
+    ReadyForRelaxSession,       // 휴식 세션을 준비하는 상태
+    FocusSessionRunning,        // 집중 세션이 진행중인 상태 
+    RelaxSessionRunning,        // 휴식 세션이 진행중인 상태 
+    Paused,                     // 타이머 일시정지
+    Stopped,                    // 타이머가 완전히 멈춘 상태 (세션이 전혀 없는 상태)
+    PpomodoroEnd,                  // 전체 타이머가 끝난 상태
 }

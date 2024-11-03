@@ -121,6 +121,8 @@ public class DebugExController  : MonoBehaviour
         PlayerPrefs.DeleteAll();
         PlayerPrefs.Save();
 
+        
+        
         // Todo항목들 불러오기 
         TodoManager.Instance.LoadTodoList();
         
@@ -134,8 +136,7 @@ public class DebugExController  : MonoBehaviour
     
     public void ShowTimerInformation() {
         
-        DebugEx.Log($"현재의 타이머 세션 종류는 : {TimerManager.Instance.CurrentSessionType}\n" +
-                    $"현재의 타이머 상태는 : {TimerManager.Instance.CurrentTimerState}\n" +
+        DebugEx.Log($"현재의 타이머 상태는 : {TimerManager.Instance.CurrentTimerState}\n" +
                     $"현재의 타이머의 남은 사이클 수는 {TimerManager.Instance.remainingCycleCount}\n" +
                     $"마지막 사이클은 {TimerManager.Instance.lastCycleTime}분 \n" +
                     $"타이머의 남은 초단위 시간은 : {TimerManager.Instance.RemainingTimeInSeconds}\n" +
@@ -164,6 +165,6 @@ public class DebugExController  : MonoBehaviour
 
     public void AndroidBackButton()
     {
-        PopupManager.Instance.HandleBackButton();
+        PopupManager.Instance.HandleAndroidBackButton();
     }
 }

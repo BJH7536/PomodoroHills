@@ -80,9 +80,14 @@ public class TodoListPopup_TodoItemUI : MonoBehaviour
 
     public void ShowTimerPopup()
     {
-        // Todo항목을 짧게 터치하면 타이머에 연결하는 기능 추가 필요
-        TimerManager.Instance.LinkTodoItem(_todoItem);              // 이 ui 요소를 터치하면 TimerManager에 todoItem 객체를 연결시키고
-        PopupManager.Instance.ShowPopup<TimerPopup>();              // TimerPopup을 띄운다
+        if (!_todoItem.IsTodayTaskCompleted(DateTime.Today))
+        {
+            // Todo항목을 짧게 터치하면 타이머에 연결하는 기능 추가 필요
+            TimerManager.Instance.LinkTodoItem(_todoItem); // 이 ui 요소를 터치하면 TimerManager에 todoItem 객체를 연결시키고
+            PopupManager.Instance.ShowPopup<TimerPopup>(); // TimerPopup을 띄운다
+        }
+        else
+            PopupManager.Instance.ShowAlertPopup("이 항목은 다 했어요!", "이 항목은 오늘 할만큼의 시간을 \n모두 채웠어요! \n\n다른 항목을 찾아봐요!");
     }
 
     public void ShowDeleteConfirmPopup()

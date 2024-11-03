@@ -5,6 +5,7 @@ using LeTai.Asset.TranslucentImage;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using VInspector;
 
 /// <summary>
 /// 팝업을 관리하는 클래스입니다.
@@ -40,6 +41,16 @@ public class PopupManager : MonoBehaviour
     [SerializeField] private TranslucentImageSource _translucentImageSource;
 
     [SerializeField] private PomoPopupImages pomoPopupImages;
+
+    [Button]
+    public void TopOfPopupStack()
+    {
+        Popup top = activePopups.Peek();
+
+        DebugEx.Log($"TopOfPopupStack : {top.GetType().ToString()}\n" +
+                    $"PopupStack Count : {activePopups.Count}");
+        
+    }
     
     /// <summary>
     /// 게임 오브젝트가 활성화될 때 호출됩니다.
@@ -69,7 +80,7 @@ public class PopupManager : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.Escape))
         {
-            HandleBackButton();
+            HandleAndroidBackButton();
         }
     }
 
@@ -123,8 +134,11 @@ public class PopupManager : MonoBehaviour
     /// <returns>생성된 팝업 인스턴스</returns>
     public T ShowPopup<T>(bool blur = false) where T : Popup
     {
+        Debug.Log($"Show Popup {typeof(T)}");
+        
         Type popupType = typeof(T);
         T popup = null;
+        
 
         // 이미 같은 타입의 팝업이 활성화되어 있는지 확인
         foreach (Popup activePopup in activePopups)
@@ -226,8 +240,21 @@ public class PopupManager : MonoBehaviour
 
         return null;
     }
-    
-    public void HandleBackButton()
+
+    public RewardPopup ShowRewardPopup(string title, string message, int rewardCoin, int rewardGem)
+    {
+        RewardPopup rewardPopup = ShowPopup<RewardPopup>(false);
+
+        if (rewardPopup != null)
+        {
+            rewardPopup.Setup(title, message, rewardCoin, rewardGem, null);
+            return rewardPopup;
+        }
+
+        return null;
+    }
+
+    public void HandleAndroidBackButton()
     {
         // 팝업을 끄는 데 실패했다면,
         // 게임 종료를 묻는 팝업이 켜진다.
