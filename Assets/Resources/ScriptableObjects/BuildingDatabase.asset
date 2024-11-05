@@ -13,31 +13,35 @@ MonoBehaviour:
   m_Name: BuildingDatabase
   m_EditorClassIdentifier: 
   _buildings:
-  - name: "\uAC70\uC8FC\uC9C0"
+  - id: 0
+    name: "\uAC70\uC8FC\uC9C0"
     buildingPrefab: {fileID: 1572243783172642, guid: 584f4ab692f93504ba90c4afd41ab12f,
-      type: 3}
-    sizeX: 2
-    sizeZ: 3
-    tags:
-    - "\uC8FC\uAC70\uC6A9"
-  - name: "\uBC2D"
-    buildingPrefab: {fileID: 5793054202314272093, guid: d9d63b1d604f18f4a9754942810b9eb2,
-      type: 3}
-    sizeX: 2
-    sizeZ: 2
-    tags:
-    - "\uB18D\uC5C5\uC6A9"
-  - name: "\uACFC\uC218\uC6D0"
-    buildingPrefab: {fileID: 1118131271904288891, guid: 63e86079e17c8924ab82c8187ecf9d91,
       type: 3}
     sizeX: 3
     sizeZ: 3
     tags:
+    - "\uC8FC\uAC70\uC6A9"
+  - id: 1
+    name: "\uACFC\uC218\uC6D0"
+    buildingPrefab: {fileID: 1118131271904288891, guid: 63e86079e17c8924ab82c8187ecf9d91,
+      type: 3}
+    sizeX: 4
+    sizeZ: 4
+    tags:
     - "\uB18D\uC5C5\uC6A9"
-  - name: "\uBE44\uB2D0 \uD558\uC6B0\uC2A4"
+  - id: 2
+    name: "\uBC2D"
+    buildingPrefab: {fileID: 5793054202314272093, guid: d9d63b1d604f18f4a9754942810b9eb2,
+      type: 3}
+    sizeX: 1
+    sizeZ: 1
+    tags:
+    - "\uB18D\uC5C5\uC6A9"
+  - id: 3
+    name: "\uBE44\uB2D0 \uD558\uC6B0\uC2A4"
     buildingPrefab: {fileID: 1750395351432862, guid: 460cc210bc935fd4b8d666972cf52489,
       type: 3}
-    sizeX: 2
-    sizeZ: 4
+    sizeX: 1
+    sizeZ: 2
     tags:
     - "\uB18D\uC5C5\uC6A9"

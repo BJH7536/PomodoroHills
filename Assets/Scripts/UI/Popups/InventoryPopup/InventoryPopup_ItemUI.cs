@@ -1,28 +1,33 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace DataManagement
+namespace PomodoroHills
 {
     /// <summary>
     /// 개별 아이템의 UI를 관리하는 클래스입니다.
     /// </summary>
     public class InventoryPopup_ItemUI : MonoBehaviour
     {
+        [SerializeField] private ItemTable ItemTable;
+        
         [SerializeField] private TMP_Text itemNameText;     // 아이템 이름 텍스트
         [SerializeField] private TMP_Text itemQuantityText; // 아이템 수량 텍스트
         [SerializeField] private Image itemIconImage;       // 아이템 아이콘 이미지
 
-        private Item _item;
+        [SerializeField] private LongPressDetector LongPressDetector;
+        
+        [SerializeField] public ItemData Item;
         
         // 아이템 고유 ID를 저장하기 위한 필드
-        public string itemID { get; private set; }
+        public int itemID { get; private set; }
 
         /// <summary>
         /// 아이템 데이터를 기반으로 UI를 설정합니다.
         /// </summary>
         /// <param name="item">설정할 아이템 데이터</param>
-        public void Setup(Item item)
+        public void Setup(ItemData item)
         {
             if (item == null)
             {
@@ -31,26 +36,28 @@ namespace DataManagement
             }
 
             // 아이템 ID 설정
-            itemID = item.ItemID;
+            itemID = item.id;
 
-            _item = item;
+            Item = item;
+
+            var itemTableElement = ItemTable.GetItemInformById(itemID);
+            
             
             if (itemNameText != null)
-                itemNameText.text = item.Name;
+                itemNameText.text = itemTableElement.name;
 
             if (itemQuantityText != null)
-                itemQuantityText.text = $"x{item.Quantity}";
+                itemQuantityText.text = $"{Item.amount}";
 
-            // 아이템 아이콘 설정 (예: Resources에서 이미지 로드)
-            if (itemIconImage != null)
+            itemIconImage.sprite = itemTableElement.image;
+
+            if (itemTableElement.type == ItemType.Crop)
             {
-                // 예시: 아이템 타입에 따라 다른 이미지를 로드
-                string iconPath = $"Sprites/Icons/{item.Type.ToString()}";
-                Sprite iconSprite = Resources.Load<Sprite>(iconPath);
-                if (iconSprite != null)
-                    itemIconImage.sprite = iconSprite;
-                else
-                    DebugEx.LogWarning($"아이템 아이콘을 찾을 수 없습니다: {iconPath}");
+                LongPressDetector.onLongPress.RemoveAllAndAddListener(() =>
+                {
+                    InventoryPopup_ChooseAmountForItemSell chooseAmount = PopupManager.Instance.ShowPopup<InventoryPopup_ChooseAmountForItemSell>();
+                    chooseAmount.SetUp(item.id, Item.amount);
+                });
             }
         }
 
@@ -59,7 +66,7 @@ namespace DataManagement
         /// </summary>
         public void ResetUI()
         {
-            itemID = string.Empty;
+            itemID = 0;
 
             if (itemNameText != null)
                 itemNameText.text = string.Empty;
@@ -71,9 +78,14 @@ namespace DataManagement
                 itemIconImage.sprite = null;
         }
 
+        public void RefreshUI()
+        {
+            Setup(Item);
+        }
+        
         public ItemType GetItemType()
         {
-            return _item.Type;
+            return (ItemType)(itemID / 100);
         }
     }
 }

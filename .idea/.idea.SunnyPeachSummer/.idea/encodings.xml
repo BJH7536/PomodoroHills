@@ -14,6 +14,7 @@
     <file url="file://$PROJECT_DIR$/Assets/Scripts/Timer.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/TimerRestorationService.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/UIScaleEffect.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/StoreManager.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/TodoItem.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/TodoItemUIPool.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/TodoItem_Tester.cs" charset="UTF-8" />

@@ -9,13 +9,13 @@ public static class UIUtillity
     /// </summary>
     /// <param name="buttonClickedEvent"></param>
     /// <param name="call"></param>
-    public static void RemoveAllAndAddListener(this Button.ButtonClickedEvent buttonClickedEvent, UnityAction call)
+    public static void RemoveAllAndAddListener(this UnityEvent buttonClickedEvent, UnityAction call)
     {
         buttonClickedEvent.RemoveAllListeners();
         buttonClickedEvent.AddListener(call);
     }
     
-    public static void RemoveAllAndAddListeners(this Button.ButtonClickedEvent buttonClickedEvent, params UnityAction[] calls)
+    public static void RemoveAllAndAddListeners(this UnityEvent buttonClickedEvent, params UnityAction[] calls)
     {
         buttonClickedEvent.RemoveAllListeners();
         foreach (var call in calls)
@@ -23,7 +23,7 @@ public static class UIUtillity
                 buttonClickedEvent.AddListener(call);
     }
     
-    public static void RemoveAllAndAddListener(this ScrollRect.ScrollRectEvent scrollRectEvent, UnityAction<Vector2> call)
+    public static void RemoveAllAndAddListener(this UnityEvent<Vector2> scrollRectEvent, UnityAction<Vector2> call)
     {
         scrollRectEvent.RemoveAllListeners();
         scrollRectEvent.AddListener(call);

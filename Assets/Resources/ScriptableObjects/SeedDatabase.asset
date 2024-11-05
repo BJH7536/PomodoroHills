@@ -12,28 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f10a938dfd7e4604aaeddddd6efb592a, type: 3}
   m_Name: SeedDatabase
   m_EditorClassIdentifier: 
-  _seeds:
-  - name: "\uBBF8\uC2A4\uD130\uB9AC\uD55C \uC528\uC557"
-    growthTime: 600
-    tags: []
-  - name: "\uBD04 \uC528\uC557"
-    growthTime: 900
-    tags: []
-  - name: "\uC5EC\uB984 \uC528\uC557"
-    growthTime: 900
-    tags: []
-  - name: "\uAC00\uC744 \uC528\uC557"
-    growthTime: 900
-    tags: []
-  - name: "\uD654\uB824\uD55C \uC528\uC557"
-    growthTime: 1200
-    tags: []
-  - name: "\uBB34\uC1E0 \uC528\uC557"
-    growthTime: 1200
-    tags: []
-  - name: "\uBC30\uC528"
-    growthTime: 746409600
-    tags: []
-  - name: "\uC7A5\uC528"
-    growthTime: 752976000
-    tags: []
+  _seeds: []

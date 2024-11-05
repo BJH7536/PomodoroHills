@@ -9,6 +9,8 @@ using System.Linq;
 [System.Serializable]
 public class SeedData
 {
+    [SerializeField] private int id;                        // 식별자
+    public int Id => id;
     [SerializeField] private string name;                   // 씨앗의 이름
     public string Name => name;
 
@@ -36,7 +38,7 @@ public class SeedDatabase : ScriptableObject
     /// 외부에서 씨앗을 빠르게 찾을 수 있도록 Dictionary를 활용한다.
     /// 런타임에 List에 있는 씨앗들이 이 Dictionary로 옮겨온다.
     /// </summary>
-    private Dictionary<string, SeedData> _seedDictionary = new Dictionary<string, SeedData>();
+    private Dictionary<int, SeedData> _seedDictionary = new Dictionary<int, SeedData>();
 
     private void OnEnable()
     {
@@ -49,12 +51,12 @@ public class SeedDatabase : ScriptableObject
     /// </summary>
     private void InitializeDictionary()
     {
-        _seedDictionary = new Dictionary<string, SeedData>();
+        _seedDictionary = new Dictionary<int, SeedData>();
         foreach (var seed in _seeds)
         {
-            if (!_seedDictionary.TryAdd(seed.Name, seed))
+            if (!_seedDictionary.TryAdd(seed.Id, seed))
             {
-                DebugEx.LogWarning($"중복된 씨앗 이름: {seed.Name} / 씨앗 이름은 고유해야 합니다.");
+                DebugEx.LogWarning($"중복된 씨앗 식별자 : {seed.Id} / 씨앗의 식별자는 고유해야 합니다.");
             }
         }
     }
@@ -62,22 +64,22 @@ public class SeedDatabase : ScriptableObject
     /// <summary>
     /// 씨앗 이름으로 데이터를 검색하는 함수
     /// </summary>
-    /// <param name="seedName"> 찾고자 하는 씨앗 데이터 </param>
+    /// <param name="id"> 찾고자 하는 씨앗 데이터 </param>
     /// <returns></returns>
-    public SeedData GetSeedByName(string seedName)
+    public SeedData GetSeedByName(int id)
     {
         if (_seedDictionary == null)
         {
             InitializeDictionary();  // 만약 Dictionary가 null이라면 다시 초기화
         }
 
-        if (_seedDictionary != null && _seedDictionary.TryGetValue(seedName, out var seedData))
+        if (_seedDictionary != null && _seedDictionary.TryGetValue(id, out var seedData))
         {
             return seedData;
         }
         else
         {
-            DebugEx.LogWarning($"이름이 {seedName}인 씨앗을 찾을 수 없습니다.");
+            DebugEx.LogWarning($"이름이 {id}인 씨앗을 찾을 수 없습니다.");
             return null;
         }
     }

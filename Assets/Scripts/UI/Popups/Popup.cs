@@ -30,4 +30,9 @@ public class Popup : MonoBehaviour
     {
         // 필요한 경우 재정의하여 추가적인 동작을 처리
     }
+
+    public void Close()
+    {
+        PopupManager.Instance.HidePopup();
+    }
 }

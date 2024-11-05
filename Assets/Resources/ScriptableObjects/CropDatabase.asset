@@ -13,25 +13,23 @@ MonoBehaviour:
   m_Name: CropDatabase
   m_EditorClassIdentifier: 
   _crops:
-  - name: "\uAC10\uC790"
-    harvestTime: 20
-    tags:
-    - "\uBC2D"
-  - name: "\uC0AC\uACFC"
-    harvestTime: 30
+  - id: 300
+    name: "\uC0AC\uACFC"
+    harvestTime: 300
     tags:
     - "\uACFC\uC218\uC6D0"
-  - name: "\uB538\uAE30"
-    harvestTime: 45
+  - id: 301
+    name: "\uBCF5\uC22D\uC544"
+    harvestTime: 2700
+    tags:
+    - "\uACFC\uC218\uC6D0"
+  - id: 302
+    name: "\uC625\uC218\uC218"
+    harvestTime: 900
     tags:
     - "\uBC2D"
-    - "\uBE44\uB2D0\uD558\uC6B0\uC2A4"
-  - name: "\uD30C\uD504\uB9AC\uCE74"
-    harvestTime: 45
-    tags:
-    - "\uBC2D"
-    - "\uBE44\uB2D0\uD558\uC6B0\uC2A4"
-  - name: "\uBCF5\uC22D\uC544"
-    harvestTime: 60
+  - id: 303
+    name: "\uD1A0\uB9C8\uD1A0"
+    harvestTime: 1800
     tags:
     - "\uACFC\uC218\uC6D0"

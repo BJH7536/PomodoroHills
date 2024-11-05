@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using LeTai.Asset.TranslucentImage;
 using TMPro;
@@ -16,19 +17,19 @@ public class AlertPopup : Popup
     [SerializeField] private Transform panel;
 
     [SerializeField] private Button touchCover;
-
-    private void Awake()
-    {
-        touchCover.onClick.RemoveAllAndAddListener(()=> PopupManager.Instance.HidePopup());
-    }
-
-    private void OnEnable()
+    
+    private async void OnEnable()
     {
         _canvasGroup.alpha = 0;
         _canvasGroup.DOFade(1, 0.5f);
 
         panel.localScale = Vector3.zero;
         panel.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
+        
+
+        touchCover.onClick.RemoveAllListeners();
+        await UniTask.Delay(500);
+        touchCover.onClick.AddListener(()=> PopupManager.Instance.HidePopup());
     }
     
     public void Setup(string title, string message, TranslucentImageSource translucentImageSource)

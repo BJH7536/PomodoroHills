@@ -13,9 +13,29 @@ MonoBehaviour:
   m_Name: DecorDatabase
   m_EditorClassIdentifier: 
   _decors:
-  - name: "\uBC9A\uAF43\uB098\uBB34"
+  - id: 100
+    name: "\uBC9A\uAF43\uB098\uBB34"
     decorPrefab: {fileID: 1581205512263063425, guid: d58e1695d330ec14c9d23e4cabf58f4f,
       type: 3}
+    sizeX: 2
+    sizeZ: 2
+    tags: []
+  - id: 101
+    name: "\uC791\uC740\uC232"
+    decorPrefab: {fileID: 4818902426302677971, guid: 2c53daa9bade25843975c0aed7b86b27,
+      type: 3}
+    sizeX: 4
+    sizeZ: 4
+    tags: []
+  - id: 102
+    name: 
+    decorPrefab: {fileID: 0}
+    sizeX: 2
+    sizeZ: 2
+    tags: []
+  - id: 103
+    name: 
+    decorPrefab: {fileID: 0}
     sizeX: 2
     sizeZ: 2
     tags: []

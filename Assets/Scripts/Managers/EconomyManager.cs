@@ -76,6 +76,9 @@ public class EconomyManager : MonoBehaviour
         // 초기 텍스트 설정
         UpdateCoinText(Coin);
         UpdateGemText(Gem);
+
+        OnCoinChanged += UpdateCoinText;
+        OnGemChanged += UpdateGemText;
         
         // onFirstParticleFinished 이벤트 연결
         attractorBurstCoin.onFirstParticleFinished.AddListener(() => StartCoinAnimation(Coin));
@@ -113,8 +116,8 @@ public class EconomyManager : MonoBehaviour
     {
         if (!File.Exists(_dataPath_Currency))
         {
-            Coin = 0;
-            Gem = 0;
+            Coin = 20000;
+            Gem = 1000;
             return;
         }
 
@@ -156,7 +159,7 @@ public class EconomyManager : MonoBehaviour
             return;
         }
 
-        attractorBurstCoin.SetBurst(0, 0, (int)(amount / 300));
+        attractorBurstCoin.SetBurst(0, 0, Mathf.Max((int)(amount / 100), 10));
         attractorBurstCoin.Play();
         coinAnimationStartTime = Time.time;
         
@@ -181,8 +184,8 @@ public class EconomyManager : MonoBehaviour
 
         if (Coin < amount)
         {
-            PopupManager.Instance.ShowAlertPopup("SpendCoinAsync", "사용하려는 금액보다 보유한 Gold가 부족합니다.");
-            DebugEx.LogWarning("SpendCoinAsync: 사용하려는 금액보다 보유한 Gold가 부족합니다.");
+            PopupManager.Instance.ShowAlertPopup("구매 실패", "보유한 코인이 부족합니다.");
+            DebugEx.LogWarning("SpendCoinAsync: 보유한 Gold가 부족합니다.");
             return false;
         }
 
@@ -205,7 +208,7 @@ public class EconomyManager : MonoBehaviour
             return;
         }
 
-        attractorBurstGem.SetBurst(0, 0, (int)(amount / 10));
+        attractorBurstGem.SetBurst(0, 0, Mathf.Max((int)(amount / 10), 4));
         attractorBurstGem.Play();
         gemAnimationStartTime = Time.time;
         
@@ -230,8 +233,8 @@ public class EconomyManager : MonoBehaviour
 
         if (Gem < amount)
         {
-            PopupManager.Instance.ShowAlertPopup("SpendGemAsync", "사용하려는 금액보다 보유한 Diamond가 부족합니다.");
-            DebugEx.LogWarning("SpendGemAsync: 사용하려는 금액보다 보유한 Diamond가 부족합니다.");
+            PopupManager.Instance.ShowAlertPopup("구매 실패", "보유한 젬이 부족합니다.");
+            DebugEx.LogWarning("SpendGemAsync: 보유한 젬이 부족합니다.");
             return false;
         }
 

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using DataManagement;
+using PomodoroHills;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -67,11 +67,11 @@ public class InventoryPopup : Popup
         DisableLayoutGroupAfterFrameAsync().Forget();
         await LoadItemsAndPopulateUIAsync();
         
-        // DataManager 이벤트 구독
-        if (DataManager.Instance != null)
+        // InventoryManager 이벤트 구독
+        if (PomodoroHills.InventoryManager.Instance != null)
         {
-            DataManager.Instance.OnItemAdded += HandleItemAdded;
-            DataManager.Instance.OnItemDeleted += HandleItemDeleted;
+            PomodoroHills.InventoryManager.Instance.OnItemAdded += HandleItemAdded;
+            PomodoroHills.InventoryManager.Instance.OnItemDeleted += HandleItemDeleted;
         }
     }
 
@@ -89,11 +89,11 @@ public class InventoryPopup : Popup
         // 모든 아이템 UI를 풀에 반환
         ClearAllItems();
 
-        // DataManager 이벤트 구독 해제
-        if (DataManager.Instance != null)
+        // InventoryManager 이벤트 구독 해제
+        if (PomodoroHills.InventoryManager.Instance != null)
         {
-            DataManager.Instance.OnItemAdded -= HandleItemAdded;
-            DataManager.Instance.OnItemDeleted -= HandleItemDeleted;
+            PomodoroHills.InventoryManager.Instance.OnItemAdded -= HandleItemAdded;
+            PomodoroHills.InventoryManager.Instance.OnItemDeleted -= HandleItemDeleted;
         }
     }
 
@@ -298,28 +298,27 @@ public class InventoryPopup : Popup
         ClearAllItems();
 
         // DataManager에서 아이템 리스트를 가져와 UI에 표시
-        List<DataManagement.Item> currentItems = DataManager.Instance.GetItems();
+        List<ItemData> currentItems = PomodoroHills.InventoryManager.Instance.GetItems();
 
         if (currentItems == null || currentItems.Count == 0)
         {
             DebugEx.LogWarning("No items found to populate.");
             return;
         }
-
-        // 아이템을 이름순으로 정렬합니다
-        currentItems.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.CurrentCulture));
-
-        foreach (DataManagement.Item item in currentItems)
+        
+        foreach (ItemData item in currentItems)
         {
-            GameObject itemGO = itemUIPool.GetItemUI(item.Type);
+            ItemType type = (ItemType)(item.id / 100);
+            
+            GameObject itemGO = itemUIPool.GetItemUI(type);
 
             if (itemGO == null)
             {
-                DebugEx.LogError($"Failed to get item UI for type: {item.Type}");
+                DebugEx.LogError($"Failed to get item UI for type: {type}");
                 continue;
             }
 
-            itemGO.transform.SetParent(GetScrollContent(item.Type), false);
+            itemGO.transform.SetParent(GetScrollContent(type), false);
             InventoryPopup_ItemUI inventoryPopupItemUI = itemGO.GetComponent<InventoryPopup_ItemUI>();
             if (inventoryPopupItemUI != null)
             {
@@ -350,26 +349,26 @@ public class InventoryPopup : Popup
         // Clear existing items
         ClearAllItems();
     
-        List<DataManagement.Item> currentItems = DataManager.Instance.GetItems();
+        List<ItemData> currentItems = PomodoroHills.InventoryManager.Instance.GetItems();
         if (currentItems == null || currentItems.Count == 0)
         {
             DebugEx.LogWarning("No items to display for the current tab.");
             return;
         }
 
-        currentItems.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.CurrentCulture));
-
-        foreach (DataManagement.Item item in currentItems)
+        foreach (ItemData item in currentItems)
         {
-            GameObject itemGO = itemUIPool.GetItemUI(item.Type); // 각 타입에 맞는 풀에서 UI 가져오기
+            ItemType type = (ItemType)(item.id / 100);
+            
+            GameObject itemGO = itemUIPool.GetItemUI(type); // 각 타입에 맞는 풀에서 UI 가져오기
 
             if (itemGO == null)
             {
-                DebugEx.LogError($"Failed to get item UI for type: {item.Type}");
+                DebugEx.LogError($"Failed to get item UI for type: {type}");
                 continue;
             }
 
-            itemGO.transform.SetParent(GetScrollContent(item.Type), false);
+            itemGO.transform.SetParent(GetScrollContent(type), false);
 
             InventoryPopup_ItemUI inventoryPopupItemUI = itemGO.GetComponent<InventoryPopup_ItemUI>();
             if (inventoryPopupItemUI != null)
@@ -442,31 +441,57 @@ public class InventoryPopup : Popup
     /// DataManager의 OnItemAdded 이벤트 핸들러
     /// </summary>
     /// <param name="newItem">추가된 아이템</param>
-    private async void HandleItemAdded(DataManagement.Item newItem)
+    private async void HandleItemAdded(ItemData newItem)
     {
-        // 현재 활성화된 탭에 해당하는 ScrollRect에 아이템 추가
-        GameObject itemGO = itemUIPool.GetItemUI(newItem.Type);
-        itemGO.transform.SetParent(GetScrollContent(newItem.Type), false);
-        InventoryPopup_ItemUI inventoryPopupItemUI = itemGO.GetComponent<InventoryPopup_ItemUI>();
-        if (inventoryPopupItemUI != null)
+        var itemData = PomodoroHills.InventoryManager.Instance.GetItems().Find((item) => item.id == newItem.id);
+        if (itemData.amount == 1)
         {
-            inventoryPopupItemUI.Setup(newItem);
+            ItemType type = (ItemType)(newItem.id / 100);
+        
+            // 현재 활성화된 탭에 해당하는 ScrollRect에 아이템 추가
+            GameObject itemGO = itemUIPool.GetItemUI(type);
+            itemGO.transform.SetParent(GetScrollContent(type), false);
+            InventoryPopup_ItemUI inventoryPopupItemUI = itemGO.GetComponent<InventoryPopup_ItemUI>();
+            if (inventoryPopupItemUI != null)
+            {
+                inventoryPopupItemUI.Setup(newItem);
+            }
+        
+            // 레이아웃 컴포넌트 활성화 후 업데이트, 이후 비활성화
+            EnableLayoutComponents();
+            await UniTask.Yield(); // 레이아웃이 제대로 적용될 수 있도록 한 프레임 대기
+            ForceRebuildLayout();
+            DisableLayoutComponents(); // 레이아웃 갱신 후 비활성화
+        }
+        else
+        {
+            foreach (ScrollRect scrollRect in new ScrollRect[] { buildingScrollRect, decorationScrollRect, seedScrollRect, cropScrollRect })
+            {
+                if (scrollRect != null && scrollRect.content != null)
+                {
+                    for (int i = scrollRect.content.childCount - 1; i >= 0; i--)
+                    {
+                        Transform child = scrollRect.content.GetChild(i);
+                        InventoryPopup_ItemUI inventoryPopupItemUI = child.GetComponent<InventoryPopup_ItemUI>();
+                        if (inventoryPopupItemUI != null)
+                        {
+                            inventoryPopupItemUI.RefreshUI();
+                        }
+                    }
+                }
+            }
         }
 
-        // 레이아웃 컴포넌트 활성화 후 업데이트, 이후 비활성화
-        EnableLayoutComponents();
-        await UniTask.Yield(); // 레이아웃이 제대로 적용될 수 있도록 한 프레임 대기
-        ForceRebuildLayout();
-        DisableLayoutComponents(); // 레이아웃 갱신 후 비활성화
     }
 
     /// <summary>
     /// DataManager의 OnItemDeleted 이벤트 핸들러
     /// </summary>
-    /// <param name="itemID">삭제된 아이템의 ID</param>
-    private async void HandleItemDeleted(string itemID)
+    /// <param name="id">삭제된 아이템의 ID</param>
+    /// <param name="amountToRemove">삭제할 갯수</param>
+    private async void HandleItemDeleted(int id, int amountToRemove)
     {
-        // 모든 ScrollRect의 콘텐츠를 순회하며 해당 아이템을 찾아 풀에 반환
+        // 모든 ScrollRect의 콘텐츠를 순회하며 해당 아이템을 찾아 수량을 조정하거나 풀에 반환
         foreach (ScrollRect scrollRect in new ScrollRect[] { buildingScrollRect, decorationScrollRect, seedScrollRect, cropScrollRect })
         {
             if (scrollRect != null && scrollRect.content != null)
@@ -474,9 +499,21 @@ public class InventoryPopup : Popup
                 foreach (Transform child in scrollRect.content)
                 {
                     InventoryPopup_ItemUI inventoryPopupItemUI = child.GetComponent<InventoryPopup_ItemUI>();
-                    if (inventoryPopupItemUI != null && inventoryPopupItemUI.itemID == itemID)
+                    if (inventoryPopupItemUI != null && inventoryPopupItemUI.itemID == id)
                     {
-                        itemUIPool.ReturnItemUI(child.gameObject, inventoryPopupItemUI.GetItemType());
+                        // 아이템의 현재 수량을 업데이트
+                        if (inventoryPopupItemUI.Item.amount > amountToRemove)
+                        {
+                            inventoryPopupItemUI.Item.amount -= amountToRemove;
+                            inventoryPopupItemUI.RefreshUI();
+                            DebugEx.Log($"{amountToRemove} of item ID {id} removed. Remaining amount: {inventoryPopupItemUI.Item.amount}");
+                        }
+                        else
+                        {
+                            // 아이템 수량이 부족하거나 정확히 일치할 경우 삭제
+                            itemUIPool.ReturnItemUI(child.gameObject, inventoryPopupItemUI.GetItemType());
+                            DebugEx.Log($"Item ID {id} removed from inventory as the amount is depleted.");
+                        }
                         break; // 해당 아이템을 찾으면 더 이상 탐색할 필요 없음
                     }
                 }
@@ -489,6 +526,7 @@ public class InventoryPopup : Popup
         ForceRebuildLayout();
         DisableLayoutComponents(); // 레이아웃 갱신 후 비활성화
     }
+
 
     /// <summary>
     /// 모든 ScrollRect의 Content 레이아웃을 강제로 갱신합니다.

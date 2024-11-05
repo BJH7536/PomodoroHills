@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98c00f10986c3ea4b8a72051b507ed49, type: 3}
+  m_Name: ItemTable
+  m_EditorClassIdentifier: 
+  _items:
+  - id: 0
+    name: "\uAC70\uC8FC\uC9C0"
+    image: {fileID: 21300000, guid: 3a08be4646feb2649b1a7622e6a0f61b, type: 3}
+    type: 0
+  - id: 1
+    name: "\uACFC\uC218\uC6D0"
+    image: {fileID: 21300000, guid: 884b807069377534baf84060cf021d00, type: 3}
+    type: 0
+  - id: 2
+    name: "\uBC2D"
+    image: {fileID: 21300000, guid: f55eb18cca379874aa97e0352df5635e, type: 3}
+    type: 0
+  - id: 3
+    name: "\uBE44\uB2D0\uD558\uC6B0\uC2A4"
+    image: {fileID: 21300000, guid: e396217096b57ac43850983574f5a174, type: 3}
+    type: 0
+  - id: 100
+    name: "\uBC9A\uAF43\uB098\uBB34"
+    image: {fileID: 21300000, guid: c679b7c691ae5d742ab7361f6803d9c1, type: 3}
+    type: 1
+  - id: 101
+    name: "\uC791\uC740\uC232"
+    image: {fileID: 21300000, guid: 084ef1d2e4c955145bdb3f6c85df8a30, type: 3}
+    type: 1
+  - id: 102
+    name: "\uC7A5\uC2DD\uBB3C2"
+    image: {fileID: 21300000, guid: 691d0785343029f448d488db972361b2, type: 3}
+    type: 1
+  - id: 103
+    name: "\uC7A5\uC2DD\uBB3C3"
+    image: {fileID: 21300000, guid: 691d0785343029f448d488db972361b2, type: 3}
+    type: 1
+  - id: 200
+    name: ..
+    image: {fileID: 21300000, guid: e20e2219c8024ee4ebb414b4cdfb7833, type: 3}
+    type: 2
+  - id: 201
+    name: ...
+    image: {fileID: 21300000, guid: e20e2219c8024ee4ebb414b4cdfb7833, type: 3}
+    type: 2
+  - id: 202
+    name: ...
+    image: {fileID: 21300000, guid: e20e2219c8024ee4ebb414b4cdfb7833, type: 3}
+    type: 2
+  - id: 203
+    name: ..
+    image: {fileID: 21300000, guid: e20e2219c8024ee4ebb414b4cdfb7833, type: 3}
+    type: 2
+  - id: 300
+    name: "\uC0AC\uACFC"
+    image: {fileID: 21300000, guid: c2965bb7dcf8a0741907c1a6a77e4350, type: 3}
+    type: 3
+  - id: 301
+    name: "\uBCF5\uC22D\uC544"
+    image: {fileID: 21300000, guid: e90ffbcfdeb1ef845b895063d3060c1e, type: 3}
+    type: 3
+  - id: 302
+    name: "\uC625\uC218\uC218"
+    image: {fileID: 21300000, guid: be0afb772c60f594aa76b93abb814813, type: 3}
+    type: 3
+  - id: 303
+    name: "\uD1A0\uB9C8\uD1A0"
+    image: {fileID: 21300000, guid: c89afb910ba313a4a89ff96009b21119, type: 3}
+    type: 3

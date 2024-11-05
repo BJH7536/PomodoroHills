@@ -9,6 +9,8 @@ using System.Linq;
 [System.Serializable]
 public class CropData
 {
+    [SerializeField] private int id;                        // 식별자
+    public int Id => id;
     [SerializeField] private string name;                    // 작물의 이름
     public string Name => name;
     
@@ -36,7 +38,7 @@ public class CropDatabase : ScriptableObject
     /// 외부에서 작물을 빠르게 찾을 수 있도록 Dictionary를 활용한다.
     /// 런타임에 List에 있는 작물들이 이 Dictionary로 옮겨온다.
     /// </summary>
-    private Dictionary<string, CropData> _cropDictionary = new Dictionary<string, CropData>();
+    private Dictionary<int, CropData> _cropDictionary = new Dictionary<int, CropData>();
 
     private void OnEnable()
     {
@@ -49,12 +51,12 @@ public class CropDatabase : ScriptableObject
     /// </summary>
     private void InitializeDictionary()
     {
-        _cropDictionary = new Dictionary<string, CropData>();
+        _cropDictionary = new Dictionary<int, CropData>();
         foreach (var crop in _crops)
         {
-            if (!_cropDictionary.TryAdd(crop.Name, crop))
+            if (!_cropDictionary.TryAdd(crop.Id, crop))
             {
-                DebugEx.LogWarning($"중복된 작물 이름: {crop.Name} / 작물 이름은 고유해야 합니다.");
+                DebugEx.LogWarning($"중복된 작물 식별자: {crop.Id} / 작물의 식별자는 고유해야 합니다.");
             }
         }
     }
@@ -64,20 +66,20 @@ public class CropDatabase : ScriptableObject
     /// </summary>
     /// <param name="cropName"> 찾고자 하는 작물 데이터 </param>
     /// <returns></returns>
-    public CropData GetCropByName(string cropName)
+    public CropData GetCropById(int id)
     {
         if (_cropDictionary == null)
         {
             InitializeDictionary();  // 만약 Dictionary가 null이라면 다시 초기화
         }
 
-        if (_cropDictionary != null && _cropDictionary.TryGetValue(cropName, out var cropData))
+        if (_cropDictionary != null && _cropDictionary.TryGetValue(id, out var cropData))
         {
             return cropData;
         }
         else
         {
-            DebugEx.LogWarning($"이름이 {cropName}인 작물을 찾을 수 없습니다.");
+            DebugEx.LogWarning($"식별자가 {id}인 작물을 찾을 수 없습니다.");
             return null;
         }
     }

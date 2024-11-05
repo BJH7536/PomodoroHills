@@ -53,10 +53,10 @@ public class ConfirmPopup : Popup
 
     private void OnConfirmButtonClicked()
     {
-        onConfirmAction?.Invoke();  // 확인 작업 수행
-        
         // 팝업 닫기
         PopupManager.Instance.HidePopup();
+        
+        onConfirmAction?.Invoke();  // 확인 작업 수행
     }
 
     private void OnCancelButtonClicked()

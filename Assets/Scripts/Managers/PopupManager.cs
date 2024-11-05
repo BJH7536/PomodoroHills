@@ -199,6 +199,8 @@ public class PopupManager : MonoBehaviour
         }
         popupPool[popupType].Push(popupToClose); // 팝업을 풀에 추가
         
+        DebugEx.Log($"Hide {popupToClose.GetType()}");
+        
         return true;        // 열려있는 팝업이 있었고, 그래서 팝업을 끌 수 있었다.
     }
 

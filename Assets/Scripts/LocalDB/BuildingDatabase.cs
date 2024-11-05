@@ -9,6 +9,8 @@ using UnityEngine;
 [System.Serializable]
 public class BuildingData
 {
+    [SerializeField] private int id;                        // 식별자
+    public int Id => id;
     [SerializeField] private string name;                   // 건물의 이름
     public string Name => name;
     [SerializeField] private GameObject buildingPrefab;     // 건물의 프리팹
@@ -38,7 +40,7 @@ public class BuildingDatabase : ScriptableObject
     /// 외부에서 건물을 빠르게 찾을 수 있도록 Dictionary를 활용한다.
     /// 런타임에 List에 있는 건물들이 이 Dictionary로 옮겨온다.
     /// </summary>
-    private Dictionary<string, BuildingData> _buildingDictionary = new Dictionary<string, BuildingData>();
+    private Dictionary<int, BuildingData> _buildingDictionary = new Dictionary<int, BuildingData>();
 
     private void OnEnable()
     {
@@ -51,12 +53,12 @@ public class BuildingDatabase : ScriptableObject
     /// </summary>
     private void InitializeDictionary()
     {
-        _buildingDictionary = new Dictionary<string, BuildingData>();
+        _buildingDictionary = new Dictionary<int, BuildingData>();
         foreach (var building in _buildings)
         {
-            if (!_buildingDictionary.TryAdd(building.Name, building))
+            if (!_buildingDictionary.TryAdd(building.Id, building))
             {
-                DebugEx.LogWarning($"중복된 건물 이름: {building.Name} / 건물 이름은 고유해야 합니다.");
+                DebugEx.LogWarning($"중복된 건물의 식별자: {building.Id} / 건물의 식별자는 고유해야 합니다.");
             }
         }
     }
@@ -64,22 +66,22 @@ public class BuildingDatabase : ScriptableObject
     /// <summary>
     /// 건물 이름으로 데이터를 검색하는 함수
     /// </summary>
-    /// <param name="buildingName"> 찾고자 하는 건물 데이터 </param>
+    /// <param name="id"> 찾고자 하는 건물 데이터 </param>
     /// <returns></returns>
-    public BuildingData GetBuildingByName(string buildingName)
+    public BuildingData GetBuildingById(int id)
     {
         if (_buildingDictionary == null)
         {
             InitializeDictionary();  // 만약 Dictionary가 null이라면 다시 초기화
         }
 
-        if (_buildingDictionary != null && _buildingDictionary.TryGetValue(buildingName, out var buildingData))
+        if (_buildingDictionary != null && _buildingDictionary.TryGetValue(id, out var buildingData))
         {
             return buildingData;
         }
         else
         {
-            DebugEx.LogWarning($"이름이 {buildingName}인 건물을 찾을 수 없습니다.");
+            DebugEx.LogWarning($"식별자가 {id}인 건물을 찾을 수 없습니다.");
             return null;
         }
     }

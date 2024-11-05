@@ -9,6 +9,8 @@ using System.Linq;
 [System.Serializable]
 public class DecorData
 {
+    [SerializeField] private int id;                        // 식별자
+    public int Id => id;
     [SerializeField] private string name;                   // 장식품의 이름
     public string Name => name;
 
@@ -39,7 +41,7 @@ public class DecorDatabase : ScriptableObject
     /// 외부에서 장식품을 빠르게 찾을 수 있도록 Dictionary를 활용한다.
     /// 런타임에 List에 있는 장식품들이 이 Dictionary로 옮겨온다.
     /// </summary>
-    private Dictionary<string, DecorData> _decorDictionary = new Dictionary<string, DecorData>();
+    private Dictionary<int, DecorData> _decorDictionary = new Dictionary<int, DecorData>();
 
     private void OnEnable()
     {
@@ -52,12 +54,12 @@ public class DecorDatabase : ScriptableObject
     /// </summary>
     private void InitializeDictionary()
     {
-        _decorDictionary = new Dictionary<string, DecorData>();
+        _decorDictionary = new Dictionary<int, DecorData>();
         foreach (var decor in _decors)
         {
-            if (!_decorDictionary.TryAdd(decor.Name, decor))
+            if (!_decorDictionary.TryAdd(decor.Id, decor))
             {
-                DebugEx.LogWarning($"중복된 장식품 이름: {decor.Name} / 장식품 이름은 고유해야 합니다.");
+                DebugEx.LogWarning($"중복된 장식품 식별자 : {decor.Id} / 장식품의 식별자는 고유해야 합니다.");
             }
         }
     }
@@ -65,22 +67,22 @@ public class DecorDatabase : ScriptableObject
     /// <summary>
     /// 장식품 이름으로 데이터를 검색하는 함수
     /// </summary>
-    /// <param name="decorName"> 찾고자 하는 장식품 데이터 </param>
+    /// <param name="id"> 찾고자 하는 장식품 데이터 </param>
     /// <returns></returns>
-    public DecorData GetDecorByName(string decorName)
+    public DecorData GetDecorByName(int id)
     {
         if (_decorDictionary == null)
         {
             InitializeDictionary();  // 만약 Dictionary가 null이라면 다시 초기화
         }
 
-        if (_decorDictionary != null && _decorDictionary.TryGetValue(decorName, out var decorData))
+        if (_decorDictionary != null && _decorDictionary.TryGetValue(id, out var decorData))
         {
             return decorData;
         }
         else
         {
-            DebugEx.LogWarning($"이름이 {decorName}인 장식품을 찾을 수 없습니다.");
+            DebugEx.LogWarning($"식별자가 {id}인 장식품을 찾을 수 없습니다.");
             return null;
         }
     }

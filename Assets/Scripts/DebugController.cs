@@ -1,10 +1,8 @@
 using System;
 using System.IO;
 using Cysharp.Threading.Tasks;
-using DataManagement;
 using TodoSystem;
 using UnityEngine;
-using ItemType = DataManagement.ItemType;
 
 public class DebugExController  : MonoBehaviour
 {
@@ -35,28 +33,28 @@ public class DebugExController  : MonoBehaviour
     
     public async void AddItem()
     {
-        // 임의의 아이템 타입 선택
-        ItemType randomType = GetRandomItemType();
-
-        // 새로운 아이템 생성
-        DataManagement.Item newItem = new DataManagement.Item
-        {
-            ItemID = Guid.NewGuid().ToString(),
-            Name = $"Item {itemCounter}",
-            Type = randomType,
-            Quantity = UnityEngine.Random.Range(1, 10)
-        };
-        itemCounter++;
-
-        try
-        {
-            // DataManager를 통해 아이템 추가
-            await DataManager.Instance.AddItemAsync(newItem);
-        }
-        catch (Exception ex)
-        {
-            DebugEx.LogError($"DebugExController: AddItem 호출 중 오류 발생: {ex.Message}");
-        }
+        // // 임의의 아이템 타입 선택
+        // ItemType randomType = GetRandomItemType();
+        //
+        // // 새로운 아이템 생성
+        // Item newItem = new Item
+        // {
+        //     Id = Guid.NewGuid().ToString(),
+        //     Name = $"Item {itemCounter}",
+        //     Type = randomType,
+        //     Amount = UnityEngine.Random.Range(1, 10)
+        // };
+        // itemCounter++;
+        //
+        // try
+        // {
+        //     // DataManager를 통해 아이템 추가
+        //     await PomodoroHillsInventory.InventoryManager.Instance.AddItemAsync(newItem);
+        // }
+        // catch (Exception ex)
+        // {
+        //     DebugEx.LogError($"DebugExController: AddItem 호출 중 오류 발생: {ex.Message}");
+        // }
     }
 
     /// <summary>
@@ -64,25 +62,25 @@ public class DebugExController  : MonoBehaviour
     /// </summary>
     public async void DeleteItem()
     {
-        // 현재 아이템 리스트 가져오기
-        var currentItems = DataManager.Instance.GetItems();
-
-        if (currentItems.Count == 0)
-        {
-            DebugEx.LogWarning("DeleteItem 호출 시 인벤토리가 비어있습니다.");
-            return;
-        }
-
-        // 마지막 아이템 삭제
-        var lastItem = currentItems[^1];
-        try
-        {
-            await DataManager.Instance.DeleteItemAsync(lastItem.ItemID);
-        }
-        catch (Exception ex)
-        {
-            DebugEx.LogError($"DebugExController: DeleteItem 호출 중 오류 발생: {ex.Message}");
-        }
+        // // 현재 아이템 리스트 가져오기
+        // var currentItems = PomodoroHills.InventoryManager.Instance.GetItems();
+        //
+        // if (currentItems.Count == 0)
+        // {
+        //     DebugEx.LogWarning("DeleteItem 호출 시 인벤토리가 비어있습니다.");
+        //     return;
+        // }
+        //
+        // // 마지막 아이템 삭제
+        // var lastItem = currentItems[^1];
+        // try
+        // {
+        //     await PomodoroHills.InventoryManager.Instance.DeleteItemAsync(lastItem);
+        // }
+        // catch (Exception ex)
+        // {
+        //     DebugEx.LogError($"DebugExController: DeleteItem 호출 중 오류 발생: {ex.Message}");
+        // }
     }
 
     /// <summary>
@@ -143,9 +141,9 @@ public class DebugExController  : MonoBehaviour
                     $"타이머와 연동된 Todo항목은 : \n[{TimerManager.Instance.CurrentTodoItem}]\n");
     }
 
-    public void Add100Gold()
+    public void Add1000Gold()
     {
-        EconomyManager.Instance.AddCoinAsync(100).Forget();
+        EconomyManager.Instance.AddCoinAsync(1000).Forget();
     }
     
     public void Subtract100Gold()
