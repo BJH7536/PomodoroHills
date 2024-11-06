@@ -6,11 +6,13 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using VInspector;
 
 /// <summary>
 /// 사용자의 재화 정보를 로컬 저장소에 저장하고 불러오는 기능을 제공하는 클래스.
 /// 싱글톤 패턴을 사용하여 전역에서 접근 가능.
 /// </summary>
+[DefaultExecutionOrder(-10)]
 public class EconomyManager : MonoBehaviour
 {
     /// <summary>
@@ -25,7 +27,7 @@ public class EconomyManager : MonoBehaviour
 
     private const string CurrencyFileName = "currencyData.json";
     private string _dataPath_Currency;
-
+    
     #region SerializeFields
     
     [SerializeField] private TextMeshProUGUI coinText;
@@ -71,7 +73,7 @@ public class EconomyManager : MonoBehaviour
         _dataPath_Currency = Path.Combine(Application.persistentDataPath, CurrencyFileName);
 
         // 데이터 로드
-        await LoadCurrencyAsync();
+        LoadCurrencyAsync().Forget();
         
         // 초기 텍스트 설정
         UpdateCoinText(Coin);
@@ -90,14 +92,28 @@ public class EconomyManager : MonoBehaviour
     #region Save & Load
 
     /// <summary>
+    /// 재화를 초기화합니다.
+    /// </summary>
+    public void ResetCurrency()
+    {
+        Coin = 0;
+        Gem = 0;
+
+        // 재화 변경 이벤트 호출하여 UI 업데이트
+        OnCoinChanged?.Invoke(Coin);
+        OnGemChanged?.Invoke(Gem);
+    }
+    
+    /// <summary>
     /// 재화 데이터를 로컬 저장소에 비동기적으로 저장합니다.
     /// </summary>
-    private async UniTask SaveCurrencyAsync()
+    public async UniTask SaveCurrencyAsync()
     {
         CurrencyData data = new CurrencyData { coin = Coin, gem = Gem };
         string json = JsonUtility.ToJson(data, true);
         try
         {
+            
             using (StreamWriter writer = new StreamWriter(_dataPath_Currency, false))
             {
                 await writer.WriteAsync(json);
@@ -112,7 +128,7 @@ public class EconomyManager : MonoBehaviour
     /// <summary>
     /// 로컬 저장소에서 재화 데이터를 비동기적으로 불러옵니다.
     /// </summary>
-    private async UniTask LoadCurrencyAsync()
+    public async UniTask LoadCurrencyAsync()
     {
         if (!File.Exists(_dataPath_Currency))
         {
@@ -127,8 +143,8 @@ public class EconomyManager : MonoBehaviour
             {
                 string json = await reader.ReadToEndAsync();
                 CurrencyData data = JsonUtility.FromJson<CurrencyData>(json);
-                Coin = data?.coin ?? 0;
-                Gem = data?.gem ?? 0;
+                Coin += data?.coin ?? 0;
+                Gem += data?.gem ?? 0;
 
                 // 초기값 설정 시 이벤트 호출
                 OnCoinChanged?.Invoke(Coin);
@@ -164,7 +180,6 @@ public class EconomyManager : MonoBehaviour
         coinAnimationStartTime = Time.time;
         
         Coin += amount;
-        await SaveCurrencyAsync();
         OnCoinChanged?.Invoke(Coin); // Coin 변동 시 Action 호출
         DebugEx.Log($"Coin added: {amount}, Total: {Coin}");
     }
@@ -190,7 +205,6 @@ public class EconomyManager : MonoBehaviour
         }
 
         Coin -= amount;
-        await SaveCurrencyAsync();
         OnCoinChanged?.Invoke(Coin); // Coin 변동 시 Action 호출
         DebugEx.Log($"Coin spent: {amount}, Remaining: {Coin}");
         return true;
@@ -213,7 +227,6 @@ public class EconomyManager : MonoBehaviour
         gemAnimationStartTime = Time.time;
         
         Gem += amount;
-        await SaveCurrencyAsync();
         OnGemChanged?.Invoke(Gem); // Gem 변동 시 Action 호출
         DebugEx.Log($"Gem added: {amount}, Total: {Gem}");
     }
@@ -239,7 +252,6 @@ public class EconomyManager : MonoBehaviour
         }
 
         Gem -= amount;
-        await SaveCurrencyAsync();
         OnGemChanged?.Invoke(Gem); // Gem 변동 시 Action 호출
         DebugEx.Log($"Gem spent: {amount}, Remaining: {Gem}");
         return true;
@@ -247,6 +259,13 @@ public class EconomyManager : MonoBehaviour
 
     #endregion
 
+    [Button]
+    public void CurrentCoinAndGem()
+    {
+        DebugEx.Log($"Current Coin : {Coin}\n" +
+                    $"Current Gem : {Gem}");
+    }
+    
     private void UpdateCoinText(long coinAmount)
     {
         if (coinText != null)
@@ -284,11 +303,6 @@ public class EconomyManager : MonoBehaviour
     private async void OnApplicationQuit()
     {
         await SaveCurrencyAsync();
-    }
-
-    public void ParticleStopped()
-    {
-        DebugEx.Log($"<color='red'>Particle Stopped!!!!!</color>");
     }
     
     /// <summary>

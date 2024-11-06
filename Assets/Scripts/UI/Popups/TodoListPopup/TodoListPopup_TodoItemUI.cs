@@ -95,7 +95,7 @@ public class TodoListPopup_TodoItemUI : MonoBehaviour
         // 롱프레스가 감지되면 삭제 확인 팝업 호출
         PopupManager.Instance.ShowConfirmPopup(
             title: "삭제 확인",
-            message: $"'{_todoItem.Name}' 할 일을 삭제하시겠습니까?",
+            message: $"할 일 '{_todoItem.Name}' 항목을 \n\n삭제하시겠습니까?",
             confirmAction: DeleteTodoItem
         );
     }

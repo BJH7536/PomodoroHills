@@ -7,6 +7,6 @@ public class FullScreenScaler : MonoBehaviour
 {
     private void Awake()
     {
-        Screen.fullScreen = false;
+        
     }
 }

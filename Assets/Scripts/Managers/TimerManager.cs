@@ -1,16 +1,15 @@
 using System;
-using System.Globalization;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using TodoSystem;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 
 // MVC 패턴 활용
 // Model (TimerManager) : 타이머의 상태 및 로직 관리. 핵심 로직 처리
 // View (TimerPopup(PanelCircularTimer), TimerWidget) : 타이머의 상태를 사용자에게 보여주는 UI 부분.
 // Controller (TimerPopup(PanelCircularTimer)) : 사용자의 입력을 받아 TimerManager에게 타이머를 시작, 일시정지, 재개, 취소 등의 명령을 내린다.
+[DefaultExecutionOrder(-1)]
 public class TimerManager : MonoBehaviour
 {
     #region Singleton
@@ -65,6 +64,7 @@ public class TimerManager : MonoBehaviour
         }
     }
     
+    [SerializeField]
     private TodoItem currentTodoItem = null;           // 타이머에 연결된 OnTodoItemLink
     public TodoItem CurrentTodoItem => currentTodoItem;
 
@@ -348,7 +348,7 @@ public class TimerManager : MonoBehaviour
 
                 if (CurrentTimerState == TimerState.FocusSessionRunning)
                 {
-                    int progressToAdd = (int)Math.Min(elapsed.TotalMinutes, focusMinute);
+                    int progressToAdd = (int)Math.Min(Math.Round(elapsed.TotalMinutes), focusMinute);
                     currentTodoItem.AddProgress(DateTime.Today, progressToAdd);
                     DebugEx.Log($"진척도 추가: {progressToAdd}분");
                 }

@@ -10,6 +10,7 @@ namespace PomodoroHills
     /// 아이템 데이터를 로컬 저장소에 저장하고 불러오는 기능을 제공하는 클래스입니다.
     /// 싱글톤 패턴을 사용하여 전역에서 접근 가능합니다.
     /// </summary>
+    [DefaultExecutionOrder(-1)]
     public class InventoryManager : MonoBehaviour
     {
         /// <summary>
@@ -57,10 +58,18 @@ namespace PomodoroHills
         }
 
         /// <summary>
+        /// 캐시된 아이템 리스트를 비웁니다.
+        /// </summary>
+        public void ClearCachedItems()
+        {
+            cachedItems.Clear();
+        }
+        
+        /// <summary>
         /// 아이템 데이터를 로컬 저장소에 비동기적으로 저장합니다.
         /// </summary>
         /// <param name="items">저장할 아이템 리스트</param>
-        private async UniTask SaveItemsAsync()
+        public async UniTask SaveItemsAsync()
         {
             try
             {
@@ -78,7 +87,7 @@ namespace PomodoroHills
         /// <summary>
         /// 로컬 저장소에서 아이템 데이터를 비동기적으로 불러옵니다.
         /// </summary>
-        private async UniTask LoadItemsAsync()
+        public async UniTask LoadItemsAsync()
         {
             if (File.Exists(_dataPath_Inventory))
             {
@@ -160,22 +169,23 @@ namespace PomodoroHills
         /// 아이템의 id와 갯수를 입력받아 해당 아이템의 갯수를 줄입니다.
         /// </summary>
         /// <param name="itemId">삭제할 아이템의 ID</param>
-        /// <param name="amountToRemove">제거할 갯수</param>
+        /// <param name="amountToRemove">제거할 갯수</param>ㄷ
         public async UniTask DeleteItemAsync(int itemId, int amountToRemove)
         {
             var existingItem = cachedItems.Find(item => item.id == itemId);
             if (existingItem != null)
             {
-                // if (existingItem.amount > amountToRemove)
-                // {
-                //     existingItem.amount -= amountToRemove;
-                //     DebugEx.Log($"{amountToRemove} of {existingItem.id} removed. Remaining amount: {existingItem.amount}");
-                // }
-                // else
-                // {
-                //     cachedItems.Remove(existingItem);
-                //     DebugEx.Log($"{existingItem.id} removed from inventory.");
-                // }
+                if (existingItem.amount > amountToRemove)
+                {
+                    existingItem.amount -= amountToRemove;
+                    DebugEx.Log($"{amountToRemove} of {existingItem.id} removed. Remaining amount: {existingItem.amount}");
+                }
+                else
+                {
+                    existingItem.amount = 0;
+                    cachedItems.Remove(existingItem);
+                    DebugEx.Log($"{existingItem.id} removed from inventory.");
+                }
 
                 OnItemDeleted?.Invoke(itemId, amountToRemove);
 

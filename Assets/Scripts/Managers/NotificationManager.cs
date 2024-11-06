@@ -7,6 +7,7 @@ using UnityEngine;
 using Unity.Notifications.Android;
 using UnityEngine.Android;
 
+[DefaultExecutionOrder(-1)]
 public class NotificationManager : MonoBehaviour
 {
     [SerializeField] Color notificationColor;

@@ -11,6 +11,7 @@ using VInspector;
 /// 팝업을 관리하는 클래스입니다.
 /// 팝업의 열림과 닫힘을 제어하며, 팝업 인스턴스의 재사용을 통해 성능을 최적화합니다.
 /// </summary>
+[DefaultExecutionOrder(-1)]
 public class PopupManager : MonoBehaviour
 {
     /// <summary>
@@ -204,6 +205,28 @@ public class PopupManager : MonoBehaviour
         return true;        // 열려있는 팝업이 있었고, 그래서 팝업을 끌 수 있었다.
     }
 
+    /// <summary>
+    /// 모든 활성화된 팝업을 닫는 메서드입니다.
+    /// 모든 팝업을 닫고 객체 풀에 반환합니다.
+    /// </summary>
+    public void HideAllPopups()
+    {
+        while (activePopups.Count > 0)
+        {
+            Popup popupToClose = activePopups.Pop();
+            popupToClose.OnClose(); // 팝업이 닫힐 때 추가 동작 수행
+            popupToClose.Hide();    // 팝업 비활성화
+
+            // 객체 풀에 팝업 반환
+            Type popupType = popupToClose.GetType();
+            if (!popupPool.ContainsKey(popupType))
+            {
+                popupPool[popupType] = new Stack<Popup>();
+            }
+            popupPool[popupType].Push(popupToClose); // 팝업을 풀에 추가
+        }
+    }
+    
     public ErrorPopup ShowErrorPopup(string message)
     {
         ErrorPopup errorPopup = ShowPopup<ErrorPopup>();

@@ -1,11 +1,15 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SettingsPopup : Popup
 {
-    private void Start()
+    [SerializeField] private Transform panel;
+    
+    private void OnEnable()
     {
-
+        panel.localScale = Vector3.zero;
+        panel.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
     }
 
     // private void InitializeSettings()

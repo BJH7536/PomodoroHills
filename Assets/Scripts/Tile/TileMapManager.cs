@@ -6,9 +6,15 @@ using VInspector;
 using UnityEditor;
 #endif
 
+[DefaultExecutionOrder(-1)]
 public class TileMapManager : MonoBehaviour
 {
-    public static TileMapManager Instance { get; private set; }
+    /// <summary>
+    /// InteractionManager 단일 인스턴스를 유지하기 위한 변수입니다.
+    /// </summary>
+    private static TileMapManager instance;
+    
+    public static TileMapManager Instance => instance;
 
     public int gridSize = 1;      // 그리드 한 칸의 크기
     public int gridCountX = 25;   // x 방향 그리드 개수 (가로, 홀수)
@@ -22,7 +28,7 @@ public class TileMapManager : MonoBehaviour
     {
         if (Instance == null)
         {
-            Instance = this;
+            instance = this;
             DontDestroyOnLoad(gameObject);
         }   // 싱글톤 선언
         else
@@ -310,7 +316,7 @@ public class TileMapManager : MonoBehaviour
                 else
                 {
                     Gizmos.color = Color.red;
-                    Gizmos.DrawCube(center, size);
+                    Gizmos.DrawWireCube(center, size);
                 }
             }
         }

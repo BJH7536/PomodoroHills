@@ -73,6 +73,8 @@ namespace TodoSystem
             Recurrence = recurrence;
             Status = status;
             RecurrenceDays = recurrenceDays ?? new List<DayOfWeek>();
+            if (RecurrenceDays.Count == 7) Recurrence = Recurrence.Daily;
+            
             ReminderTime = reminderTime?.ToString("yyyy-MM-dd HH:mm:ss");
  
             // 시간형 할 일 초기화
@@ -170,6 +172,18 @@ namespace TodoSystem
         }
 
         /// <summary>
+        /// 오늘 할 일을 모두 채운다. (시간형 할 일)
+        /// </summary>
+        public void FillTargetTimeOfToday()
+        {
+            if (!IsTaskScheduledForDate(DateTime.Today))
+            {
+                int time = GetRemainingTimeOfToday();
+                AddProgress(DateTime.Today, time);
+            }
+        }
+        
+        /// <summary>
         /// 특정 날짜의 작업을 완료로 표시한다. (확인형 할 일)
         /// </summary>
         /// <param name="date">작업을 완료한 날짜</param>
@@ -210,7 +224,7 @@ namespace TodoSystem
 
         #endregion
 
-        #region 진척도 계산 메서드
+        #region 진척도 관련 메서드
 
         /// <summary>
         /// 전체 진척도를 퍼센티지로 반환합니다.
@@ -278,7 +292,7 @@ namespace TodoSystem
         }
 
         /// <summary>
-        /// 오늘 남은 시간을 구합니다. (시간형 할 일)
+        /// 오늘 남은 시간을 분단위로 반환한다. (시간형 할 일)
         /// </summary>
         /// <returns></returns>
         public int GetRemainingTimeOfToday()
@@ -302,7 +316,7 @@ namespace TodoSystem
             
             return 0;
         }
-
+        
         #endregion
 
         #region 내부 데이터 처리 메서드

@@ -14,8 +14,8 @@ public class CropData
     [SerializeField] private string name;                    // 작물의 이름
     public string Name => name;
     
-    [SerializeField] private int harvestTime;                // 수확 시간 (단위: 분)
-    public int HarvestTime => harvestTime;
+    [SerializeField] private int harvestSeconds;                // 수확 시간 (단위: 초)
+    public int HarvestSeconds => harvestSeconds;
 
     [SerializeField] private List<string> tags;              // 작물 태그 리스트
     public List<string> Tags => tags;
@@ -132,7 +132,7 @@ public class CropDatabase : ScriptableObject
         foreach (var crop in _crops)
         {
             string tags = string.Join(", ", crop.Tags);
-            DebugEx.Log($"작물 이름: {crop.Name}, 수확 시간: {crop.HarvestTime}일, 태그: [{tags}]");
+            DebugEx.Log($"작물 이름: {crop.Name}, 수확 시간: {crop.HarvestSeconds}일, 태그: [{tags}]");
         }
     }
 }

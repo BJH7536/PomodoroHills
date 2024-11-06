@@ -15,6 +15,7 @@ public class DecorData
     public string Name => name;
 
     [SerializeField] private GameObject decorPrefab;        // 장식품의 프리팹
+    public GameObject Prefab => decorPrefab;
     [SerializeField] private int sizeX;                     // 장식품의 X 크기
     [SerializeField] private int sizeZ;                     // 장식품의 Z 크기
     public int SizeX => sizeX;
@@ -69,7 +70,7 @@ public class DecorDatabase : ScriptableObject
     /// </summary>
     /// <param name="id"> 찾고자 하는 장식품 데이터 </param>
     /// <returns></returns>
-    public DecorData GetDecorByName(int id)
+    public DecorData GetDecorById(int id)
     {
         if (_decorDictionary == null)
         {

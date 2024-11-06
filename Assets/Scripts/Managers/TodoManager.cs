@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace TodoSystem
 {
+    [DefaultExecutionOrder(-1)]
     public class TodoManager : MonoBehaviour
     {
         // 싱글톤 인스턴스
@@ -214,6 +215,15 @@ namespace TodoSystem
         
         #region Save&Load
 
+        /// <summary>
+        /// TodoList와 딕셔너리를 비웁니다.
+        /// </summary>
+        public void ClearTodoList()
+        {
+            TodoList.Clear();
+            todoDictionary.Clear();
+        }
+        
         /// <summary>
         /// TodoList를 JSON 파일로 저장.
         /// </summary>

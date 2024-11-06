@@ -20,19 +20,26 @@ namespace Ricimi
 		[SerializeField]
 		private RectTransform progressEndImage;
 
-		private void Update()
-		{
-			UpdateProgress(Percentage);
-		}
+		// private void Update()
+		// {
+		// 	UpdateProgress(Percentage);
+		// }
 
-		private void UpdateProgress(float value)
+		public void UpdateProgress(float value)
 		{
-			float fillAmount = (value / 100.0f);
+			if (float.IsNaN(value) || float.IsInfinity(value))
+			{
+				value = 0; // 기본값 설정
+			}
+
+			float fillAmount = Mathf.Clamp(value / 100.0f, 0, 1); // 0 ~ 1 사이로 클램프
 			progressImage.fillAmount = fillAmount;
+
 			float angle = fillAmount * 360.0f;
 			progressEndContainer.localEulerAngles = new Vector3(0, 0, -angle);
 			progressEndImage.localEulerAngles = new Vector3(0, 0, angle);
 		}
+
 
 		public float GetFillAmount()
 		{

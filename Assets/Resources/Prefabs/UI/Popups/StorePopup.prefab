@@ -117,7 +117,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0010509841}
+  m_AnchoredPosition: {x: 0, y: 0.00010538101}
   m_SizeDelta: {x: 0, y: 605}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2724068805234229162
@@ -1755,12 +1755,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 1
+  m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1080, y: 1920}
+  m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0.5
+  m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -2408,7 +2408,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 4185304424754588114}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.8235539
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3049,7 +3049,7 @@ GameObject:
   - component: {fileID: 1453518056613840437}
   - component: {fileID: 1837536592404288624}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Closer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3181,6 +3181,7 @@ GameObject:
   - component: {fileID: 1123366115411143038}
   - component: {fileID: 8225026639227277568}
   - component: {fileID: 4834318605895541613}
+  - component: {fileID: 2019687487339590622}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -3262,6 +3263,37 @@ MonoBehaviour:
   Color1: {r: 0.9245283, g: 0.6791463, b: 0.5538448, a: 1}
   Color2: {r: 0.8773585, g: 0.4025276, b: 0.16967781, a: 1}
   Angle: -45
+--- !u!114 &2019687487339590622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7731084431195074858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52c162dc854d2f24fa639ba0623de5ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  algorithm: 0
+  size: 32
+  spread: 0
+  useGlobalAngle: 0
+  offsetAngle: 90
+  offsetDistance: 12
+  offset: {x: 0.00000071525574, y: -11.999999}
+  color: {r: 0, g: 0, b: 0, a: 0.6}
+  inset: 0
+  blendMode: 0
+  useCasterAlpha: 1
+  ignoreCasterColor: 0
+  colorBleedMode: 0
+  disableFitCompensation: 0
+  shadowAsSibling: 0
+  cutout: 0
+  baked: 0
+  modifiedFromInspector: 0
+  bakedShadows: []
 --- !u!1 &7829100899320719280
 GameObject:
   m_ObjectHideFlags: 0
@@ -4594,12 +4626,12 @@ PrefabInstance:
     - target: {fileID: 2330745345425584187, guid: c0c248cc344457544a4b3d350448428e,
         type: 3}
       propertyPath: offset.x
-      value: 0.00000071525557
+      value: 0.0000007152555
       objectReference: {fileID: 0}
     - target: {fileID: 2330745345425584187, guid: c0c248cc344457544a4b3d350448428e,
         type: 3}
       propertyPath: offset.y
-      value: -11.999996
+      value: -11.999995
       objectReference: {fileID: 0}
     - target: {fileID: 3241919934600386422, guid: c0c248cc344457544a4b3d350448428e,
         type: 3}
@@ -4872,12 +4904,12 @@ PrefabInstance:
     - target: {fileID: 2330745345425584187, guid: c0c248cc344457544a4b3d350448428e,
         type: 3}
       propertyPath: offset.x
-      value: 0.0000007152556
+      value: 0.00000071525557
       objectReference: {fileID: 0}
     - target: {fileID: 2330745345425584187, guid: c0c248cc344457544a4b3d350448428e,
         type: 3}
       propertyPath: offset.y
-      value: -11.999997
+      value: -11.999996
       objectReference: {fileID: 0}
     - target: {fileID: 3241919934600386422, guid: c0c248cc344457544a4b3d350448428e,
         type: 3}
@@ -5011,12 +5043,12 @@ PrefabInstance:
     - target: {fileID: 2330745345425584187, guid: c0c248cc344457544a4b3d350448428e,
         type: 3}
       propertyPath: offset.x
-      value: 0.00000071525557
+      value: 0.0000007152555
       objectReference: {fileID: 0}
     - target: {fileID: 2330745345425584187, guid: c0c248cc344457544a4b3d350448428e,
         type: 3}
       propertyPath: offset.y
-      value: -11.999996
+      value: -11.999995
       objectReference: {fileID: 0}
     - target: {fileID: 3241919934600386422, guid: c0c248cc344457544a4b3d350448428e,
         type: 3}
@@ -5562,12 +5594,12 @@ PrefabInstance:
     - target: {fileID: 2330745345425584187, guid: c0c248cc344457544a4b3d350448428e,
         type: 3}
       propertyPath: offset.x
-      value: 0.00000071525557
+      value: 0.0000007152555
       objectReference: {fileID: 0}
     - target: {fileID: 2330745345425584187, guid: c0c248cc344457544a4b3d350448428e,
         type: 3}
       propertyPath: offset.y
-      value: -11.999996
+      value: -11.999995
       objectReference: {fileID: 0}
     - target: {fileID: 3241919934600386422, guid: c0c248cc344457544a4b3d350448428e,
         type: 3}

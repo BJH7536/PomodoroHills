@@ -181,12 +181,15 @@ public class PanelCircularTimer : MonoBehaviour
                 PrepareRelaxSession(TimerManager.Instance.relaxMinute);
                 break;
             case TimerState.FocusSessionRunning:
-                UpdateRunningUI(newState);
+                if (TimerManager.Instance.focusMinute > TimerManager.Instance.CurrentTodoItem.GetRemainingTimeOfToday())
+                    TimerManager.Instance.focusMinute = TimerManager.Instance.CurrentTodoItem.GetRemainingTimeOfToday();
+                
                 StartFocusSession(TimerManager.Instance.focusMinute);
+                UpdateRunningUI(newState);
                 break;
             case TimerState.RelaxSessionRunning:
-                UpdateRunningUI(newState);
                 StartRelaxSession(TimerManager.Instance.relaxMinute);
+                UpdateRunningUI(newState);
                 break;
             case TimerState.Paused:
                 UpdatePausedUI();
@@ -380,7 +383,7 @@ public class PanelCircularTimer : MonoBehaviour
             }
             
             message += "\n\n<size=60%>확인을 누르시면 타이머를 시작합니다.</size>";
-
+            
             PopupManager.Instance.ShowConfirmPopup("타이머 시작", message, async () =>
             {
                 // 팝업의 확인 버튼에 들어갈 기능들

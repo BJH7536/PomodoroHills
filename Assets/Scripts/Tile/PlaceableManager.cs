@@ -1,40 +1,47 @@
-﻿using JetBrains.Annotations;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using Unity.VisualScripting;
+using System.IO;
+using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
+using PomodoroHills;
 using UnityEngine;
-using UnityEngine.Rendering;
+using VInspector;
 
 //최우선 과제, 배치 절차 진입시 현재 소재 Free하기
 // placeable이 자신의 위치정보를 나타내지않아 transform 직접 참조 혹은 생성/확인 시transform을 따라가게합니다.
 // unpack 절차 작성시 반영 필요
 //버튼 등과 상화작용하는 메소드의 경우 가능한 Interaction에서 참조하도록 작성
-
+[DefaultExecutionOrder(-1)]
 public class PlaceableManager : MonoBehaviour
 {
     public static PlaceableManager Instance { get; private set; }
-    public ItemDB itemDB;
 
-
+    public BuildingDatabase BuildingDatabase;
+    public DecorDatabase DecorDatabase;
+    
     public List<GameObject> placeables = new List<GameObject>();
     public GameObject selectedPlaceable;
     public Vector2Int lastPosition = new Vector2Int(-1, -1);
     public int lastRotation = -1;
-    public UnityEngine.Color OriginColor;
+    
     //편집 등 상태관련 
-
     public bool isEdit { get; private set; }     //편집모드
-    public bool isChestEdit { get; private set; }
-    public bool isMoveEdit { get; private set; }    //이동모드
+
+    public Action<bool> EditModeSwitched;
+    
+    /// <summary>
+    /// 드래그로 Placeable을 옮길 수 있는지 여부에 대한 Flag
+    /// </summary>
+    public bool isMoveEdit { get; private set; }
+    
+    /// <summary>
+    /// 지금 편집하고있는게 새로 지은 건물인지 구분하는 Flag
+    /// </summary>
     public bool isNewEdit { get; private set; }
-
-
+    
     private void Awake()
     {
         ResetLastLocation();
-        itemDB = GetComponent<ItemDB>(); //임시 PlaceablePrefabTable -> 차후 DB 연동 후 삭제
         if (Instance == null)           //싱글톤 선언
         {
             Instance = this;
@@ -44,38 +51,241 @@ public class PlaceableManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-
         isEdit = false;
     }
-    void Start()
+    
+    private void OnApplicationPause(bool pause)
     {
-        Place(0, new Vector2Int(0, 0), 0);
-        Place(1, new Vector2Int(1, 2), 3);
-        Place(1, new Vector2Int(2, 1), 2);
-        Place(1, new Vector2Int(2, 3), 0);
-        Place(1, new Vector2Int(3, 2), 1);
+        if (pause)
+        {
+            SavePlaceables();
+            SaveTimerState();
+        }
+        else
+        {
+            LoadPlaceables();
+            
+            // 게임이 재개될 때 각 FarmBuilding 인스턴스에 저장된 타이머 상태를 전달하여 성장 업데이트
+            foreach (GameObject obj in placeables)
+            {
+                if (obj.TryGetComponent<FarmBuilding>(out var farmBuilding))
+                {
+                    farmBuilding.LoadTimerStateAndUpdateGrowth();
+                }
+            }
+            
+            // 모든 FarmBuilding의 성장 업데이트가 끝난 후, 저장된 데이터를 삭제합니다.
+            DeleteSavedTimerState();
+        }
     }
     
-    void LoadSavedPlaceable()
+    private void OnApplicationQuit()
     {
-        //리스트불러오기
-        while (false)
+        SavePlaceables();
+        SaveTimerState();
+    }
+
+    [Button]
+    public void DebugCurrentState()
+    {
+        DebugEx.Log($"isEdit : {isEdit}");
+        DebugEx.Log($"isMoveEdit : {isMoveEdit}");
+        DebugEx.Log($"isNewEdit : {isNewEdit}");
+    }
+
+    #region Data Save & Load
+    
+    /// <summary>
+    /// 배치된 오브젝트를 모두 삭제하고 리스트를 비웁니다.
+    /// </summary>
+    public void ClearPlaceables()
+    {
+        foreach (GameObject obj in placeables)
         {
-            
+            if (obj != null)
+            {
+                Destroy(obj);
+            }
         }
-        //unpack 과정과 유사하게 작성 select하는 UI안되게
+
+        placeables.Clear();
+        selectedPlaceable = null;
+    }
+    
+    private void SaveTimerState()
+    {
+        // 타이머 상태와 시간을 저장
+        PlayerPrefs.SetString("LastCheckTime", DateTime.Now.ToString());
+        PlayerPrefs.SetInt("LastTimerState", (int)TimerManager.Instance.CurrentTimerState);
+        PlayerPrefs.SetInt("RemainingFocusTimeInSeconds", TimerManager.Instance.RemainingTimeInSeconds);
+        PlayerPrefs.Save();
+    }
+    
+    private void DeleteSavedTimerState()
+    {
+        PlayerPrefs.DeleteKey("LastCheckTime");
+        PlayerPrefs.DeleteKey("LastTimerState");
+        PlayerPrefs.DeleteKey("RemainingFocusTimeInSeconds");
+        PlayerPrefs.Save();
+    }
+    
+    public void SavePlaceables()
+    {
+        List<PlaceableData> dataList = new List<PlaceableData>();
+
+        foreach (GameObject obj in placeables)
+        {
+            Placeable placeable = obj.GetComponent<Placeable>();
+            if (placeable != null)
+            {
+                PlaceableData data;
+
+                if (placeable is FarmBuilding farmBuilding)
+                {
+                    // FarmBuildingData로 저장
+                    FarmBuildingData farmData = new FarmBuildingData
+                    {
+                        type = "FarmBuilding",
+                        id = farmBuilding.id,
+                        size = farmBuilding.size,
+                        position = farmBuilding.position,
+                        rotation = farmBuilding.rotation,
+                        isCropPlanted = farmBuilding.IsCropPlanted,
+                        currentCrop = farmBuilding.currentCrop
+                    };
+                    data = farmData;
+                }
+                else
+                {
+                    // 일반 PlaceableData로 저장
+                    data = new PlaceableData
+                    {
+                        type = "Placeable",
+                        id = placeable.id,
+                        size = placeable.size,
+                        position = placeable.position,
+                        rotation = placeable.rotation
+                    };
+                }
+
+                dataList.Add(data);
+            }
+        }
+
+        // JSON으로 직렬화
+        string json = JsonConvert.SerializeObject(dataList, Formatting.Indented, new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.Auto,
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore // 순환 참조 무시
+        });
+
+        // 파일로 저장
+        string path = Application.persistentDataPath + "/placeables.json";
+        File.WriteAllText(path, json);
+
+        Debug.Log("Placeables saved to " + path);
     }
 
-    private void LoadPlaceable(int PlaceableCode, Vector2Int position, int rotation)//
+    public void LoadPlaceables()
     {
-        //수량 체크 후 -1
+        string path = Application.persistentDataPath + "/placeables.json";
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
 
+            // JSON을 역직렬화하여 PlaceableData 리스트로 변환
+            List<PlaceableData> dataList = JsonConvert.DeserializeObject<List<PlaceableData>>(json, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+
+            // 기존 오브젝트 삭제 및 타일맵 점유 해제
+            foreach (GameObject obj in placeables)
+            {
+                Placeable placeable = obj.GetComponent<Placeable>();
+                if (placeable != null)
+                {
+                    TileMapManager.Instance.FreeEveryTile(placeable.size, placeable.position, placeable.rotation);
+                }
+                Destroy(obj);
+            }
+            placeables.Clear();
+
+            // 데이터에 따라 오브젝트 재생성
+            foreach (PlaceableData data in dataList)
+            {
+                GameObject obj = null;
+
+                if (data.type == "FarmBuilding")
+                {
+                    obj = CreateFarmBuilding(data.id);
+                }
+                else if (data.type == "Placeable")
+                {
+                    obj = CreatePlaceable(data.id);
+                }
+                else
+                {
+                    Debug.LogWarning("Unknown Placeable type: " + data.type);
+                    continue;
+                }
+
+                if (obj != null)
+                {
+                    Placeable placeable = obj.GetComponent<Placeable>();
+                    if (placeable != null)
+                    {
+                        placeable.size = data.size;
+                        placeable.position = data.position;
+                        placeable.rotation = data.rotation;
+                        obj.transform.position = new Vector3(data.position.x, 0f, data.position.y);
+                        obj.transform.rotation = Quaternion.Euler(0f, data.rotation * 90f, 0f);
+
+                        if (placeable is FarmBuilding farmBuilding && data is FarmBuildingData farmData)
+                        {
+                            farmBuilding.currentCrop = farmData.currentCrop;
+                            farmBuilding.IsCropPlanted = farmData.isCropPlanted;
+
+                            if (farmBuilding.IsCropPlanted && farmBuilding.currentCrop != null)
+                            {
+                                if (!farmBuilding.currentCrop.IsFullyGrown())
+                                {
+                                    farmBuilding.SubscribeToTimer();
+                                }
+                                else
+                                {
+                                    farmBuilding.ShowHarvestButton();
+                                }
+                            }
+                        }
+
+                        TileMapManager.Instance.OccupyEveryTile(placeable.size, placeable.position, placeable.rotation);
+
+                        placeables.Add(obj);
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("Failed to create Placeable with id " + data.id);
+                }
+            }
+
+            Debug.Log("Placeables loaded from " + path);
+        }
+        else
+        {
+            Debug.LogWarning("No saved placeables found at " + path);
+        }
     }
 
-    private void Place(int index, Vector2Int position, int rotation)
+
+    #endregion
+    
+    private void Place(int id, Vector2Int position, int rotation)
     {
-        itemDB.itemTable.TryGetValue(index, out GameObject obj);
+        var obj = BuildingDatabase.GetBuildingById(id).Prefab;
+        // itemDB.itemTable.TryGetValue(id, out GameObject obj);
         Placeable placeable = obj.GetComponent<Placeable>();
         PlacePlaceable(obj, placeable.size, position, rotation);
     }
@@ -107,35 +317,68 @@ public class PlaceableManager : MonoBehaviour
     //상기 두 메소드는 테스트용으로 작성된 코드임
     // 후술할 코드 목적 : 생성, 선택 등 의 분리
     
-    public GameObject CreatePlaceable(int placeableCode) // 테이블에서 Placeable프리팹을 찾아서 생성
+    public GameObject CreatePlaceable(int id) // 테이블에서 Placeable프리팹을 찾아서 생성
     {
-        if (itemDB.itemTable.TryGetValue(placeableCode, out GameObject Prefab))
+        ItemType type = (ItemType)(id / 100);
+
+        GameObject obj = null;
+        if (type == ItemType.Building)
         {
-            GameObject newObj = Instantiate(Prefab, Vector3.zero, Quaternion.identity);
+            obj = BuildingDatabase.GetBuildingById(id).Prefab;
+            
+        }
+        else if (type == ItemType.Decoration)
+        {
+            obj = DecorDatabase.GetDecorById(id).Prefab;
+        }
+        
+        if (obj != null)
+        {
+            GameObject newObj = Instantiate(obj, Vector3.zero, Quaternion.identity);
             return newObj;
         }
-        DebugEx.Log("Can't Find placeableCode in Table");
+        DebugEx.Log("Can't Find id in Table");
         return null;
     }
 
+    public GameObject CreateFarmBuilding(int id)
+    {
+        GameObject obj = BuildingDatabase.GetBuildingById(id).Prefab;
+
+        if (obj != null)
+        {
+            GameObject newObj = Instantiate(obj, Vector3.zero, Quaternion.identity);
+
+            if (!newObj.TryGetComponent(out FarmBuilding _))
+            {
+                newObj.AddComponent<FarmBuilding>();
+            }
+
+            return newObj;
+        }
+        Debug.Log("Can't Find id in Table");
+        return null;
+    }
+    
     /// <summary>
+    /// 인벤토리에서 Placeable을 지으려고 꺼내는 메서드.
     /// 인벤토리랑 연동 (인벤토리 내 수량검증, 인벤토리 내 수량 감소 및 오브젝트 배치) 과정 구현 필요
     /// </summary>
     /// <param name="placeableCode"></param>
     /// <returns></returns>
     public bool UnpackPlaceable(int placeableCode)   //인벤토리에서 배치요소를 꺼내는 메소드     //Gameobject 반환하도록 수정 초기 저장된 배치 불러오기와 통합 (미완성)
     {
+        OnEditMode();
         OnIsNewEdit();
-        ResetLastLocation();//불필요하게 반복되는 부분이나 만약을 위해 작성
+        ResetLastLocation();                        //불필요하게 반복되는 부분이나 만약을 위해 작성
         selectedPlaceable = CreatePlaceable(placeableCode);
         if (selectedPlaceable != null)
         {
-            Vector2Int position = new Vector2Int(TileMapManager.Instance.gridCountX/2, TileMapManager.Instance.gridCountZ/2);
+            Vector2Int position = new Vector2Int(0, 0);
             Placeable placeable = selectedPlaceable.GetComponent<Placeable>();
             placeable.position = position;
             selectedPlaceable.transform.position = new Vector3(position.x, 0f,position.y) ;
             OnIsMoveEdit();
-            OffisChestEdit();
             return true;
         }
         else
@@ -155,7 +398,16 @@ public class PlaceableManager : MonoBehaviour
         {
             selectedPlaceable.TryGetComponent<Placeable>(out Placeable placeable);
             TileMapManager.Instance.FreeEveryTile(placeable.size,placeable.position,placeable.rotation);
-            //인벤토리 내 해당하는 수량 +1
+            
+            // TODO 인벤토리 내 해당하는 수량 +1
+
+            ItemData newItem = new ItemData()
+            {
+                id = placeable.id,
+                amount = 1
+            };
+            PomodoroHills.InventoryManager.Instance.AddItemAsync(newItem).Forget();
+            
             Destroy(selectedPlaceable);
             //삭제여부 검토 후 수량 재확인
             selectedPlaceable = null;
@@ -183,9 +435,9 @@ public class PlaceableManager : MonoBehaviour
     /// UnpackPlaceable에서 Unpack과정을 수행할때, 인벤토리의 수량 감소 시점을 Unpack Placeable에 둘지, ComfirmEdit에 둘지 문제로 (미완성)이라고 표기
     /// </summary>
     /// <returns></returns>
-    public bool ConfirmEdit()   //(미완성)
+    public bool ConfirmEdit()
     {
-        if (selectedPlaceable.TryGetComponent<Placeable>(out Placeable placeable))
+        if (selectedPlaceable.TryGetComponent(out Placeable placeable))
         {
             if (TileMapManager.Instance.GetEveryTileAvailable(placeable.size, placeable.position, placeable.rotation))
             {
@@ -196,8 +448,12 @@ public class PlaceableManager : MonoBehaviour
                 }
                 else
                 {
+                    // TODO 기존에 있던 placeable이 아니니까, 인벤토리에서 감소시키기
+                    PomodoroHills.InventoryManager.Instance.DeleteItemAsync(placeable.id, 1).Forget();
+                    
                     placeables.Add(selectedPlaceable);
                     OffIsNewEdit();
+                    OffEditMode();
                 }
                 return true;
             }
@@ -211,8 +467,10 @@ public class PlaceableManager : MonoBehaviour
         return false;
     }
 
-    public void CancleEdit()
+    public void CancelEdit()
     {
+        DebugEx.Log($"{nameof(CancelEdit)}");
+        
         if (lastRotation == -1)     //새로 생성한 Placeable의 경우
         {
             // 인벤토리 구현시 해당 Placeable 수량 +1
@@ -227,7 +485,6 @@ public class PlaceableManager : MonoBehaviour
             selectedPlaceable.transform.rotation = Quaternion.Euler(0, lastRotation * 90f, 0);
             placeable.position = lastPosition;
             placeable.rotation = lastRotation;
-            DebugEx.Log("oldob");
         }
     }
     
@@ -252,16 +509,24 @@ public class PlaceableManager : MonoBehaviour
     
     //IsEdit이 true인 상태에서 타일맵 위의 Placeable을 클릭하면 주위로 UI가 활성화 되고 드래그하여 움직일 수 있다.
     //이때 확인, 회전, 보관(삭제)와 관련된 UI(버튼) 띄운다.
-    public void OnIsEdit() { isEdit = true; }
-    public void OffIsEdit() { isEdit = false; }
+    public void OnEditMode()
+    {
+        isEdit = true; 
+        EditModeSwitched?.Invoke(isEdit);
+    }
+
+    public void OffEditMode()
+    {
+        isEdit = false; 
+        EditModeSwitched?.Invoke(isEdit);
+    }
     public void OnIsNewEdit() { isNewEdit = true; }
     public void OffIsNewEdit() { isNewEdit = false; }
-    public void OnisChestEdit() { isChestEdit = true; }
-    public void OffisChestEdit() { isChestEdit = false; }
+
     public void OnIsMoveEdit() // 오브젝트 이동 시작시 기존 위치 Free
     {
         StartColor();
-        if (selectedPlaceable.TryGetComponent<Placeable>(out Placeable placeable))
+        if (selectedPlaceable.TryGetComponent(out Placeable placeable))
         {
             TileMapManager.Instance.FreeEveryTile(placeable.size, placeable.position, placeable.rotation);
             if (isNewEdit)
@@ -282,7 +547,7 @@ public class PlaceableManager : MonoBehaviour
     /// Color 변경 문제로 미완성, 나머지 이유는 뭐임?
     /// </summary>
     public void OffIsMoveEdit() // 세분화(confirm, cancle 버튼 모두 이 메소드 사용중)(미완성)
-    {                           // ConfirmEdit, CancleEdit,  해당 메소드가 제일 하위에 위치하도록 변경
+    {                           // ConfirmEdit, CancelEdit,  해당 메소드가 제일 하위에 위치하도록 변경
 
         isMoveEdit = false;
         EndColor();
@@ -302,21 +567,25 @@ public class PlaceableManager : MonoBehaviour
             Placeable placeable = selectedPlaceable.GetComponent<Placeable>();
             if (TileMapManager.Instance.GetEveryTileAvailable(placeable.size, placeable.position, placeable.rotation))
             {
-                MeshRenderer[] renderers = selectedPlaceable.GetComponentsInChildren<MeshRenderer>();
-
-                foreach (MeshRenderer renderer in renderers)
-                {
-                    renderer.material.color = UnityEngine.Color.green;
-                }
+                // MeshRenderer[] renderers = selectedPlaceable.GetComponentsInChildren<MeshRenderer>();
+                //
+                // foreach (MeshRenderer renderer in renderers)
+                // {
+                //     renderer.material.color = UnityEngine.Color.green;
+                // }
+                
+                placeable.SetGreenColor();
             }
             else
             {
-                MeshRenderer[] renderers = selectedPlaceable.GetComponentsInChildren<MeshRenderer>();
-
-                foreach (MeshRenderer renderer in renderers)
-                {
-                    renderer.material.color = UnityEngine.Color.red;
-                }
+                // MeshRenderer[] renderers = selectedPlaceable.GetComponentsInChildren<MeshRenderer>();
+                //
+                // foreach (MeshRenderer renderer in renderers)
+                // {
+                //     renderer.material.color = UnityEngine.Color.red;
+                // }
+                
+                placeable.SetRedColor();
             }
         }
 
@@ -325,12 +594,14 @@ public class PlaceableManager : MonoBehaviour
     {
         if (selectedPlaceable != null)
         {
-            MeshRenderer[] renderers = selectedPlaceable.GetComponentsInChildren<MeshRenderer>();
-
-            foreach (MeshRenderer renderer in renderers)
-            {
-                renderer.material.color = UnityEngine.Color.white;
-            }
+            // MeshRenderer[] renderers = selectedPlaceable.GetComponentsInChildren<MeshRenderer>();
+            //
+            // foreach (MeshRenderer renderer in renderers)
+            // {
+            //     renderer.material.color = UnityEngine.Color.white;
+            // }
+            
+            selectedPlaceable.GetComponent<Placeable>().ResetColor();
         }
     }
     
@@ -339,5 +610,12 @@ public class PlaceableManager : MonoBehaviour
         lastPosition = new Vector2Int(-1, -1);
         lastRotation = -1;
     }
+}
+
+
+[Serializable]
+public class PlaceableDataList
+{
+    public List<PlaceableData> placeables;
 }
 

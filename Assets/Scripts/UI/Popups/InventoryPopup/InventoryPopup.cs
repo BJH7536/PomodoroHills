@@ -322,7 +322,7 @@ public class InventoryPopup : Popup
             InventoryPopup_ItemUI inventoryPopupItemUI = itemGO.GetComponent<InventoryPopup_ItemUI>();
             if (inventoryPopupItemUI != null)
             {
-                inventoryPopupItemUI.Setup(item);
+                inventoryPopupItemUI.Setup(item, itemUIPool);
             }
             else
             {
@@ -373,7 +373,7 @@ public class InventoryPopup : Popup
             InventoryPopup_ItemUI inventoryPopupItemUI = itemGO.GetComponent<InventoryPopup_ItemUI>();
             if (inventoryPopupItemUI != null)
             {
-                inventoryPopupItemUI.Setup(item);
+                inventoryPopupItemUI.Setup(item, itemUIPool);
             }
             else
             {
@@ -454,7 +454,7 @@ public class InventoryPopup : Popup
             InventoryPopup_ItemUI inventoryPopupItemUI = itemGO.GetComponent<InventoryPopup_ItemUI>();
             if (inventoryPopupItemUI != null)
             {
-                inventoryPopupItemUI.Setup(newItem);
+                inventoryPopupItemUI.Setup(newItem, itemUIPool);
             }
         
             // 레이아웃 컴포넌트 활성화 후 업데이트, 이후 비활성화
@@ -491,35 +491,21 @@ public class InventoryPopup : Popup
     /// <param name="amountToRemove">삭제할 갯수</param>
     private async void HandleItemDeleted(int id, int amountToRemove)
     {
-        // 모든 ScrollRect의 콘텐츠를 순회하며 해당 아이템을 찾아 수량을 조정하거나 풀에 반환
-        foreach (ScrollRect scrollRect in new ScrollRect[] { buildingScrollRect, decorationScrollRect, seedScrollRect, cropScrollRect })
+        ScrollRect[] scrollRect = { buildingScrollRect, decorationScrollRect, seedScrollRect, cropScrollRect };
+
+        ScrollRect targetRect = scrollRect[(id / 100)];
+        
+        // 아이템이 있는 ScrollRect의 콘텐츠를 순회하며 해당 아이템을 찾아 수량을 조정하거나 풀에 반환
+        
+        foreach (Transform child in targetRect.content)
         {
-            if (scrollRect != null && scrollRect.content != null)
+            InventoryPopup_ItemUI inventoryPopupItemUI = child.GetComponent<InventoryPopup_ItemUI>();
+            if (inventoryPopupItemUI != null && inventoryPopupItemUI.itemID == id)
             {
-                foreach (Transform child in scrollRect.content)
-                {
-                    InventoryPopup_ItemUI inventoryPopupItemUI = child.GetComponent<InventoryPopup_ItemUI>();
-                    if (inventoryPopupItemUI != null && inventoryPopupItemUI.itemID == id)
-                    {
-                        // 아이템의 현재 수량을 업데이트
-                        if (inventoryPopupItemUI.Item.amount > amountToRemove)
-                        {
-                            inventoryPopupItemUI.Item.amount -= amountToRemove;
-                            inventoryPopupItemUI.RefreshUI();
-                            DebugEx.Log($"{amountToRemove} of item ID {id} removed. Remaining amount: {inventoryPopupItemUI.Item.amount}");
-                        }
-                        else
-                        {
-                            // 아이템 수량이 부족하거나 정확히 일치할 경우 삭제
-                            itemUIPool.ReturnItemUI(child.gameObject, inventoryPopupItemUI.GetItemType());
-                            DebugEx.Log($"Item ID {id} removed from inventory as the amount is depleted.");
-                        }
-                        break; // 해당 아이템을 찾으면 더 이상 탐색할 필요 없음
-                    }
-                }
+                inventoryPopupItemUI.RefreshUI();
             }
         }
-
+        
         // 레이아웃 컴포넌트 활성화 후 업데이트, 이후 비활성화
         EnableLayoutComponents();
         await UniTask.Yield(); // 레이아웃이 제대로 적용될 수 있도록 한 프레임 대기

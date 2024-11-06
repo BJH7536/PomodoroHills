@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using PomodoroHills;
 using UnityEngine;
 
+[DefaultExecutionOrder(-1)]
 public class StoreManager : MonoBehaviour
 {
     private static StoreManager instance;

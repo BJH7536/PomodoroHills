@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// 로컬 Database에 저장되는 건물 데이터.
@@ -14,6 +15,7 @@ public class BuildingData
     [SerializeField] private string name;                   // 건물의 이름
     public string Name => name;
     [SerializeField] private GameObject buildingPrefab;     // 건물의 프리팹
+    public GameObject Prefab => buildingPrefab;
     [SerializeField] private int sizeX;                     // 건물의 X크기
     [SerializeField] private int sizeZ;                     // 건물의 Z크기
     public int SizeX => sizeX;
@@ -21,6 +23,9 @@ public class BuildingData
     
     [SerializeField] private List<string> tags;             // 건물 태그 리스트 (여러 태그를 가질 수 있음)
     public List<string> Tags => tags;
+
+    [SerializeField] private List<int> growable;             // 재배 가능한 작물들의 리스트 (id를 저장)
+    public List<int> Growable => growable;
 }
 
 /// <summary>
@@ -78,6 +83,44 @@ public class BuildingDatabase : ScriptableObject
         if (_buildingDictionary != null && _buildingDictionary.TryGetValue(id, out var buildingData))
         {
             return buildingData;
+        }
+        else
+        {
+            DebugEx.LogWarning($"식별자가 {id}인 건물을 찾을 수 없습니다.");
+            return null;
+        }
+    }
+    
+    /// <summary>
+    /// 건물 이름으로 데이터를 검색하는 함수
+    /// </summary>
+    /// <param name="id"> 찾고자 하는 건물 데이터 </param>
+    /// <returns></returns>
+    public List<int> GetGrowablesById(int id)
+    {
+        BuildingData data = GetBuildingById(id);
+
+        if (data != null)
+            return data.Growable;
+        else
+            return null;
+    }
+    
+    /// <summary>
+    /// 건물의 Id를 통해 해당 건물의 태그 리스트를 반환하는 함수
+    /// </summary>
+    /// <param name="id">찾고자 하는 건물의 Id</param>
+    /// <returns>건물의 태그 리스트 (해당 건물이 없을 경우 null 반환)</returns>
+    public List<string> GetTagsByBuildingId(int id)
+    {
+        if (_buildingDictionary == null)
+        {
+            InitializeDictionary();  // Dictionary가 null일 경우 초기화
+        }
+
+        if (_buildingDictionary != null && _buildingDictionary.TryGetValue(id, out var buildingData))
+        {
+            return buildingData.Tags;
         }
         else
         {

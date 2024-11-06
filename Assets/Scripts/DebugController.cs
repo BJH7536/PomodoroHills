@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using TodoSystem;
 using UnityEngine;
@@ -29,118 +30,117 @@ public class DebugExController  : MonoBehaviour
         PopupManager.Instance.ShowPopup<TodoListPopup>();
     }
     
-    private int itemCounter = 1; // 테스트용 아이템 카운터
-    
-    public async void AddItem()
+    public async void DeleteAllData()
     {
-        // // 임의의 아이템 타입 선택
-        // ItemType randomType = GetRandomItemType();
-        //
-        // // 새로운 아이템 생성
-        // Item newItem = new Item
-        // {
-        //     Id = Guid.NewGuid().ToString(),
-        //     Name = $"Item {itemCounter}",
-        //     Type = randomType,
-        //     Amount = UnityEngine.Random.Range(1, 10)
-        // };
-        // itemCounter++;
-        //
-        // try
-        // {
-        //     // DataManager를 통해 아이템 추가
-        //     await PomodoroHillsInventory.InventoryManager.Instance.AddItemAsync(newItem);
-        // }
-        // catch (Exception ex)
-        // {
-        //     DebugEx.LogError($"DebugExController: AddItem 호출 중 오류 발생: {ex.Message}");
-        // }
-    }
-
-    /// <summary>
-    /// Delete Item 버튼이 클릭될 때 호출되는 메서드입니다.
-    /// </summary>
-    public async void DeleteItem()
-    {
-        // // 현재 아이템 리스트 가져오기
-        // var currentItems = PomodoroHills.InventoryManager.Instance.GetItems();
-        //
-        // if (currentItems.Count == 0)
-        // {
-        //     DebugEx.LogWarning("DeleteItem 호출 시 인벤토리가 비어있습니다.");
-        //     return;
-        // }
-        //
-        // // 마지막 아이템 삭제
-        // var lastItem = currentItems[^1];
-        // try
-        // {
-        //     await PomodoroHills.InventoryManager.Instance.DeleteItemAsync(lastItem);
-        // }
-        // catch (Exception ex)
-        // {
-        //     DebugEx.LogError($"DebugExController: DeleteItem 호출 중 오류 발생: {ex.Message}");
-        // }
-    }
-
-    /// <summary>
-    /// 임의의 아이템 타입을 반환하는 메서드입니다.
-    /// </summary>
-    /// <returns>임의의 ItemType</returns>
-    private ItemType GetRandomItemType()
-    {
-        Array values = Enum.GetValues(typeof(ItemType));
-        return (ItemType)values.GetValue(UnityEngine.Random.Range(0, values.Length));
-    }
-
-    public void DeleteAllData()
-    {
-        // persistentDataPath 경로 아래의 모든 파일과 폴더 삭제
-        string path = Application.persistentDataPath;
+        // 각 매니저의 캐시된 데이터 초기화
+        ResetInventoryManager();
+        ResetEconomyManager();
+        ResetTodoManager();
+        ResetPlaceableManager();
         
-        if (Directory.Exists(path))
-        {
-            // 모든 파일 삭제
-            string[] files = Directory.GetFiles(path);
-            foreach (string file in files)
-            {
-                File.Delete(file);
-            }
+        // 데이터가 저장된 경로 가져오기
+        string dataPath = Application.persistentDataPath;
 
-            // 모든 디렉토리 삭제
-            string[] directories = Directory.GetDirectories(path);
-            foreach (string directory in directories)
+        // 삭제할 데이터 파일 목록
+        string[] dataFiles = new string[]
+        {
+            Path.Combine(dataPath, "inventoryData.json"),
+            Path.Combine(dataPath, "currencyData.json"),
+            Path.Combine(dataPath, "todoList.json"),
+            Path.Combine(dataPath, "placeables.json")
+        };
+
+        // 각 파일 삭제
+        foreach (string filePath in dataFiles)
+        {
+            if (File.Exists(filePath))
             {
-                Directory.Delete(directory, true);
+                File.Delete(filePath);
+                DebugEx.Log($"파일 삭제됨: {filePath}");
+            }
+            else
+            {
+                DebugEx.Log($"파일을 찾을 수 없음: {filePath}");
             }
         }
-        
-        // PlayerPrefs 초기화
+
+        // PlayerPrefs 데이터 초기화
         PlayerPrefs.DeleteAll();
         PlayerPrefs.Save();
+        DebugEx.Log("모든 PlayerPrefs 데이터가 초기화되었습니다.");
 
-        
-        
-        // Todo항목들 불러오기 
-        TodoManager.Instance.LoadTodoList();
-        
-        DebugEx.Log("모든 데이터가 초기화되었습니다.");
+        DebugEx.Log("모든 매니저의 데이터가 초기화되었습니다.");
+
+        // 매니저들이 데이터를 다시 로드하도록 합니다.
+        await LoadAllManagers();
+
+        DebugEx.Log("모든 매니저의 데이터가 다시 로드되었습니다.");
     }
 
-    public void ShowAlertPopup()
+    private static void ResetInventoryManager()
     {
-        PopupManager.Instance.ShowAlertPopup("대충 제목", "대충 내용");
+        if (PomodoroHills.InventoryManager.Instance != null)
+        {
+            PomodoroHills.InventoryManager.Instance.ClearCachedItems();
+            DebugEx.Log("InventoryManager의 캐시된 아이템이 초기화되었습니다.");
+        }
+    }
+
+    private static void ResetEconomyManager()
+    {
+        if (EconomyManager.Instance != null)
+        {
+            EconomyManager.Instance.ResetCurrency();
+            DebugEx.Log("EconomyManager의 재화가 초기화되었습니다.");
+        }
+    }
+
+    private static void ResetTodoManager()
+    {
+        if (TodoSystem.TodoManager.Instance != null)
+        {
+            TodoSystem.TodoManager.Instance.ClearTodoList();
+            DebugEx.Log("TodoManager의 TodoList가 초기화되었습니다.");
+        }
+    }
+
+    private static void ResetPlaceableManager()
+    {
+        if (PlaceableManager.Instance != null)
+        {
+            PlaceableManager.Instance.ClearPlaceables();
+            DebugEx.Log("PlaceableManager의 배치된 오브젝트가 초기화되었습니다.");
+        }
+    }
+
+    private static async UniTask LoadAllManagers()
+    {
+        // 각 매니저의 데이터를 로드하여, 데이터가 없을 경우 샘플 데이터를 생성하도록 합니다.
+        if (PomodoroHills.InventoryManager.Instance != null)
+        {
+            await PomodoroHills.InventoryManager.Instance.LoadItemsAsync();
+            DebugEx.Log("InventoryManager의 데이터가 로드되었습니다.");
+        }
+
+        if (EconomyManager.Instance != null)
+        {
+            await EconomyManager.Instance.LoadCurrencyAsync();
+            DebugEx.Log("EconomyManager의 데이터가 로드되었습니다.");
+        }
+
+        if (TodoSystem.TodoManager.Instance != null)
+        {
+            TodoSystem.TodoManager.Instance.LoadTodoList();
+            DebugEx.Log("TodoManager의 데이터가 로드되었습니다.");
+        }
+
+        if (PlaceableManager.Instance != null)
+        {
+            PlaceableManager.Instance.LoadPlaceables();
+            DebugEx.Log("PlaceableManager의 데이터가 로드되었습니다.");
+        }
     }
     
-    public void ShowTimerInformation() {
-        
-        DebugEx.Log($"현재의 타이머 상태는 : {TimerManager.Instance.CurrentTimerState}\n" +
-                    $"현재의 타이머의 남은 사이클 수는 {TimerManager.Instance.remainingCycleCount}\n" +
-                    $"마지막 사이클은 {TimerManager.Instance.lastCycleTime}분 \n" +
-                    $"타이머의 남은 초단위 시간은 : {TimerManager.Instance.RemainingTimeInSeconds}\n" +
-                    $"타이머와 연동된 Todo항목은 : \n[{TimerManager.Instance.CurrentTodoItem}]\n");
-    }
-
     public void Add1000Gold()
     {
         EconomyManager.Instance.AddCoinAsync(1000).Forget();

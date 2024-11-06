@@ -38,6 +38,7 @@ namespace PomodoroHills
         [SerializeField] public int id;
         [SerializeField] public string name;
         [SerializeField] public Sprite image;
+        [SerializeField] public Sprite image_noBackground;
         [SerializeField] public ItemType type;
     }
 }
