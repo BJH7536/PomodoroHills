@@ -135,6 +135,8 @@ public class PlaceableManager : MonoBehaviour
 
         foreach (GameObject obj in placeables)
         {
+            if(obj == null)  continue;
+            
             Placeable placeable = obj.GetComponent<Placeable>();
             if (placeable != null)
             {
@@ -337,6 +339,7 @@ public class PlaceableManager : MonoBehaviour
             GameObject newObj = Instantiate(obj, Vector3.zero, Quaternion.identity);
             return newObj;
         }
+        
         DebugEx.Log("Can't Find id in Table");
         return null;
     }
@@ -528,13 +531,13 @@ public class PlaceableManager : MonoBehaviour
         StartColor();
         if (selectedPlaceable.TryGetComponent(out Placeable placeable))
         {
-            TileMapManager.Instance.FreeEveryTile(placeable.size, placeable.position, placeable.rotation);
             if (isNewEdit)
             {
                 ResetLastLocation();
             }
             else
             {
+                TileMapManager.Instance.FreeEveryTile(placeable.size, placeable.position, placeable.rotation);
                 lastRotation = placeable.rotation;
                 lastPosition = placeable.position;
             }

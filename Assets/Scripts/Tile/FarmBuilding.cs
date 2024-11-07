@@ -79,16 +79,19 @@ public class FarmBuilding : Placeable
             UpdateUIVisibility();
         }
 
-        PlaceableManager.Instance.EditModeSwitched += b =>
-        {
-            UpdateUIVisibility();
-        };
+        PlaceableManager.Instance.EditModeSwitched += OnInstanceEditModeSwitched;
+    }
 
+    private void OnInstanceEditModeSwitched(bool b)
+    {
+        UpdateUIVisibility();
     }
 
     private void OnDisable()
     {
         UnsubscribeFromTimer();
+        
+        PlaceableManager.Instance.EditModeSwitched -= OnInstanceEditModeSwitched;
     }
 
     public void PlantCrop(int cropId)

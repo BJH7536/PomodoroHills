@@ -140,6 +140,9 @@ public class PopupManager : MonoBehaviour
         Type popupType = typeof(T);
         T popup = null;
         
+        // TODO 
+        if(PlaceableManager.Instance.isNewEdit)
+            InteractionManager.Instance.ClickCancelEdit();
 
         // 이미 같은 타입의 팝업이 활성화되어 있는지 확인
         foreach (Popup activePopup in activePopups)
