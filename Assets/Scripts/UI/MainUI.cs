@@ -1,8 +1,11 @@
+// using GooglePlayGames;
+
+using GooglePlayGames;
 using UnityEngine;
 
 public class MainUI : MonoBehaviour
 {
-    // ÀÎº¥Åä¸® ÆË¾÷À» ¿­±â À§ÇÑ ¸Ş¼­µå
+    // ì¸ë²¤í† ë¦¬ íŒì—…ì„ ì—´ê¸° ìœ„í•œ ë©”ì„œë“œ
     public void OpenInventoryPopup()
     {
         PopupManager.Instance.ShowPopup<InventoryPopup>();
@@ -20,11 +23,10 @@ public class MainUI : MonoBehaviour
 
     public void OpenGPGSAchievement()
     {
-        // TODO ±¸±Û ¾÷Àû ¿©´Â ±â´É ³Ö±â
-        // TODO ¼³Á¤ ÆË¾÷¿¡¼­´Â ±¸±Û ·Î±×ÀÎÇÏ´Â ±â´É ³Ö±â
+        PlayGamesPlatform.Instance.ShowAchievementsUI();
     }
     
-    // ¼³Á¤ ÆË¾÷À» ¿­±â À§ÇÑ ¸Ş¼­µå
+    // ì„¤ì • íŒì—…ì„ ì—´ê¸° ìœ„í•œ ë©”ì„œë“œ
     public void OpenSettingsPopup() 
     {
         PopupManager.Instance.ShowPopup<SettingsPopup>();

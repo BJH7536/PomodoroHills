@@ -148,6 +148,23 @@ namespace TodoSystem
             codingStudy.AddProgress(today.AddDays(-1), 45);
             codingStudy.AddProgress(today, 89);
             
+            TodoItem majorStudy = new TodoItem(
+                id : Guid.NewGuid().ToString(),
+                name: "전공 공부",
+                description: "매일 120분씩 전공 공부하기",
+                startDate: today.AddDays(-2),
+                endDate: today.AddDays(4),
+                type: ItemType.TimeBased,
+                priority: 5,
+                recurrence: Recurrence.Daily,
+                status: Status.Pending,
+                dailyTargetDurationInMinutes: 120
+            );
+            
+            majorStudy.AddProgress(today.AddDays(-2), 120);
+            majorStudy.AddProgress(today.AddDays(-1), 120);
+            majorStudy.AddProgress(today, 117);
+            
             TodoItem drinkWater = new TodoItem(
                 id : Guid.NewGuid().ToString(),
                 name: "물 마시기",
@@ -191,6 +208,7 @@ namespace TodoSystem
             return new List<TodoItem>
             {
                 codingStudy,
+                majorStudy,
                 drinkWater,
                 healthCheck,
                 yogaClass

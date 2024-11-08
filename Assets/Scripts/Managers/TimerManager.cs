@@ -153,6 +153,7 @@ public class TimerManager : MonoBehaviour
             
             // 타이머 복원
             TimerData restoredData = TimerRestorationService.RestoreTimerState();
+            
             if (restoredData != null)
             {
                 RestoreTimerState(restoredData);
@@ -405,14 +406,15 @@ public class TimerManager : MonoBehaviour
             DebugEx.Log("타이머가 복원되었으나 이미 만료되었습니다.");
         }
         
-        // 저장된 타이머 상태 삭제
-        // TODO : 나중엔 주석 지우기
         TimerRestorationService.DeleteStoredTimerState();
     }
     
     private void ResumeTimerWithRemainingTime(int newRemainingSeconds)
     {
         _remainingTimeInSeconds = newRemainingSeconds;
+        
+        CancellationTokenSource?.Cancel();
+        
         CancellationTokenSource = new CancellationTokenSource();
 
         OnTimeUpdated?.Invoke(_remainingTimeInSeconds);
@@ -488,5 +490,5 @@ public enum TimerState
     RelaxSessionRunning,        // 휴식 세션이 진행중인 상태 
     Paused,                     // 타이머 일시정지
     Stopped,                    // 타이머가 완전히 멈춘 상태 (세션이 전혀 없는 상태)
-    PpomodoroEnd,                  // 전체 타이머가 끝난 상태
+    PpomodoroEnd,               // 전체 타이머가 끝난 상태
 }

@@ -7,6 +7,7 @@ public class PomoController : MonoBehaviour
     public NavMeshAgent agent;
     public float commandInterval = 2f;
     public float moveRadius = 5f;
+    public float minDistance = 2f; // 최소 거리 추가
 
     private Queue<ICommand> commandQueue = new Queue<ICommand>();
 
@@ -15,13 +16,18 @@ public class PomoController : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
+        // 최대 반경 표시
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, moveRadius);
+
+        // 최소 반경 표시
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, minDistance);
     }
     
     private void Start()
     {
-        // PomoAnimationController���� �̺�Ʈ ����
+        // PomoAnimationController에서 이벤트 구독
         PomoAnimationController animationController = GetComponent<PomoAnimationController>();
         animationController.OnActionStart += OnActionStart;
         animationController.OnActionEnd += OnActionEnd;
@@ -32,6 +38,7 @@ public class PomoController : MonoBehaviour
         if (isActionPlaying)
         {
             agent.isStopped = true;
+            agent.ResetPath();
             return;
         }
         else
@@ -42,9 +49,9 @@ public class PomoController : MonoBehaviour
         timer += Time.deltaTime;
         if (timer >= commandInterval)
         {
-            Vector3 finalPosition = GetRandomPoint(transform.position, moveRadius);
+            Vector3 finalPosition = GetRandomPoint(transform.position, moveRadius, minDistance);
 
-            // ��� ��ȿ�� �˻�
+            // 경로 유효성 검사
             NavMeshPath path = new NavMeshPath();
             agent.CalculatePath(finalPosition, path);
             if (path.status == NavMeshPathStatus.PathComplete)
@@ -53,10 +60,10 @@ public class PomoController : MonoBehaviour
                 AddCommand(moveCommand);
                 timer = 0f;
             }
-            // ��ȿ�� ��ΰ� �ƴ� ��� Ÿ�̸Ӹ� �ʱ�ȭ���� ����
+            // 유효한 경로가 아닐 경우 타이머를 초기화하지 않음
         }
 
-        // Command ������ �����Ű��
+        // Command 꺼내어 실행시키기
         if (commandQueue.Count > 0 && !isActionPlaying)
         {
             ICommand command = commandQueue.Dequeue();
@@ -64,12 +71,19 @@ public class PomoController : MonoBehaviour
         }
     }
 
-    private Vector3 GetRandomPoint(Vector3 center, float radius)
+    private Vector3 GetRandomPoint(Vector3 center, float maxRadius, float minRadius)
     {
-        Vector3 randomDirection = Random.insideUnitSphere * radius;
-        randomDirection += center;
+        // 무작위 방향을 구함
+        Vector3 randomDirection = Random.insideUnitSphere.normalized;
+
+        // 최소 거리와 최대 거리 사이의 무작위 거리 구하기
+        float distance = Random.Range(minRadius, maxRadius);
+
+        // 방향과 거리를 사용하여 위치 계산
+        Vector3 randomPoint = center + randomDirection * distance;
+
         NavMeshHit hit;
-        if (NavMesh.SamplePosition(randomDirection, out hit, radius, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(randomPoint, out hit, maxRadius, NavMesh.AllAreas))
         {
             return hit.position;
         }

@@ -1,9 +1,9 @@
-lastUpgrade=01101
-proj.pluginVersion=0.11.01
+lastUpgrade=01014
+proj.pluginVersion=0.10.14
 proj.AppId=1009799474662
 and.BundleId=com.SunnyPeachSummer.PomodoroHills
 proj.classDir=Assets
 proj.ConstantsClassName=GPGSIds
-and.ResourceData=%3c%3fxml+version%3d%221.0%22+encoding%3d%22utf-8%22%3f%3e%0d%0a%3c%21--Google+Play+game+services+IDs.+Save+this+file+as+res%2fvalues%2fgames-ids.xml+in+your+project.--%3e%0d%0a%3cresources%3e%0d%0a++%3c%21--app_id--%3e%0d%0a++%3cstring+name%3d%22app_id%22+translatable%3d%22false%22%3e1009799474662%3c%2fstring%3e%0d%0a++%3c%21--package_name--%3e%0d%0a++%3cstring+name%3d%22package_name%22+translatable%3d%22false%22%3ecom.SunnyPeachSummer.PomodoroHills%3c%2fstring%3e%0d%0a++%3c%21--achievement+Welcome%21--%3e%0d%0a++%3cstring+name%3d%22achievement_welcome%22+translatable%3d%22false%22%3eCgkI5tv05bEdEAIQAw%3c%2fstring%3e%0d%0a++%3c%21--achievement+Test+Achievement--%3e%0d%0a++%3cstring+name%3d%22achievement_test_achievement%22+translatable%3d%22false%22%3eCgkI5tv05bEdEAIQBA%3c%2fstring%3e%0d%0a++%3c%21--achievement+Hidden+Achievement--%3e%0d%0a++%3cstring+name%3d%22achievement_hidden_achievement%22+translatable%3d%22false%22%3eCgkI5tv05bEdEAIQBQ%3c%2fstring%3e%0d%0a%3c%2fresources%3e
+and.ResourceData=%3c%3fxml+version%3d%221.0%22+encoding%3d%22utf-8%22%3f%3e%0d%0a%3c%21--Google+Play+game+services+IDs.+Save+this+file+as+res%2fvalues%2fgames-ids.xml+in+your+project.--%3e%0d%0a%3cresources%3e%0d%0a++%3c%21--app_id--%3e%0d%0a++%3cstring+name%3d%22app_id%22+translatable%3d%22false%22%3e1009799474662%3c%2fstring%3e%0d%0a++%3c%21--package_name--%3e%0d%0a++%3cstring+name%3d%22package_name%22+translatable%3d%22false%22%3ecom.SunnyPeachSummer.PomodoroHills%3c%2fstring%3e%0d%0a++%3c%21--achievement+%ec%b2%98%ec%9d%8c+%ea%b2%8c%ec%9e%84%ec%9d%84+%ec%bc%9c%ea%b8%b0--%3e%0d%0a++%3cstring+name%3d%22achievement%22+translatable%3d%22false%22%3eCgkI5tv05bEdEAIQAw%3c%2fstring%3e%0d%0a++%3c%21--achievement+%ed%8f%ac%eb%aa%a8%ec%99%80+%ec%9d%b8%ec%82%ac%ed%95%98%ea%b8%b0--%3e%0d%0a++%3cstring+name%3d%22achievement_2%22+translatable%3d%22false%22%3eCgkI5tv05bEdEAIQBA%3c%2fstring%3e%0d%0a%3c%2fresources%3e
 and.ClientId=1009799474662-06sqg5j7m51cpb9h692tj2scjq8u340i.apps.googleusercontent.com
 android.SetupDone=true

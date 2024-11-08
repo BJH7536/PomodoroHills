@@ -1,4 +1,5 @@
 using System;
+using GooglePlayGames;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -10,8 +11,7 @@ public class PomoAnimationController : MonoBehaviour
 
     private NavMeshAgent agent;
     private Vector3 lastPosition;
-
-    // 이벤트 델리게이트 정의
+    
     public event Action OnActionStart;
     public event Action OnActionEnd;
 
@@ -26,14 +26,12 @@ public class PomoAnimationController : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         lastPosition = transform.position;
-
-        // 무작위 Watering 시간 설정
+        
         ScheduleNextWatering();
     }
 
     private void Update()
     {
-        // 특수 애니메이션 재생 중인지 확인
         if (isActionPlaying)
         {
             actionTimer += Time.deltaTime;
@@ -45,7 +43,6 @@ public class PomoAnimationController : MonoBehaviour
         }
         else
         {
-            // 이동 방향 및 애니메이션 파라미터 설정
             Vector3 movement = transform.position - lastPosition;
             bool isMoving = movement.magnitude > 0.01f;
             animator.SetBool("IsMoving", isMoving);
@@ -63,8 +60,7 @@ public class PomoAnimationController : MonoBehaviour
             }
 
             lastPosition = transform.position;
-
-            // Watering 애니메이션 재생 체크
+            
             wateringTimer += Time.deltaTime;
             if (wateringTimer >= nextWateringTime)
             {
@@ -72,15 +68,15 @@ public class PomoAnimationController : MonoBehaviour
                 ScheduleNextWatering();
             }
         }
-
-        // 캔버스가 카메라를 향하도록 회전
+        
         canvas.LookAt(mainCamera.transform);
     }
 
     private void OnMouseDown()
     {
-        // Greeting 애니메이션 재생
         PlayGreeting();
+        
+        PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_2);
     }
 
     public void PlayGreeting()
@@ -110,6 +106,6 @@ public class PomoAnimationController : MonoBehaviour
     private void ScheduleNextWatering()
     {
         wateringTimer = 0f;
-        nextWateringTime = UnityEngine.Random.Range(10f, 30f); // 최소 10초, 최대 30초
+        nextWateringTime = UnityEngine.Random.Range(10f, 30f); // ??? 10??, ??? 30??
     }
 }

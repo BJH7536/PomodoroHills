@@ -9,6 +9,8 @@
     <file url="file://$PROJECT_DIR$/Assets/Resources/Prefabs/UI/Popups/TodoItemUI_LongPress.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/Managers/DataBaseManager.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/Managers/EconomyManager.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/PomoAnimationController.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/PomoController.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/Popups/ConfirmPopup/ConfirmPopup.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/Popups/TimerPopup/TimerPopup.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/Popups/TodoListPopup/MakeNewTodoItemCaller.cs" charset="UTF-8" />
