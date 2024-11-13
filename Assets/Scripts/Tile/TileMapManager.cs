@@ -271,7 +271,7 @@ public class TileMapManager : MonoBehaviour
 
 #if UNITY_EDITOR
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         // tileStates와 오프셋이 초기화되었는지 확인
         if (tileStates == null || offsetX == 0 || offsetZ == 0)
@@ -310,7 +310,7 @@ public class TileMapManager : MonoBehaviour
 
                 if (GetTileAvailable(new Vector2Int(x, z)))
                 {
-                    Gizmos.color = Color.green;
+                    Gizmos.color = Color.cyan;
                     Gizmos.DrawWireCube(center, size);
                 }
                 else

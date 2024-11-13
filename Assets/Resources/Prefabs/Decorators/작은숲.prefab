@@ -881,6 +881,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1438527075152093744}
   - component: {fileID: 8062459881545044245}
+  - component: {fileID: 6725298244446895758}
   m_Layer: 6
   m_Name: "\uC791\uC740\uC232"
   m_TagString: Placeable
@@ -921,6 +922,22 @@ MonoBehaviour:
   size: {x: 4, y: 4}
   position: {x: 0, y: 0}
   rotation: 0
+--- !u!208 &6725298244446895758
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3670982348126000925}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 2, y: 0.5, z: 2}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 1.5041276, y: 0.5, z: 1.4958614}
+  m_TimeToStationary: 0.5
 --- !u!1 &3788066259877882187
 GameObject:
   m_ObjectHideFlags: 0

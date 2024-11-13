@@ -29,6 +29,11 @@ public class DebugExController  : MonoBehaviour
     {
         PopupManager.Instance.ShowPopup<TodoListPopup>();
     }
+
+    public void OpenAlertPopup()
+    {
+        PopupManager.Instance.ShowAlertPopup("제목", "내용");
+    }
     
     public void Add1000Gold()
     {

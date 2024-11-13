@@ -2,6 +2,7 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/Assets/ExternalAssets/ModularGameUIKit/Common/Scripts/CircularProgressBar.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/GPGSManger.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/InvincibleTimer/NotificationManager.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/MakeNewTodoItem.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/PanelCircularTimer.cs" charset="UTF-8" />

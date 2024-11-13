@@ -4,30 +4,30 @@ using TMPro;
 
 public class GPGSManager : MonoBehaviour
 {
-    public static GPGSManager Instance { get; private set; } // ½Ì±ÛÅæ ÀÎ½ºÅÏ½º
+    public static GPGSManager Instance { get; private set; } // ì‹±ê¸€í†¤ ì¸ìŠ¤í„´ìŠ¤
 
-    public string LoginFlagKey = "IsLoggedIn"; // ·Î±×ÀÎ ¿©ºÎ¸¦ È®ÀÎÇÏ´Â Å°
+    public string LoginFlagKey = "IsLoggedIn"; // ë¡œê·¸ì¸ ì—¬ë¶€ë¥¼ í™•ì¸í•˜ëŠ” í‚¤
 
     private void Awake()
     {
-        // ½Ì±ÛÅæ ÀÎ½ºÅÏ½º ¼³Á¤
+        // ì‹±ê¸€í†¤ ì¸ìŠ¤í„´ìŠ¤ ì„¤ì •
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // ¾À ÀüÈ¯ ½Ã¿¡µµ ÆÄ±«µÇÁö ¾Êµµ·Ï ¼³Á¤
+            DontDestroyOnLoad(gameObject); // ì”¬ ì „í™˜ ì‹œì—ë„ íŒŒê´´ë˜ì§€ ì•Šë„ë¡ ì„¤ì •
             Initialize();
         }
         else
         {
-            Destroy(gameObject); // Áßº¹ ÀÎ½ºÅÏ½º´Â ÆÄ±«
+            Destroy(gameObject); // ì¤‘ë³µ ì¸ìŠ¤í„´ìŠ¤ëŠ” íŒŒê´´
         }
     }
 
     private void Initialize()
     {
-        PlayGamesPlatform.Activate(); // Play Games ÇÃ·§Æû È°¼ºÈ­
+        PlayGamesPlatform.Activate(); // Play Games í”Œë«í¼ í™œì„±í™”
 
-        // PlayerPrefs¿¡ ·Î±×ÀÎ ÇÃ·¡±×°¡ Á¸ÀçÇÏ¸é ÀÚµ¿ ·Î±×ÀÎ ½Ãµµ
+        // PlayerPrefsì— ë¡œê·¸ì¸ í”Œë˜ê·¸ê°€ ì¡´ì¬í•˜ë©´ ìë™ ë¡œê·¸ì¸ ì‹œë„
         if (PlayerPrefs.GetInt(LoginFlagKey, 0) == 1)
         {
             AutoLogin();
@@ -43,11 +43,11 @@ public class GPGSManager : MonoBehaviour
     {
         if (status)
         {
-            // ·Î±×ÀÎ ¼º°ø ½Ã PlayerPrefs¿¡ ÇÃ·¡±× ÀúÀå
+            // ë¡œê·¸ì¸ ì„±ê³µ ì‹œ PlayerPrefsì— í”Œë˜ê·¸ ì €ì¥
             PlayerPrefs.SetInt(LoginFlagKey, 1);
             PlayerPrefs.Save();
 
-            // À¯Àú ÀÌ¸§ Ç¥½Ã ¾÷µ¥ÀÌÆ®
+            // ìœ ì € ì´ë¦„ í‘œì‹œ ì—…ë°ì´íŠ¸
             if (GameObject.Find("Label-Name").TryGetComponent(out TMP_Text text))
             {
                 text.text = PlayGamesPlatform.Instance.GetUserDisplayName();
@@ -55,9 +55,9 @@ public class GPGSManager : MonoBehaviour
         }
         else
         {
-            // ·Î±×ÀÎ ½ÇÆĞ ½Ã Ã³¸®
+            // ë¡œê·¸ì¸ ì‹¤íŒ¨ ì‹œ ì²˜ë¦¬
             Debug.Log("Login failed, showing login button.");
-            // ÇÊ¿ä ½Ã ·Î±×ÀÎ ¹öÆ° Ç¥½Ã µî Ã³¸®
+            // í•„ìš” ì‹œ ë¡œê·¸ì¸ ë²„íŠ¼ í‘œì‹œ ë“± ì²˜ë¦¬
         }
     }
 }

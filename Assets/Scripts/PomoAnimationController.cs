@@ -21,6 +21,9 @@ public class PomoAnimationController : MonoBehaviour
 
     private float wateringTimer = 0f;
     private float nextWateringTime = 0f;
+    private static readonly int MoveX = Animator.StringToHash("MoveX");
+    private static readonly int MoveY = Animator.StringToHash("MoveY");
+    private static readonly int IsMoving = Animator.StringToHash("IsMoving");
 
     private void Start()
     {
@@ -45,7 +48,7 @@ public class PomoAnimationController : MonoBehaviour
         {
             Vector3 movement = transform.position - lastPosition;
             bool isMoving = movement.magnitude > 0.01f;
-            animator.SetBool("IsMoving", isMoving);
+            animator.SetBool(IsMoving, isMoving);
 
             if (isMoving)
             {
@@ -55,8 +58,8 @@ public class PomoAnimationController : MonoBehaviour
                 float moveX = Vector3.Dot(movement.normalized, cameraRight.normalized);
                 float moveY = Vector3.Dot(movement.normalized, cameraForward.normalized);
 
-                animator.SetFloat("MoveX", moveX);
-                animator.SetFloat("MoveY", moveY);
+                animator.SetFloat(MoveX, moveX);
+                animator.SetFloat(MoveY, moveY);
             }
 
             lastPosition = transform.position;
@@ -68,8 +71,8 @@ public class PomoAnimationController : MonoBehaviour
                 ScheduleNextWatering();
             }
         }
-        
-        canvas.LookAt(mainCamera.transform);
+
+        canvas.rotation = mainCamera.transform.rotation;
     }
 
     private void OnMouseDown()
@@ -106,6 +109,6 @@ public class PomoAnimationController : MonoBehaviour
     private void ScheduleNextWatering()
     {
         wateringTimer = 0f;
-        nextWateringTime = UnityEngine.Random.Range(10f, 30f); // ??? 10??, ??? 30??
+        nextWateringTime = UnityEngine.Random.Range(10f, 30f);
     }
 }
