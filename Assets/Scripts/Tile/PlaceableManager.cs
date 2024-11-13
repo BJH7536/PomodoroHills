@@ -16,9 +16,6 @@ public class PlaceableManager : MonoBehaviour
 {
     public static PlaceableManager Instance { get; private set; }
 
-    public BuildingDatabase BuildingDatabase;
-    public DecorDatabase DecorDatabase;
-    
     public List<GameObject> placeables = new List<GameObject>();
     public GameObject selectedPlaceable;
     public Vector2Int lastPosition = new Vector2Int(-1, -1);
@@ -208,7 +205,7 @@ public class PlaceableManager : MonoBehaviour
                 Placeable placeable = obj.GetComponent<Placeable>();
                 if (placeable != null)
                 {
-                    TileMapManager.Instance.FreeEveryTile(placeable.size, placeable.position, placeable.rotation);
+                    TileMapManager.Instance.FreeEveryTile(placeable.position, placeable.size, placeable.rotation);
                 }
                 Destroy(obj);
             }
@@ -262,7 +259,7 @@ public class PlaceableManager : MonoBehaviour
                             }
                         }
 
-                        TileMapManager.Instance.OccupyEveryTile(placeable.size, placeable.position, placeable.rotation);
+                        TileMapManager.Instance.OccupyEveryTile(placeable.position, placeable.size, placeable.rotation);
 
                         placeables.Add(obj);
                     }
@@ -286,7 +283,7 @@ public class PlaceableManager : MonoBehaviour
     
     private void Place(int id, Vector2Int position, int rotation)
     {
-        var obj = BuildingDatabase.GetBuildingById(id).Prefab;
+        var obj = DataBaseManager.Instance.BuildingDatabase.GetBuildingById(id).Prefab;
         // itemDB.itemTable.TryGetValue(id, out GameObject obj);
         Placeable placeable = obj.GetComponent<Placeable>();
         PlacePlaceable(obj, placeable.size, position, rotation);
@@ -296,13 +293,13 @@ public class PlaceableManager : MonoBehaviour
     {
         if (TileMapManager.Instance != null)
         {
-            if (!TileMapManager.Instance.GetEveryTileAvailable(size, position, rotation))
+            if (!TileMapManager.Instance.GetEveryTileAvailable(position, size, rotation))
             {
                 DebugEx.Log("이미 타일을 누가 쓰고있어요");
             }
             else
             {
-                TileMapManager.Instance.OccupyEveryTile(size, position, rotation);
+                TileMapManager.Instance.OccupyEveryTile(position, size, rotation);
                 Vector3 objPosition = new Vector3(position.x, 0f, position.y);
                 Quaternion rotationQuaternion = Quaternion.Euler(0, rotation * 90, 0);
                 GameObject newObj = Instantiate(Prefab, objPosition, rotationQuaternion);
@@ -326,12 +323,12 @@ public class PlaceableManager : MonoBehaviour
         GameObject obj = null;
         if (type == ItemType.Building)
         {
-            obj = BuildingDatabase.GetBuildingById(id).Prefab;
+            obj = DataBaseManager.Instance.BuildingDatabase.GetBuildingById(id).Prefab;
             
         }
         else if (type == ItemType.Decoration)
         {
-            obj = DecorDatabase.GetDecorById(id).Prefab;
+            obj = DataBaseManager.Instance.DecorDatabase.GetDecorById(id).Prefab;
         }
         
         if (obj != null)
@@ -346,7 +343,7 @@ public class PlaceableManager : MonoBehaviour
 
     public GameObject CreateFarmBuilding(int id)
     {
-        GameObject obj = BuildingDatabase.GetBuildingById(id).Prefab;
+        GameObject obj = DataBaseManager.Instance.BuildingDatabase.GetBuildingById(id).Prefab;
 
         if (obj != null)
         {
@@ -400,7 +397,7 @@ public class PlaceableManager : MonoBehaviour
         if (selectedPlaceable != null)
         {
             selectedPlaceable.TryGetComponent<Placeable>(out Placeable placeable);
-            TileMapManager.Instance.FreeEveryTile(placeable.size,placeable.position,placeable.rotation);
+            TileMapManager.Instance.FreeEveryTile(placeable.position, placeable.size, placeable.rotation);
             
             // TODO 인벤토리 내 해당하는 수량 +1
 
@@ -442,9 +439,9 @@ public class PlaceableManager : MonoBehaviour
     {
         if (selectedPlaceable.TryGetComponent(out Placeable placeable))
         {
-            if (TileMapManager.Instance.GetEveryTileAvailable(placeable.size, placeable.position, placeable.rotation))
+            if (TileMapManager.Instance.GetEveryTileAvailable(placeable.position, placeable.size, placeable.rotation))
             {
-                TileMapManager.Instance.OccupyEveryTile(placeable.size, placeable.position, placeable.rotation);
+                TileMapManager.Instance.OccupyEveryTile(placeable.position, placeable.size, placeable.rotation);
                 if (!isNewEdit) // 기존에 있던 오브젝트의 경우
                 {
                     //TileMapManager.Instance.FreeEveryTile(placeable.size, lastPosition, lastRotation); //수정중 240921/0349
@@ -483,7 +480,7 @@ public class PlaceableManager : MonoBehaviour
         }
         else if (selectedPlaceable.TryGetComponent<Placeable>(out Placeable placeable))  //기존의 Placeable
         {
-            TileMapManager.Instance.OccupyEveryTile(placeable.size, lastPosition, lastRotation);
+            TileMapManager.Instance.OccupyEveryTile(lastPosition, placeable.size, lastRotation);
             selectedPlaceable.transform.position = new Vector3(lastPosition.x, 0f, lastPosition.y);
             selectedPlaceable.transform.rotation = Quaternion.Euler(0, lastRotation * 90f, 0);
             placeable.position = lastPosition;
@@ -537,7 +534,7 @@ public class PlaceableManager : MonoBehaviour
             }
             else
             {
-                TileMapManager.Instance.FreeEveryTile(placeable.size, placeable.position, placeable.rotation);
+                TileMapManager.Instance.FreeEveryTile(placeable.position, placeable.size, placeable.rotation);
                 lastRotation = placeable.rotation;
                 lastPosition = placeable.position;
             }
@@ -568,7 +565,7 @@ public class PlaceableManager : MonoBehaviour
         if (selectedPlaceable != null)
         {
             Placeable placeable = selectedPlaceable.GetComponent<Placeable>();
-            if (TileMapManager.Instance.GetEveryTileAvailable(placeable.size, placeable.position, placeable.rotation))
+            if (TileMapManager.Instance.GetEveryTileAvailable(placeable.position, placeable.size, placeable.rotation))
             {
                 // MeshRenderer[] renderers = selectedPlaceable.GetComponentsInChildren<MeshRenderer>();
                 //

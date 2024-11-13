@@ -48,7 +48,13 @@ public class SettingsPopup : Popup
         PopupManager.Instance.ShowConfirmPopup("데이터 초기화", "전체 데이터를 초기화합니다.\n\n게임이 자동으로 꺼집니다. \n재접속해주세요.", async () =>
         {
             await DeleteAllData();
-            Application.Quit();
+            
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit(); // 어플리케이션 종료
+#endif
+            
         });
     }
     

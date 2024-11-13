@@ -10,6 +10,7 @@
     <file url="file://$PROJECT_DIR$/Assets/Resources/Prefabs/UI/Popups/TodoItemUI_LongPress.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/Managers/DataBaseManager.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/Managers/EconomyManager.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/Managers/NotificationManager.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/PomoAnimationController.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/PomoController.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/Popups/ConfirmPopup/ConfirmPopup.cs" charset="UTF-8" />
@@ -19,6 +20,7 @@
     <file url="file://$PROJECT_DIR$/Assets/Scripts/Timer.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/TimerRestorationService.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/UI/Popups/SelectCropToHarvestPopup/SelectCropToPlantPopup.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/UI/UIUtillity.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/UIScaleEffect.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/StoreManager.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/TodoItem.cs" charset="UTF-8" />

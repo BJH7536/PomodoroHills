@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using VInspector;
 
@@ -24,6 +25,8 @@ public class TileMapManager : MonoBehaviour
     private int offsetX;
     private int offsetZ;
 
+    [SerializeField] private List<Placeable> backgroundTrees;
+    
     private void Awake()
     {
         if (Instance == null)
@@ -35,7 +38,9 @@ public class TileMapManager : MonoBehaviour
         {
             DestroyImmediate(gameObject);
         }
+        
         CreateTileMap();
+        OccupyBackgroundTrees();
     }
 
     void CreateTileMap()
@@ -59,6 +64,17 @@ public class TileMapManager : MonoBehaviour
         }
     }
 
+    public void OccupyBackgroundTrees()
+    {
+        foreach (var placeable in backgroundTrees)
+        {
+            Vector2Int pos = placeable.position;
+            Vector2Int size = placeable.size;
+            int rot = placeable.rotation;
+            OccupyEveryTile(pos, size, rot);
+        }
+    }
+
     // 그리드 인덱스를 배열 인덱스로 변환하는 함수
     private bool TryGetArrayIndices(Vector2Int gridPosition, out int arrayX, out int arrayZ)
     {
@@ -75,7 +91,7 @@ public class TileMapManager : MonoBehaviour
         }
     }
     
-    public bool GetEveryTileAvailable(Vector2Int size, Vector2Int position, int rotation)   // GetTileAvailable을 타일에 놓일 모든 자리에서 실행
+    public bool GetEveryTileAvailable(Vector2Int position, Vector2Int size, int rotation)   // GetTileAvailable을 타일에 놓일 모든 자리에서 실행
     {
         switch (rotation)
         {
@@ -136,12 +152,12 @@ public class TileMapManager : MonoBehaviour
         }
         else
         {
-            Debug.Log($"Tile not found at position {position}");
+            DebugEx.Log($"Tile not found at position {position}");
             return false;
         }
     }
 
-    public void OccupyEveryTile(Vector2Int size, Vector2Int position, int rotation)
+    public void OccupyEveryTile(Vector2Int position, Vector2Int size, int rotation)
     {
         switch (rotation)
         {
@@ -201,11 +217,11 @@ public class TileMapManager : MonoBehaviour
         }
         else
         {
-            Debug.Log($"Cannot occupy tile at position {position} - out of bounds");
+            DebugEx.Log($"Cannot occupy tile at position {position} - out of bounds");
         }
     }
 
-    public void FreeEveryTile(Vector2Int size, Vector2Int prePosition, int preRotation)
+    public void FreeEveryTile(Vector2Int prePosition, Vector2Int size, int preRotation)
     {
         switch (preRotation)
         {
@@ -265,7 +281,7 @@ public class TileMapManager : MonoBehaviour
         }
         else
         {
-            Debug.Log($"Cannot free tile at position {position} - out of bounds");
+            DebugEx.Log($"Cannot free tile at position {position} - out of bounds");
         }
     }
 
@@ -306,7 +322,7 @@ public class TileMapManager : MonoBehaviour
             for (int z = minZ; z <= maxZ; z++)
             {
                 Vector3 center = new Vector3(x * gridSize, 0, z * gridSize);
-                Vector3 size = new Vector3(gridSize, 0.1f, gridSize);
+                Vector3 size = new Vector3(gridSize, 0.01f, gridSize);
 
                 if (GetTileAvailable(new Vector2Int(x, z)))
                 {
@@ -316,7 +332,7 @@ public class TileMapManager : MonoBehaviour
                 else
                 {
                     Gizmos.color = Color.red;
-                    Gizmos.DrawWireCube(center, size);
+                    Gizmos.DrawCube(center, size);
                 }
             }
         }
@@ -347,6 +363,6 @@ public class TileMapManager : MonoBehaviour
             }
         }
 
-        Debug.Log(sb.ToString());
+        DebugEx.Log(sb.ToString());
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using UnityEngine;
 using VInspector;
 
@@ -8,13 +7,24 @@ using VInspector;
 public class Placeable : MonoBehaviour
 {
     public int id;
-    public Vector2Int size;         //(x,z)
     public Vector2Int position;     //(x,z)
+    public Vector2Int size;         //(x,z)
     public int rotation;            // n * 90
+
+    private void Reset()
+    {
+        SetPosition();
+    }
 
     private void Awake()
     {
         InitializeRenderers();
+    }
+
+    [ContextMenu("SetPosition")]
+    public void SetPosition()
+    {
+        position = new Vector2Int((int) transform.position.x, (int) transform.position.z);
     }
     
     #region Color

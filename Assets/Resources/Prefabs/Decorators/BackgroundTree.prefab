@@ -9,9 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2405178708962738538}
+  - component: {fileID: 6339258037915971979}
   - component: {fileID: 2773617476809017227}
   m_Layer: 6
-  m_Name: Trees (5)
+  m_Name: BackgroundTree
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34,6 +35,22 @@ Transform:
   - {fileID: 8383894172267305179}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6339258037915971979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732227926336309115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fad55f02ff2892a499a98d42b0345d6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 150
+  position: {x: 18, y: 0}
+  size: {x: 2, y: 2}
+  rotation: 0
 --- !u!208 &2773617476809017227
 NavMeshObstacle:
   m_ObjectHideFlags: 0
