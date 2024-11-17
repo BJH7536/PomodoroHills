@@ -134,6 +134,8 @@ GameObject:
   - component: {fileID: 5332999}
   - component: {fileID: 5332998}
   - component: {fileID: 5332997}
+  - component: {fileID: 5333001}
+  - component: {fileID: 5333002}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -151,7 +153,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1851942825}
   - {fileID: 2095590378}
@@ -202,7 +204,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -220,19 +222,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5332999}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1848817722}
-        m_TargetAssemblyTypeName: TimerWidget, Assembly-CSharp
-        m_MethodName: ShowTimerPopup
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &5332999
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -271,6 +261,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5332995}
   m_CullTransparentMesh: 1
+--- !u!114 &5333001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5332995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f95b2bb5a1fc99a4088ccbb7b5aedc8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  longPressDuration: 1
+  onLongPress:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &5333002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5332995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5256e6d0fb76a9d4b9ecbabe29e3fbd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rectTransform: {fileID: 5332996}
+  canvas: {fileID: 1848817720}
+  longPressDetector: {fileID: 5333001}
 --- !u!1 &5767149
 GameObject:
   m_ObjectHideFlags: 0
@@ -45266,6 +45287,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeText: {fileID: 2095590376}
+  button: {fileID: 5332998}
 --- !u!1 &1851942824
 GameObject:
   m_ObjectHideFlags: 0
@@ -51699,7 +51721,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 932359396}
   m_HandleRect: {fileID: 932359395}
   m_Direction: 2
-  m_Value: 0.0000073242186
+  m_Value: 0.0000075683593
   m_Size: 0.5
   m_NumberOfSteps: 0
   m_OnValueChanged:

@@ -44,31 +44,31 @@ public static class DebugEx
   
     public static void Log(object message, Object context = null)  
     {
-// #if UNITY_EDITOR  
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         if (CurrentLogLevel >= LogLevel.All)  
         {
             Debug.Log(message, context);  
         }
-//#endif  
+#endif  
     }  
   
     public static void LogWarning(object message, Object context = null)  
     {
-//#if UNITY_EDITOR  
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         if (CurrentLogLevel >= LogLevel.Warning)  
         {
             Debug.LogWarning(message, context);  
         }
-//#endif  
+#endif  
     }  
   
     public static void LogError(object message, Object context = null)  
     {
-//#if UNITY_EDITOR 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         if (CurrentLogLevel >= LogLevel.Error)  
         {
             Debug.LogError(message, context);  
         }
-//#endif 
+#endif 
     }  
 }
