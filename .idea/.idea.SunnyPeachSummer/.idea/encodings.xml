@@ -4,6 +4,7 @@
     <file url="file://$PROJECT_DIR$/Assets/ExternalAssets/ModularGameUIKit/Common/Scripts/CircularProgressBar.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/GPGSManger.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/MovableUI.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/LofiMusicPlayList.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/Managers/DataBaseManager.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/Managers/EconomyManager.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/Managers/NotificationManager.cs" charset="UTF-8" />

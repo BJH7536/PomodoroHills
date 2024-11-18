@@ -4,23 +4,55 @@ using DG.Tweening;
 using GooglePlayGames;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SettingsPopup : Popup
 {
     [SerializeField] private Transform panel;
-    
+
+    [SerializeField] private Slider MasterVolume;
+    [SerializeField] private Slider MusicVolume;
+    [SerializeField] private Slider SfxVolume;
+
+    private void Awake()
+    {
+        MasterVolume.onValueChanged.AddListener(ControlMasterVolume);
+        MusicVolume.onValueChanged.AddListener(ControlMusicVolume);
+        SfxVolume.onValueChanged.AddListener(ControlSfxVolume);
+    }
+
     private void OnEnable()
     {
         panel.localScale = Vector3.zero;
         panel.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
     }
 
+    public void ControlMasterVolume(float value)
+    {
+        SoundManager.Instance.MasterSoundVolume = value / 100.0f;
+    }
+    
+    public void ControlMusicVolume(float value)
+    {
+        SoundManager.Instance.MusicSoundVolume = value / 100.0f;
+    }
+    
+    public void ControlSfxVolume(float value)
+    {
+        SoundManager.Instance.SfxSoundVolume = value / 100.0f;
+    }
+    
+    #region GPGS Login
+    
+    /// <summary>
+    /// 구글 GPGS 로그인 버튼
+    /// </summary>
     public void GPGSLoginButton()
     {
        PlayGamesPlatform.Instance.Authenticate(ProcessAuthentication);
     }
     
-    void ProcessAuthentication(bool status) {
+    private void ProcessAuthentication(bool status) {
         if (status) {
             // 로그인에 성공
     
@@ -43,6 +75,10 @@ public class SettingsPopup : Popup
         }
     }
 
+    #endregion
+    
+    #region Data Reset
+    
     public void ResetDataButton()
     {
         PopupManager.Instance.ShowConfirmPopup("데이터 초기화", "전체 데이터를 초기화합니다.\n\n게임이 자동으로 꺼집니다. \n재접속해주세요.", async () =>
@@ -171,7 +207,8 @@ public class SettingsPopup : Popup
         }
     }
 
-
+    #endregion
+    
     public void Close()
     {
         PopupManager.Instance.HidePopup();

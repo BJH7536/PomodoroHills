@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using VInspector;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// 팝업을 관리하는 클래스입니다.
@@ -24,25 +25,25 @@ public class PopupManager : MonoBehaviour
     /// </summary>
     public static PopupManager Instance => instance;
 
-    /// <summary>
-    /// 팝업이 생성될 부모 캔버스입니다.
-    /// </summary>
-    [SerializeField] private Transform popupCanvas;
+    [Tab("PopupManagement")] 
+    [SerializeField] private Transform popupCanvas;         // 팝업이 생성될 부모 캔버스
+    [SerializeField] private TranslucentImageSource _translucentImageSource;
+    [SerializeField] private PomoPopupImages pomoPopupImages;
 
+    [Tab("Sounds")] 
+    [SerializeField] private List<AudioClip> PopupOpen;
+    
     /// <summary>
-    /// 현재 활성화된 팝업들을 관리하는 스택입니다.
+    /// 현재 활성화된 팝업들을 관리하는 스택
     /// </summary>
     private Stack<Popup> activePopups = new Stack<Popup>();
 
     /// <summary>
-    /// 팝업 타입별로 비활성화된 팝업 인스턴스를 저장하는 객체 풀입니다.
+    /// 팝업 타입별로 비활성화된 팝업 인스턴스를 저장하는 풀
     /// </summary>
     private Dictionary<Type, Stack<Popup>> popupPool = new Dictionary<Type, Stack<Popup>>();
 
-    [SerializeField] private TranslucentImageSource _translucentImageSource;
-
-    [SerializeField] private PomoPopupImages pomoPopupImages;
-
+    
     [Button]
     public void TopOfPopupStack()
     {
@@ -50,7 +51,6 @@ public class PopupManager : MonoBehaviour
 
         DebugEx.Log($"TopOfPopupStack : {top.GetType().ToString()}\n" +
                     $"PopupStack Count : {activePopups.Count}");
-        
     }
     
     /// <summary>
@@ -140,7 +140,6 @@ public class PopupManager : MonoBehaviour
         Type popupType = typeof(T);
         T popup = null;
         
-        // TODO 
         if(PlaceableManager.Instance.isNewEdit)
             InteractionManager.Instance.ClickCancelEdit();
 
@@ -180,6 +179,8 @@ public class PopupManager : MonoBehaviour
             activePopups.Push(popup); // 활성 팝업 스택에 추가
         }
 
+        PlayRandomPopupOpenSFX();
+        
         return popup;
     }
 
@@ -290,5 +291,10 @@ public class PopupManager : MonoBehaviour
         {
             ShowPopup<QuitGamePopup>(true);
         }
+    }
+
+    public void PlayRandomPopupOpenSFX()
+    {
+        SoundManager.Instance.Play(PopupOpen[Random.Range(0, PopupOpen.Count)]);
     }
 }

@@ -31,6 +31,8 @@ public class PomoController : MonoBehaviour
         PomoAnimationController animationController = GetComponent<PomoAnimationController>();
         animationController.OnActionStart += OnActionStart;
         animationController.OnActionEnd += OnActionEnd;
+        
+        MakeRandomMoveCommand();
     }
 
     private void Update()
@@ -49,17 +51,7 @@ public class PomoController : MonoBehaviour
         timer += Time.deltaTime;
         if (timer >= commandInterval)
         {
-            Vector3 finalPosition = GetRandomPoint(transform.position, moveRadius, minDistance);
-
-            // 경로 유효성 검사
-            NavMeshPath path = new NavMeshPath();
-            agent.CalculatePath(finalPosition, path);
-            if (path.status == NavMeshPathStatus.PathComplete)
-            {
-                MoveCommand moveCommand = new MoveCommand(agent, finalPosition);
-                AddCommand(moveCommand);
-                timer = 0f;
-            }
+            MakeRandomMoveCommand();
             // 유효한 경로가 아닐 경우 타이머를 초기화하지 않음
         }
 
@@ -68,6 +60,21 @@ public class PomoController : MonoBehaviour
         {
             ICommand command = commandQueue.Dequeue();
             command.Execute();
+        }
+    }
+
+    private void MakeRandomMoveCommand()
+    {
+        Vector3 finalPosition = GetRandomPoint(transform.position, moveRadius, minDistance);
+
+        // 경로 유효성 검사
+        NavMeshPath path = new NavMeshPath();
+        agent.CalculatePath(finalPosition, path);
+        if (path.status == NavMeshPathStatus.PathComplete)
+        {
+            MoveCommand moveCommand = new MoveCommand(agent, finalPosition);
+            AddCommand(moveCommand);
+            timer = 0f;
         }
     }
 

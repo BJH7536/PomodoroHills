@@ -62,7 +62,6 @@ public class StoreManager : MonoBehaviour
 
     public async UniTask<bool> SellItem(int id, int amount)
     {
-        // TODO 아이템 파는 로직 개발하기
         if (amount <= 0)
         {
             DebugEx.LogWarning("SellItem: 판매 수량은 0보다 커야 합니다.");

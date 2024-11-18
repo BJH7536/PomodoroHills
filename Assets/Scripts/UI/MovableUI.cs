@@ -22,11 +22,7 @@ public class MovableUI : MonoBehaviour, IDragHandler, IPointerUpHandler
         {
             isMovable = true;                                       // 롱프레스가 감지되면 이동 가능 상태 활성화
 
-            // TODO : UI에 이동 가능함을 보여주는 시각적 효과 추가하기 
-
-            
             rectTransform.DOScale(0.7f, 0.2f).SetEase(Ease.OutExpo);
-            
             
             longPressDetector.GetComponent<Button>().interactable = false;
             
@@ -62,7 +58,7 @@ public class MovableUI : MonoBehaviour, IDragHandler, IPointerUpHandler
         await SnapToEdgeAsync();
 
         longPressDetector.GetComponent<Button>().interactable = true;
-        Debug.Log("UI 이동 완료");
+        DebugEx.Log("UI 이동 완료");
     }
 
     private async UniTask SnapToEdgeAsync()

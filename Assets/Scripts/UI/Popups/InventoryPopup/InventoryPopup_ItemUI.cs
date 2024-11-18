@@ -54,7 +54,7 @@ namespace PomodoroHills
 
             itemIconImage.sprite = itemTableElement.image;
             
-            // TODO 건물이거나 장식품인 경우에만 짧은 터치로 건물 짓는 기능 연결하기
+            // 건물이나 장식물인 경우에는 지을 수 있게
             if (itemTableElement.type is ItemType.Building or ItemType.Decoration)
             {
                 button.onClick.RemoveAllAndAddListener(() =>

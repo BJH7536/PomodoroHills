@@ -399,8 +399,6 @@ public class PlaceableManager : MonoBehaviour
             selectedPlaceable.TryGetComponent<Placeable>(out Placeable placeable);
             TileMapManager.Instance.FreeEveryTile(placeable.position, placeable.size, placeable.rotation);
             
-            // TODO 인벤토리 내 해당하는 수량 +1
-
             ItemData newItem = new ItemData()
             {
                 id = placeable.id,
@@ -448,7 +446,6 @@ public class PlaceableManager : MonoBehaviour
                 }
                 else
                 {
-                    // TODO 기존에 있던 placeable이 아니니까, 인벤토리에서 감소시키기
                     PomodoroHills.InventoryManager.Instance.DeleteItemAsync(placeable.id, 1).Forget();
                     
                     placeables.Add(selectedPlaceable);
@@ -521,7 +518,12 @@ public class PlaceableManager : MonoBehaviour
         EditModeSwitched?.Invoke(isEdit);
     }
     public void OnIsNewEdit() { isNewEdit = true; }
-    public void OffIsNewEdit() { isNewEdit = false; }
+    
+    public void OffIsNewEdit()
+    {
+        if(isNewEdit) OffEditMode();
+        isNewEdit = false; 
+    }
 
     public void OnIsMoveEdit() // 오브젝트 이동 시작시 기존 위치 Free
     {

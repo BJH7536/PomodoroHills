@@ -59,4 +59,12 @@ public class DebugExController  : MonoBehaviour
     {
         PopupManager.Instance.HandleAndroidBackButton();
     }
+
+
+    [SerializeField] private AudioClip testClip;
+
+    public void PlaySoundEffect()
+    {
+        SoundManager.Instance.Play(testClip);
+    }
 }
