@@ -25,21 +25,23 @@ public class InteractionManager : MonoBehaviour       //해당 작업은 다른 
     
     public EventSystem eventSystem;
 
-    public GameObject TileMapMainOptionUI;      //ModeOptionUI,EditOptionUI 그룹
-    public GameObject ModeOptionUI;             // edit, minimizeUI 버튼 그룹
-    public GameObject EditOptionUI;             // moveEdit, chest 버튼 그룹
-    public GameObject selectOptionUI;           //Move(시작), Pack 버튼 그룹
-    public GameObject MoveOptionUI;             // confirm, rotate, cancle 버튼 그룹
-    public GameObject PlaceableChestUI;         //placeableChest(보관함) UI 그룹
+    [SerializeField] private GameObject TileMapMainOptionUI;      //ModeOptionUI,EditOptionUI 그룹
+    [SerializeField] private GameObject ModeOptionUI;             // edit, minimizeUI 버튼 그룹
+    [SerializeField] private GameObject EditOptionUI;             // moveEdit, chest 버튼 그룹
+    [SerializeField] private GameObject selectOptionUI;           //Move(시작), Pack 버튼 그룹
+    [SerializeField] private GameObject MoveOptionUI;             // confirm, rotate, cancle 버튼 그룹
+    [SerializeField] private GameObject PlaceableChestUI;         //placeableChest(보관함) UI 그룹
 
     private bool isDrag;                        //드래그 상태를 확인하는데 사용합니다.
     private Vector3 mouseDownPosition;          //클릭 된 위치를 기억합니다. (입력작업 관련 메소드 내 중복 시 삭제)
     private Vector3 startClickPosition;
     private float dragSpeed = 0.1f;
-    public float dragThreshold = 0.5f;
-    private float clickCheckTime = 0.5f;
-    public float clickStartTime = 0f;
-
+    [SerializeField] private float dragThreshold = 0.5f;          // 드래그로 인정할 최소 거리
+    [SerializeField] private float clickCheckTime = 0.5f;        // 드래그로 인정할 최소 시간
+    private float clickStartTime = 0f;
+    private float lastClickTime = 0f;
+    [SerializeField] private float doubleClickThreshold = 0.3f;
+    
     /// <summary>
     /// 게임 오브젝트가 활성화될 때 호출됩니다.
     /// 싱글톤 인스턴스를 설정

@@ -29,10 +29,11 @@ public class Placeable : MonoBehaviour
     
     #region Color
     
-    private struct RendererInfo
+    private class  RendererInfo
     {
-        public Renderer renderer;
-        public Color originalColor;
+        public Renderer renderer;           // 해당 Renderer 컴포넌트 참조
+        public Material originalMaterial;   // 원본 Material 저장
+        public Material instanceMaterial;   // 색상 변경을 위해 생성된 Material의 인스턴스를 저장
     }
 
     private List<RendererInfo> renderers = new List<RendererInfo>();
@@ -40,22 +41,13 @@ public class Placeable : MonoBehaviour
     
     private void InitializeRenderers()
     {
-        // 자신과 모든 자식 오브젝트에서 Renderer를 찾아 저장합니다.
+        renderers = new List<RendererInfo>();
         foreach (Renderer renderer in GetComponentsInChildren<Renderer>())
         {
             RendererInfo info = new RendererInfo();
             info.renderer = renderer;
-
-            // 원래 색상을 저장합니다.
-            if (renderer.material.HasProperty("_Color"))
-            {
-                info.originalColor = renderer.material.color;
-            }
-            else
-            {
-                info.originalColor = Color.white; // 기본 색상 설정
-            }
-
+            info.originalMaterial = renderer.sharedMaterial; // 원본 Material 저장
+            info.instanceMaterial = null;
             renderers.Add(info);
         }
     }
@@ -77,9 +69,24 @@ public class Placeable : MonoBehaviour
     {
         foreach (RendererInfo info in renderers)
         {
-            if (info.renderer.material.HasProperty("_Color"))
+            if (info.instanceMaterial != null)
             {
-                info.renderer.material.color = info.originalColor;
+                info.renderer.material = info.originalMaterial; // 원본 Material로 복구
+                Destroy(info.instanceMaterial); // 인스턴스 Material 제거
+                info.instanceMaterial = null;
+            }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        // 인스턴스 Material이 남아있다면 제거
+        foreach (RendererInfo info in renderers)
+        {
+            if (info.instanceMaterial != null)
+            {
+                Destroy(info.instanceMaterial);
+                info.instanceMaterial = null;
             }
         }
     }
@@ -89,10 +96,20 @@ public class Placeable : MonoBehaviour
     {
         foreach (RendererInfo info in renderers)
         {
-            if (info.renderer.material.HasProperty("_Color"))
+            // 이미 인스턴스 Material이 있으면 재사용
+            Material material = info.instanceMaterial;
+            if (material == null)
             {
-                info.renderer.material.color = color;
+                material = new Material(info.originalMaterial); // 인스턴스 Material 생성
+                info.instanceMaterial = material;
             }
+
+            if (material.HasProperty("_Color"))
+            {
+                material.color = color;
+            }
+
+            info.renderer.material = material; // 인스턴스 Material 적용
         }
     }
 
