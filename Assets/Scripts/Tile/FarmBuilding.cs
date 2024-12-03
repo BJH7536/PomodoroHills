@@ -70,7 +70,7 @@ public class FarmBuilding : Placeable
 
     private void OnEnable()
     {
-        if (PlaceableManager.Instance.isEdit)
+        if (PlaceableManager.Instance.IsEdit)
         {
             HideAllButtons();
         }
@@ -186,7 +186,7 @@ public class FarmBuilding : Placeable
     {
         Canvas.rotation = Camera.main.transform.rotation;
         
-        if (PlaceableManager.Instance.isEdit)
+        if (PlaceableManager.Instance.IsEdit)
         {
             Canvas.gameObject.SetActive(false);
         }

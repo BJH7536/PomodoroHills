@@ -8,6 +8,7 @@ public class DataBaseManager : MonoBehaviour
     [SerializeField] public CropDatabase CropDatabase;
 
     [SerializeField] public ItemTable ItemTable;
+    [SerializeField] public PomoDialogue PomoDialogue;
     
     /// <summary>
     /// 싱글톤 인스턴스

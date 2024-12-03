@@ -15,7 +15,7 @@ public class ClickRespondByMMFPlayer : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if(!PlaceableManager.Instance.isEdit)
+        if(!PlaceableManager.Instance.IsEdit)
             mmf_Player.PlayFeedbacks();
     }
 }

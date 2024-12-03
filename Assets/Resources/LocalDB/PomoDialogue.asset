@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96ceeb2d2f6f81e4d8f8e1a0d0748822, type: 3}
+  m_Name: PomoDialogue
+  m_EditorClassIdentifier: 
+  dialogueEntries:
+  - timePeriod: 0
+    dialogues:
+    - Text: "\uC88B\uC740\\n\uC544\uCE68\uC774\uC57C!"
+      characterDelay: 0.05
+      Delay: 2
+    - Text: "\uC624\uB298\uB3C4\\n\uAC00\uBCF4\uC790\uAD6C"
+      characterDelay: 0.05
+      Delay: 2
+  - timePeriod: 1
+    dialogues:
+    - Text: "\uC810\uC2EC\uC740\\n\uBA39\uC5C8\uC5B4?"
+      characterDelay: 0.05
+      Delay: 2
+  - timePeriod: 2
+    dialogues:
+    - Text: "\uB098\uB978\uD55C\\n\uC624\uD6C4\uC57C"
+      characterDelay: 0.05
+      Delay: 2
+  - timePeriod: 3
+    dialogues:
+    - Text: "\uC800\uB141\uC740\\n\uBA39\uC5C8\uC5B4?"
+      characterDelay: 0.05
+      Delay: 2
+  - timePeriod: 4
+    dialogues:
+    - Text: "\uC544\uC9C1\\n\uD560 \uAC8C \uB9CE\uC544?"
+      characterDelay: 0.05
+      Delay: 2

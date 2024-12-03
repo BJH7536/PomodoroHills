@@ -904,6 +904,13 @@ MonoBehaviour:
     - 566aa35c44c93fe46b7459e855b7604a
     - 83a7946e99bba6a4db00a8c877720b6e
     - dc34e4ac2f7e6420da72898e7b511098
+    - 38ab9b16c6b61c541a24b40b96415156
+    - 40239d7015d776f4c8d49e4a15d8a640
+    - c9a3737e382ea5f4eab29c34fea8d890
+    - b792df21cc73ef444a6845a9e7d51c21
+    - 01ba14fa195daf04ea6fd6c5200d9510
+    - 320844bab5cf4d84588ef8d3d09eb7ec
+    - 15c8f126a620abb489642e4590251870
     values:
     - guid: 00000000000000001000000000000000
       iColor: 0
@@ -5029,7 +5036,7 @@ MonoBehaviour:
       iColor: 0
       autoIcon: cs Script Icon
       customIcon: 
-      autoIconDirty: 0
+      autoIconDirty: 1
     - guid: 4b0ed6d63eef8d0b92bcb738adc0b519
       iColor: 0
       autoIcon: 
@@ -5355,3 +5362,38 @@ MonoBehaviour:
       autoIcon: cs Script Icon
       customIcon: 
       autoIconDirty: 0
+    - guid: 38ab9b16c6b61c541a24b40b96415156
+      iColor: 5
+      autoIcon: cs Script Icon
+      customIcon: 
+      autoIconDirty: 0
+    - guid: 40239d7015d776f4c8d49e4a15d8a640
+      iColor: 0
+      autoIcon: 
+      customIcon: 
+      autoIconDirty: 0
+    - guid: c9a3737e382ea5f4eab29c34fea8d890
+      iColor: 0
+      autoIcon: 
+      customIcon: 
+      autoIconDirty: 0
+    - guid: b792df21cc73ef444a6845a9e7d51c21
+      iColor: 0
+      autoIcon: 
+      customIcon: 
+      autoIconDirty: 0
+    - guid: 01ba14fa195daf04ea6fd6c5200d9510
+      iColor: 0
+      autoIcon: 
+      customIcon: 
+      autoIconDirty: 0
+    - guid: 320844bab5cf4d84588ef8d3d09eb7ec
+      iColor: 0
+      autoIcon: 
+      customIcon: 
+      autoIconDirty: 0
+    - guid: 15c8f126a620abb489642e4590251870
+      iColor: 0
+      autoIcon: cs Script Icon
+      customIcon: 
+      autoIconDirty: 1

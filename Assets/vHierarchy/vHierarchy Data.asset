@@ -1669,6 +1669,7 @@ MonoBehaviour:
         - globalObjectIdString: GlobalObjectId_V1-2-8c6ccb57c09956f47bf64b65d2e10841-1483063499-0
         - globalObjectIdString: GlobalObjectId_V1-2-8c6ccb57c09956f47bf64b65d2e10841-1607374926-0
         - globalObjectIdString: GlobalObjectId_V1-2-8c6ccb57c09956f47bf64b65d2e10841-449770932-0
+        - globalObjectIdString: GlobalObjectId_V1-2-8c6ccb57c09956f47bf64b65d2e10841-267678706-0
         values:
         - colorIndex: 2
           iconNameOrGuid: Settings Icon
@@ -1708,7 +1709,7 @@ MonoBehaviour:
           iconNameOrGuid: 
         - colorIndex: 2
           iconNameOrGuid: Settings Icon
-        - colorIndex: 2
+        - colorIndex: 4
           iconNameOrGuid: Settings Icon
         - colorIndex: 2
           iconNameOrGuid: Settings Icon
@@ -1726,3 +1727,5 @@ MonoBehaviour:
           iconNameOrGuid: AudioClip Icon
         - colorIndex: 3
           iconNameOrGuid: AudioClip Icon
+        - colorIndex: 3
+          iconNameOrGuid: Settings Icon

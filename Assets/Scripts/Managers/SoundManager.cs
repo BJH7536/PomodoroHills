@@ -15,7 +15,7 @@ public class SoundManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)           //½Ì±ÛÅæ ¼±¾ğ
+        if (Instance == null)           //ì‹±ê¸€í†¤ ì„ ì–¸
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
@@ -29,7 +29,7 @@ public class SoundManager : MonoBehaviour
     #endregion
     
     [Tab("Volumes")]
-    [SerializeField] private float masterSoundVolume = 1.0f;             // ¸¶½ºÅÍ º¼·ı
+    [SerializeField] private float masterSoundVolume = 1.0f;             // ë§ˆìŠ¤í„° ë³¼ë¥¨
 
     public float MasterSoundVolume
     {
@@ -41,7 +41,7 @@ public class SoundManager : MonoBehaviour
         }
     }
     
-    [SerializeField] private float musicSoundVolume = 1.0f;              // À½¾Ç
+    [SerializeField] private float musicSoundVolume = 1.0f;              // ìŒì•…
     
     public float MusicSoundVolume
     {
@@ -53,7 +53,7 @@ public class SoundManager : MonoBehaviour
         }
     }
     
-    [SerializeField] private float sfxSoundVolume = 1.0f;            // È¿°úÀ½
+    [SerializeField] private float sfxSoundVolume = 1.0f;            // íš¨ê³¼ìŒ
     
     public float SfxSoundVolume
     {
@@ -79,7 +79,7 @@ public class SoundManager : MonoBehaviour
 
     private void Start()
     {
-        // ¹è°æÀ½ AudioSource ¼¼ÆÃ
+        // ë°°ê²½ìŒ AudioSource ì„¸íŒ…
         if (backgroundAudioSource == null)
         {
             GameObject BGM = new GameObject("@BGM");
@@ -91,13 +91,13 @@ public class SoundManager : MonoBehaviour
             DontDestroyOnLoad(BGM);
         }
 
-        // È¿°úÀ½ ¿Àµğ¿À ¼Ò½º Ç® ÃÊ±âÈ­
+        // íš¨ê³¼ìŒ ì˜¤ë””ì˜¤ ì†ŒìŠ¤ í’€ ì´ˆê¸°í™”
         for (int i = 0; i < InitialPoolSize; i++)
         {
             CreateNewAudioSource();
         }
 
-        // ¸¶½ºÅÍ º¼·ıÀÌ º¯ÇÒ ¶§
+        // ë§ˆìŠ¤í„° ë³¼ë¥¨ì´ ë³€í•  ë•Œ
         OnChangeMasterSoundVolume += ChangeMasterSoundVolume;
     }
 
@@ -107,12 +107,12 @@ public class SoundManager : MonoBehaviour
     }
 
     /// <summary>
-    /// AudioClip ¹öÀüÀÇ ¿Àµğ¿À ÇÃ·¹ÀÌ ÇÔ¼ö. 
+    /// AudioClip ë²„ì „ì˜ ì˜¤ë””ì˜¤ í”Œë ˆì´ í•¨ìˆ˜. 
     /// </summary>
     /// <param name="audioClip">AudioClip</param>
-    /// <param name="type">ClipÀÇ Á¾·ù</param>
-    /// <param name="volume">Àç»ı º¼·ı</param>
-    /// <param name="pitch">Àç»ı ¼Óµµ</param>
+    /// <param name="type">Clipì˜ ì¢…ë¥˜</param>
+    /// <param name="volume">ì¬ìƒ ë³¼ë¥¨</param>
+    /// <param name="pitch">ì¬ìƒ ì†ë„</param>
     /// <param name="pos"></param>
     public void Play(AudioClip audioClip, SoundType type = SoundType.Effect, float volume = 1.0f, float pitch = 1.0f, Vector3 pos = default)
     {
@@ -138,7 +138,7 @@ public class SoundManager : MonoBehaviour
     }
     
     /// <summary>
-    /// È¿°úÀ½À» Àç»ıÇÏ´Â ÇÔ¼ö
+    /// íš¨ê³¼ìŒì„ ì¬ìƒí•˜ëŠ” í•¨ìˆ˜
     /// </summary>
     private async UniTaskVoid PlayEffect(AudioClip audioClip, float volume, float pitch, Vector3 pos)
     {
@@ -151,13 +151,13 @@ public class SoundManager : MonoBehaviour
         audioSource.pitch = pitch;
         audioSource.Play();
 
-        await UniTask.Delay((int)(audioClip.length * 1000)); // Å¬¸³ ±æÀÌ¸¸Å­ ´ë±â
+        await UniTask.Delay((int)(audioClip.length * 1000)); // í´ë¦½ ê¸¸ì´ë§Œí¼ ëŒ€ê¸°
 
         ReturnAudioSourceToPool(audioSource);
     }
 
     /// <summary>
-    /// ¿Àµğ¿À ¼Ò½º Ç®¿¡¼­ ¿Àµğ¿À ¼Ò½º¸¦ °¡Á®¿À´Â ÇÔ¼ö
+    /// ì˜¤ë””ì˜¤ ì†ŒìŠ¤ í’€ì—ì„œ ì˜¤ë””ì˜¤ ì†ŒìŠ¤ë¥¼ ê°€ì ¸ì˜¤ëŠ” í•¨ìˆ˜
     /// </summary>
     private AudioSource GetAudioSourceFromPool()
     {
@@ -174,7 +174,7 @@ public class SoundManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ¿Àµğ¿À ¼Ò½º¸¦ Ç®·Î ¹İÈ¯ÇÏ´Â ÇÔ¼ö
+    /// ì˜¤ë””ì˜¤ ì†ŒìŠ¤ë¥¼ í’€ë¡œ ë°˜í™˜í•˜ëŠ” í•¨ìˆ˜
     /// </summary>
     private void ReturnAudioSourceToPool(AudioSource audioSource)
     {
@@ -185,7 +185,7 @@ public class SoundManager : MonoBehaviour
     }
 
     /// <summary>
-    /// »õ·Î¿î ¿Àµğ¿À ¼Ò½º¸¦ »ı¼ºÇÏ¿© Ç®¿¡ Ãß°¡ÇÏ´Â ÇÔ¼ö
+    /// ìƒˆë¡œìš´ ì˜¤ë””ì˜¤ ì†ŒìŠ¤ë¥¼ ìƒì„±í•˜ì—¬ í’€ì— ì¶”ê°€í•˜ëŠ” í•¨ìˆ˜
     /// </summary>
     private AudioSource CreateNewAudioSource()
     {

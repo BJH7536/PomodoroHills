@@ -1,153 +1,117 @@
-using System.Collections.Generic;
-using Cinemachine;
 using UnityEngine;
+using Cinemachine;
 using DG.Tweening;
-using UnityEngine.EventSystems;
+using VInspector;
 
 public class CameraController : MonoBehaviour
 {
+    [Header("Control")]
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
-    [SerializeField] private BoxCollider CameraArea;
+    [SerializeField] private BoxCollider cameraArea;
 
     private float zoomInOrthographicSize = 5.0f;
     private float zoomOutOrthographicSize = 10.0f;
     private float tweenDuration = 0.3f;
 
-    private Vector3 previousTouchPosition;
     private Vector3 velocity = Vector3.zero;
     private float smoothTime = 0.1f;
     
-    [SerializeField] private bool isPanning = false;
-    [SerializeField] private float panSpeed = 8f;
-    [SerializeField] private float zoomOutThreshold = 40;
-    [SerializeField] private float zoomInThreshold = 40;
+    [Header("Panning")]
+    [SerializeField] private float panSpeed = 0.02f;
 
     private Tween currentZoomTween;
-    
-    private void LateUpdate()
-    {
-        if ((currentZoomTween != null && currentZoomTween.IsActive()) || PlaceableManager.Instance.isEdit)
-            return;
 
-#if UNITY_EDITOR || UNITY_STANDALONE
-        HandleMouseInput();
-#else
-        HandleTouchInput();
-#endif
+    [Header("Focus")]
+    [SerializeField] private Transform pomo;
+    private Vector3 DeltaToFocus;
+    
+    
+    private void Start()
+    {
+        TouchManager.Instance.OnDragDelta += HandleDragDelta;
+        // TouchManager.Instance.OnDragDelta += (vec)=> { DebugEx.Log($"OnDragDelta");};
+
+        TouchManager.Instance.OnPinch += HandlePinch;
+        // TouchManager.Instance.OnPinch += (vec)=> { DebugEx.Log($"OnPinch");};
+
+        TouchManager.Instance.OnClick += HandleClick;
+        // TouchManager.Instance.OnClick += (vec)=> { DebugEx.Log($"OnClick");};
+
+        DeltaToFocus = virtualCamera.transform.position - pomo.position;
+    }
+
+    private void OnDisable()
+    {
+        if (TouchManager.Instance != null)
+        {
+            TouchManager.Instance.OnDragDelta -= HandleDragDelta;
+            TouchManager.Instance.OnPinch -= HandlePinch;
+            TouchManager.Instance.OnClick -= HandleClick;
+        }
+    }
+
+    private void Update()
+    {
+        if ((currentZoomTween != null && currentZoomTween.IsActive()) || PlaceableManager.Instance.IsEdit)
+            return;
 
         if (Input.GetKeyUp(KeyCode.Escape))
         {
             ZoomOut();
         }
     }
-    
-    private void HandleMouseInput()
+
+    private void HandleDragDelta(Vector2 delta)
     {
-        if(IsMouseOnUI()) return;
-        
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
-        if (scroll > 0f)
+        if (TouchManager.Instance.IsPointerOverUIObject()) return;
+        if (PlaceableManager.Instance.IsEdit) return;
+
+        // 스크린 좌표에서 월드 좌표로 변환
+        // 카메라의 로컬 축 기준으로 변환
+        Vector3 localDelta = virtualCamera.transform.TransformDirection(new Vector3(delta.x, 0, delta.y * 1.2f) * panSpeed);
+        Vector3 targetPosition = virtualCamera.transform.localPosition - localDelta;
+
+        targetPosition = ClampPositionWithinConfiner(targetPosition);
+
+        virtualCamera.transform.localPosition = Vector3.SmoothDamp(virtualCamera.transform.localPosition, targetPosition, ref velocity, smoothTime);
+    }
+
+    private void HandlePinch(float deltaMagnitudeDiff)
+    {
+        if (PlaceableManager.Instance.IsEdit) return;
+
+        if (deltaMagnitudeDiff < 0)
         {
             ZoomIn();
         }
-        else if (scroll < 0f)
+        else
         {
             ZoomOut();
         }
-        
-        if (Input.GetMouseButtonDown(1))
-        {
-            isPanning = true;
-            previousTouchPosition = Input.mousePosition;
-        }
-        else if (Input.GetMouseButton(1) && isPanning)
-        {
-            Vector3 currentTouchPosition = Input.mousePosition;
-            Vector3 delta = currentTouchPosition - previousTouchPosition;
-
-            // 카메라의 로컬 축 기준으로 변환
-            Vector3 localDelta = virtualCamera.transform.TransformDirection(new Vector3(delta.x, 0, delta.y) * panSpeed);
-            Vector3 targetPosition = virtualCamera.transform.localPosition - localDelta;
-
-            // Confiner 경계로 위치 제한
-            targetPosition = ClampPositionWithinConfiner(targetPosition);
-
-            // 위치 적용
-            virtualCamera.transform.localPosition = Vector3.SmoothDamp(virtualCamera.transform.localPosition, targetPosition, ref velocity, smoothTime);
-
-            previousTouchPosition = currentTouchPosition;
-        }
-        else if (Input.GetMouseButtonUp(1))
-        {
-            isPanning = false;
-        }
     }
 
-    private void HandleTouchInput()
+    private void HandleClick(Vector2 position)
     {
-        if (Input.touchCount == 2)
+        if (TouchManager.Instance.IsPointerOverUIObject()) return;
+        if (PlaceableManager.Instance.IsEdit) return;
+
+        // 마우스 휠 업으로 ZoomIn 시뮬레이션
+#if UNITY_EDITOR || UNITY_STANDALONE
+        if (Input.GetAxis("Mouse ScrollWheel") > 0f)
         {
-            if(IsMouseOnUI()) return;
-            
-            Touch firstTouch = Input.GetTouch(0);
-            Touch secondTouch = Input.GetTouch(1);
-
-            if (firstTouch.phase == TouchPhase.Began || secondTouch.phase == TouchPhase.Began)
-            {
-                isPanning = false;
-            }
-
-            if (DetectPinchOut())
-            {
-                ZoomIn();
-            }
-            else if (DetectPinchIn())
-            {
-                ZoomOut();
-            }
+            ZoomIn();
         }
-        else if (Input.touchCount == 1)
-        {
-            if(IsMouseOnUI()) return;
-            
-            Touch touch = Input.GetTouch(0);
-
-            if (touch.phase == TouchPhase.Began)
-            {
-                isPanning = true;
-                previousTouchPosition = touch.position;
-            }
-            else if (touch.phase == TouchPhase.Moved && isPanning)
-            {
-                Vector3 currentTouchPosition = touch.position;
-                Vector3 delta = currentTouchPosition - previousTouchPosition;
-
-                // 카메라 로컬 축 기준으로 변환
-                Vector3 localDelta = virtualCamera.transform.TransformDirection(new Vector3(delta.x, 0, delta.y) * panSpeed);
-                Vector3 targetPosition = virtualCamera.transform.localPosition - localDelta;
-
-                // Confiner 경계로 위치 제한
-                targetPosition = ClampPositionWithinConfiner(targetPosition);
-
-                // 위치 적용
-                virtualCamera.transform.localPosition = Vector3.SmoothDamp(virtualCamera.transform.localPosition, targetPosition, ref velocity, smoothTime);
-
-                previousTouchPosition = currentTouchPosition;
-            }
-            else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
-            {
-                isPanning = false;
-            }
-        }
-        else
-        {
-            isPanning = false;
-        }
+#endif
     }
-    
+
     private void ZoomIn()
     {
         float endSize = zoomInOrthographicSize;
+        if (currentZoomTween != null && currentZoomTween.IsActive())
+        {
+            currentZoomTween.Kill();
+        }
+
         currentZoomTween = DOTween.To(() => virtualCamera.m_Lens.OrthographicSize, x =>
         {
             var lens = virtualCamera.m_Lens;
@@ -161,6 +125,10 @@ public class CameraController : MonoBehaviour
     private void ZoomOut()
     {
         float endSize = zoomOutOrthographicSize;
+        if (currentZoomTween != null && currentZoomTween.IsActive())
+        {
+            currentZoomTween.Kill();
+        }
         currentZoomTween = DOTween.To(() => virtualCamera.m_Lens.OrthographicSize, x =>
         {
             var lens = virtualCamera.m_Lens;
@@ -171,68 +139,22 @@ public class CameraController : MonoBehaviour
         .OnComplete(() => currentZoomTween = null);
     }
 
-    private bool DetectPinchOut()
-    {
-        if (Input.touchCount != 2) return false;
-
-        Touch firstTouch = Input.GetTouch(0);
-        Touch secondTouch = Input.GetTouch(1);
-
-        Vector2 firstTouchPreviousPosition = firstTouch.position - firstTouch.deltaPosition;
-        Vector2 secondTouchPreviousPosition = secondTouch.position - secondTouch.deltaPosition;
-
-        float previousPositionDistance = (firstTouchPreviousPosition - secondTouchPreviousPosition).magnitude;
-        float currentPositionDistance = (firstTouch.position - secondTouch.position).magnitude;
-
-        return currentPositionDistance > previousPositionDistance + zoomInThreshold;
-    }
-
-    private bool DetectPinchIn()
-    {
-        if (Input.touchCount != 2) return false;
-
-        Touch firstTouch = Input.GetTouch(0);
-        Touch secondTouch = Input.GetTouch(1);
-
-        Vector2 firstTouchPreviousPosition = firstTouch.position - firstTouch.deltaPosition;
-        Vector2 secondTouchPreviousPosition = secondTouch.position - secondTouch.deltaPosition;
-
-        float previousPositionDistance = (firstTouchPreviousPosition - secondTouchPreviousPosition).magnitude;
-        float currentPositionDistance = (firstTouch.position - secondTouch.position).magnitude;
-
-        return currentPositionDistance < previousPositionDistance - zoomOutThreshold;
-    }
-
     private Vector3 ClampPositionWithinConfiner(Vector3 targetPosition)
     {
-        // CameraArea에서 가장 가까운 경계 점 계산
-        if (CameraArea == null) return targetPosition;
+        if (cameraArea == null) return targetPosition;
 
-        Vector3 closestPoint = CameraArea.ClosestPoint(targetPosition);
+        Vector3 closestPoint = cameraArea.ClosestPoint(targetPosition);
 
-        // Y축 높이는 그대로 유지, XZ 평면만 제한
-        return new Vector3(closestPoint.x, CameraArea.transform.position.y, closestPoint.z);
+        return new Vector3(closestPoint.x, cameraArea.transform.position.y, closestPoint.z);
     }
-    
-    private bool IsMouseOnUI()      //마우스가 UI 위에 있는지 검증합니다. 오브젝트 조작과 UI 조작이 겹칠 경우의 조작을 유효하게 하기 위한 절차입니다.
+
+    [Button]
+    public void FocusToPomo()
     {
-        PointerEventData pointerEventData = new PointerEventData(EventSystem.current)
-        {
-#if UNITY_EDITOR || UNITY_STANDALONE
-            position = Input.mousePosition
-#else
-            position = Input.GetTouch(0).position
-#endif
-        };
+        Vector3 targetPosition = pomo.position + DeltaToFocus;
         
-        List<RaycastResult> raycastResults = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(pointerEventData, raycastResults);
-    
-        if (raycastResults.Count > 0)
-        {
-            return raycastResults[0].gameObject.layer == 5;
-        }
-        return false;
-    }
+        targetPosition = ClampPositionWithinConfiner(targetPosition);
 
+        virtualCamera.transform.DOMove(targetPosition, 0.5f, false);
+    }
 }

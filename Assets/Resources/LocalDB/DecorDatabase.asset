@@ -28,13 +28,13 @@ MonoBehaviour:
     sizeZ: 4
     tags: []
   - id: 102
-    name: "\uC7A5\uC2DD\uD4881"
+    name: "\uC7A5\uC2DD\uBB3C1"
     decorPrefab: {fileID: 0}
     sizeX: 2
     sizeZ: 2
     tags: []
   - id: 103
-    name: "\uC7A5\uC2DD\uD4882"
+    name: "\uC7A5\uC2DD\uBB3C2"
     decorPrefab: {fileID: 0}
     sizeX: 2
     sizeZ: 2

@@ -42,6 +42,7 @@ public static class DebugEx
   
     public static LogLevel CurrentLogLevel = LogLevel.All;  
   
+    // ReSharper disable Unity.PerformanceAnalysis
     public static void Log(object message, Object context = null)  
     {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -52,6 +53,7 @@ public static class DebugEx
 #endif  
     }  
   
+    // ReSharper disable Unity.PerformanceAnalysis
     public static void LogWarning(object message, Object context = null)  
     {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -62,6 +64,7 @@ public static class DebugEx
 #endif  
     }  
   
+    // ReSharper disable Unity.PerformanceAnalysis
     public static void LogError(object message, Object context = null)  
     {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD

@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using PomodoroHills;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VInspector;
 
 //최우선 과제, 배치 절차 진입시 현재 소재 Free하기
@@ -17,24 +18,24 @@ public class PlaceableManager : MonoBehaviour
     public static PlaceableManager Instance { get; private set; }
 
     public List<GameObject> placeables = new List<GameObject>();
-    public GameObject selectedPlaceable;
+    public GameObject SelectedPlaceable;
     public Vector2Int lastPosition = new Vector2Int(-1, -1);
     public int lastRotation = -1;
     
     //편집 등 상태관련 
-    public bool isEdit { get; private set; }     //편집모드
+    public bool IsEdit { get; private set; }     //편집모드
 
     public Action<bool> EditModeSwitched;
     
     /// <summary>
     /// 드래그로 Placeable을 옮길 수 있는지 여부에 대한 Flag
     /// </summary>
-    public bool isMoveEdit { get; private set; }
+    public bool IsMoveEdit { get; private set; }
     
     /// <summary>
     /// 지금 편집하고있는게 새로 지은 건물인지 구분하는 Flag
     /// </summary>
-    public bool isNewEdit { get; private set; }
+    public bool IsNewEdit { get; private set; }
     
     private void Awake()
     {
@@ -48,7 +49,15 @@ public class PlaceableManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        isEdit = false;
+        IsEdit = false;
+    }
+    
+    private void Update()
+    {
+        if (IsMoveEdit)
+        {
+            ChangePlaceableColor();
+        }
     }
     
     private void OnApplicationPause(bool pause)
@@ -85,9 +94,9 @@ public class PlaceableManager : MonoBehaviour
     [Button]
     public void DebugCurrentState()
     {
-        DebugEx.Log($"isEdit : {isEdit}");
-        DebugEx.Log($"isMoveEdit : {isMoveEdit}");
-        DebugEx.Log($"isNewEdit : {isNewEdit}");
+        DebugEx.Log($"IsEdit : {IsEdit}");
+        DebugEx.Log($"IsMoveEdit : {IsMoveEdit}");
+        DebugEx.Log($"IsNewEdit : {IsNewEdit}");
     }
 
     #region Data Save & Load
@@ -106,7 +115,7 @@ public class PlaceableManager : MonoBehaviour
         }
 
         placeables.Clear();
-        selectedPlaceable = null;
+        SelectedPlaceable = null;
     }
     
     private void SaveTimerState()
@@ -371,13 +380,13 @@ public class PlaceableManager : MonoBehaviour
         OnEditMode();
         OnIsNewEdit();
         ResetLastLocation();                        //불필요하게 반복되는 부분이나 만약을 위해 작성
-        selectedPlaceable = CreatePlaceable(placeableCode);
-        if (selectedPlaceable != null)
+        SelectedPlaceable = CreatePlaceable(placeableCode);
+        if (SelectedPlaceable != null)
         {
             Vector2Int position = new Vector2Int(0, 0);
-            Placeable placeable = selectedPlaceable.GetComponent<Placeable>();
+            Placeable placeable = SelectedPlaceable.GetComponent<Placeable>();
             placeable.position = position;
-            selectedPlaceable.transform.position = new Vector3(position.x, 0f,position.y) ;
+            SelectedPlaceable.transform.position = new Vector3(position.x, 0f,position.y) ;
             OnIsMoveEdit();
             return true;
         }
@@ -394,9 +403,9 @@ public class PlaceableManager : MonoBehaviour
     /// <returns></returns>
     public bool PackPlaceable()
     {
-        if (selectedPlaceable != null)
+        if (SelectedPlaceable != null)
         {
-            selectedPlaceable.TryGetComponent<Placeable>(out Placeable placeable);
+            SelectedPlaceable.TryGetComponent<Placeable>(out Placeable placeable);
             TileMapManager.Instance.FreeEveryTile(placeable.position, placeable.size, placeable.rotation);
             
             ItemData newItem = new ItemData()
@@ -406,9 +415,9 @@ public class PlaceableManager : MonoBehaviour
             };
             PomodoroHills.InventoryManager.Instance.AddItemAsync(newItem).Forget();
             
-            Destroy(selectedPlaceable);
+            Destroy(SelectedPlaceable);
             //삭제여부 검토 후 수량 재확인
-            selectedPlaceable = null;
+            SelectedPlaceable = null;
             return true;
         }
         return false;
@@ -416,16 +425,16 @@ public class PlaceableManager : MonoBehaviour
 
     public void RotatePlaceable()       //현재 SelectedPlaceable을 회전 (이관예정)
     {
-        if (selectedPlaceable.TryGetComponent<Placeable>(out Placeable placeable))
+        if (SelectedPlaceable.TryGetComponent<Placeable>(out Placeable placeable))
         {
             placeable.rotation++;
             if (placeable.rotation > 3) placeable.rotation = 0;
             //오브젝트 회전을 placeable 스크립트 rotation*90으로 변경
-            selectedPlaceable.transform.rotation = Quaternion.Euler(0f, placeable.rotation * 90f, 0f);
+            SelectedPlaceable.transform.rotation = Quaternion.Euler(0f, placeable.rotation * 90f, 0f);
         }
         else
         {
-            DebugEx.Log("There is no selectedPlaceable");
+            DebugEx.Log("There is no SelectedPlaceable");
         }
     }
 
@@ -435,12 +444,12 @@ public class PlaceableManager : MonoBehaviour
     /// <returns></returns>
     public bool ConfirmEdit()
     {
-        if (selectedPlaceable.TryGetComponent(out Placeable placeable))
+        if (SelectedPlaceable.TryGetComponent(out Placeable placeable))
         {
             if (TileMapManager.Instance.GetEveryTileAvailable(placeable.position, placeable.size, placeable.rotation))
             {
                 TileMapManager.Instance.OccupyEveryTile(placeable.position, placeable.size, placeable.rotation);
-                if (!isNewEdit) // 기존에 있던 오브젝트의 경우
+                if (!IsNewEdit) // 기존에 있던 오브젝트의 경우
                 {
                     //TileMapManager.Instance.FreeEveryTile(placeable.size, lastPosition, lastRotation); //수정중 240921/0349
                 }
@@ -448,7 +457,7 @@ public class PlaceableManager : MonoBehaviour
                 {
                     PomodoroHills.InventoryManager.Instance.DeleteItemAsync(placeable.id, 1).Forget();
                     
-                    placeables.Add(selectedPlaceable);
+                    placeables.Add(SelectedPlaceable);
                     OffIsNewEdit();
                     OffEditMode();
                 }
@@ -471,15 +480,15 @@ public class PlaceableManager : MonoBehaviour
         if (lastRotation == -1)     //새로 생성한 Placeable의 경우
         {
             // 인벤토리 구현시 해당 Placeable 수량 +1
-            Destroy(selectedPlaceable);
+            Destroy(SelectedPlaceable);
             OffIsNewEdit();
-            DebugEx.Log("selectedPlaceable is newPlaceable, we pack it up");
+            DebugEx.Log("SelectedPlaceable is newPlaceable, we pack it up");
         }
-        else if (selectedPlaceable.TryGetComponent<Placeable>(out Placeable placeable))  //기존의 Placeable
+        else if (SelectedPlaceable.TryGetComponent<Placeable>(out Placeable placeable))  //기존의 Placeable
         {
             TileMapManager.Instance.OccupyEveryTile(lastPosition, placeable.size, lastRotation);
-            selectedPlaceable.transform.position = new Vector3(lastPosition.x, 0f, lastPosition.y);
-            selectedPlaceable.transform.rotation = Quaternion.Euler(0, lastRotation * 90f, 0);
+            SelectedPlaceable.transform.position = new Vector3(lastPosition.x, 0f, lastPosition.y);
+            SelectedPlaceable.transform.rotation = Quaternion.Euler(0, lastRotation * 90f, 0);
             placeable.position = lastPosition;
             placeable.rotation = lastRotation;
         }
@@ -490,9 +499,9 @@ public class PlaceableManager : MonoBehaviour
     /// </summary>
     void DeletePlaceableObject()//미완성
     {
-        if (selectedPlaceable != null)
+        if (SelectedPlaceable != null)
         {
-            Placeable placeable = selectedPlaceable.GetComponent<Placeable>();
+            Placeable placeable = SelectedPlaceable.GetComponent<Placeable>();
             if (placeable != null)
             {
                 Vector2Int position = placeable.position;
@@ -508,29 +517,28 @@ public class PlaceableManager : MonoBehaviour
     //이때 확인, 회전, 보관(삭제)와 관련된 UI(버튼) 띄운다.
     public void OnEditMode()
     {
-        isEdit = true; 
-        EditModeSwitched?.Invoke(isEdit);
+        IsEdit = true; 
+        EditModeSwitched?.Invoke(IsEdit);
     }
 
     public void OffEditMode()
     {
-        isEdit = false; 
-        EditModeSwitched?.Invoke(isEdit);
+        IsEdit = false; 
+        EditModeSwitched?.Invoke(IsEdit);
     }
-    public void OnIsNewEdit() { isNewEdit = true; }
+    public void OnIsNewEdit() { IsNewEdit = true; }
     
     public void OffIsNewEdit()
     {
-        if(isNewEdit) OffEditMode();
-        isNewEdit = false; 
+        if(IsNewEdit) OffEditMode();
+        IsNewEdit = false; 
     }
 
     public void OnIsMoveEdit() // 오브젝트 이동 시작시 기존 위치 Free
     {
-        StartColor();
-        if (selectedPlaceable.TryGetComponent(out Placeable placeable))
+        if (SelectedPlaceable.TryGetComponent(out Placeable placeable))
         {
-            if (isNewEdit)
+            if (IsNewEdit)
             {
                 ResetLastLocation();
             }
@@ -541,7 +549,7 @@ public class PlaceableManager : MonoBehaviour
                 lastPosition = placeable.position;
             }
 
-            isMoveEdit = true;
+            IsMoveEdit = true;
         }
     }
     
@@ -551,25 +559,19 @@ public class PlaceableManager : MonoBehaviour
     public void OffIsMoveEdit() // 세분화(confirm, cancle 버튼 모두 이 메소드 사용중)(미완성)
     {                           // ConfirmEdit, CancelEdit,  해당 메소드가 제일 하위에 위치하도록 변경
 
-        isMoveEdit = false;
+        IsMoveEdit = false;
         EndColor();
         ResetLastLocation();
     }
     
-    public void StartColor()    //(미사용)
-    {
-        //Renderer renderer = selectedPlaceable.GetComponent<Renderer>();
-        //OriginColor = renderer.material.color;
-    }
-    
     public void ChangePlaceableColor()  //배치가능,불가능 여부를 녹/적색으로 나타내기 위한 코드입니다. 컬러값이 따로 지정된 마테리얼을 사용하는 경우 StartColor()에서 기존 색을 저장해야 합니다.
     {
-        if (selectedPlaceable != null)
+        if (SelectedPlaceable != null)
         {
-            Placeable placeable = selectedPlaceable.GetComponent<Placeable>();
+            Placeable placeable = SelectedPlaceable.GetComponent<Placeable>();
             if (TileMapManager.Instance.GetEveryTileAvailable(placeable.position, placeable.size, placeable.rotation))
             {
-                // MeshRenderer[] renderers = selectedPlaceable.GetComponentsInChildren<MeshRenderer>();
+                // MeshRenderer[] renderers = SelectedPlaceable.GetComponentsInChildren<MeshRenderer>();
                 //
                 // foreach (MeshRenderer renderer in renderers)
                 // {
@@ -580,7 +582,7 @@ public class PlaceableManager : MonoBehaviour
             }
             else
             {
-                // MeshRenderer[] renderers = selectedPlaceable.GetComponentsInChildren<MeshRenderer>();
+                // MeshRenderer[] renderers = SelectedPlaceable.GetComponentsInChildren<MeshRenderer>();
                 //
                 // foreach (MeshRenderer renderer in renderers)
                 // {
@@ -594,16 +596,16 @@ public class PlaceableManager : MonoBehaviour
     }
     public void EndColor()  //변경된 색을 원래대로 바꿉니다. ChangePlaceableColor()의 주석 참고바랍니다.
     {
-        if (selectedPlaceable != null)
+        if (SelectedPlaceable != null)
         {
-            // MeshRenderer[] renderers = selectedPlaceable.GetComponentsInChildren<MeshRenderer>();
+            // MeshRenderer[] renderers = SelectedPlaceable.GetComponentsInChildren<MeshRenderer>();
             //
             // foreach (MeshRenderer renderer in renderers)
             // {
             //     renderer.material.color = UnityEngine.Color.white;
             // }
             
-            selectedPlaceable.GetComponent<Placeable>().ResetColor();
+            SelectedPlaceable.GetComponent<Placeable>().ResetColor();
         }
     }
     

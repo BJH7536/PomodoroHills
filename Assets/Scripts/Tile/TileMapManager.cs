@@ -25,7 +25,7 @@ public class TileMapManager : MonoBehaviour
     private int offsetX;
     private int offsetZ;
 
-    [SerializeField] private List<Placeable> backgroundTrees;
+    [SerializeField] private Transform backgroundTrees;
     
     private void Awake()
     {
@@ -66,8 +66,9 @@ public class TileMapManager : MonoBehaviour
 
     public void OccupyBackgroundTrees()
     {
-        foreach (var placeable in backgroundTrees)
+        foreach (Transform tree in backgroundTrees)
         {
+            Placeable placeable = tree.GetComponent<Placeable>();
             Vector2Int pos = placeable.position;
             Vector2Int size = placeable.size;
             int rot = placeable.rotation;
