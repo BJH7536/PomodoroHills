@@ -270,6 +270,41 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &963416295717067119
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 437723126352548088}
+  m_Layer: 6
+  m_Name: PlantPoints
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &437723126352548088
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963416295717067119}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.5, y: 0, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6128258844151187706}
+  - {fileID: 6574835246195233431}
+  - {fileID: 7644025639940277486}
+  - {fileID: 27865346924044980}
+  m_Father: {fileID: 2387502107427362499}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1369911393836463097
 GameObject:
   m_ObjectHideFlags: 0
@@ -395,7 +430,7 @@ GameObject:
   - component: {fileID: 4925362607159567940}
   m_Layer: 6
   m_Name: Canvas (1)
-  m_TagString: Untagged
+  m_TagString: Placeable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -408,7 +443,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1931896187565156152}
   m_LocalRotation: {x: -0.115075074, y: 0.88111967, z: -0.27781585, w: -0.36497167}
-  m_LocalPosition: {x: 0, y: 0, z: 0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 1.5}
   m_LocalScale: {x: 0.0030000003, y: 0.003, z: 0.0030000003}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -483,6 +518,37 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!1 &2076202578968341870
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6574835246195233431}
+  m_Layer: 6
+  m_Name: PlantPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6574835246195233431
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2076202578968341870}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.20999998, y: 0, z: -0.20300001}
+  m_LocalScale: {x: 0.56799996, y: 0.56799996, z: 0.56799996}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 437723126352548088}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2307646924493087701
 GameObject:
   m_ObjectHideFlags: 0
@@ -804,8 +870,8 @@ Transform:
   m_GameObject: {fileID: 3093369279530579251}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.014999986, y: 0, z: 0.53900003}
-  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
+  m_LocalPosition: {x: 0.5, y: 0, z: 1.5}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2202336813526326204}
@@ -1165,7 +1231,6 @@ GameObject:
   - component: {fileID: 9141571271666816192}
   - component: {fileID: 2483482893173125986}
   - component: {fileID: 1155825391302065156}
-  - component: {fileID: 6113174748364044560}
   - component: {fileID: 3233636332431259928}
   m_Layer: 5
   m_Name: HarvestButton
@@ -1276,37 +1341,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &6113174748364044560
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3827101080797761295}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52c162dc854d2f24fa639ba0623de5ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  algorithm: 0
-  size: 35
-  spread: 0
-  useGlobalAngle: 0
-  offsetAngle: 90
-  offsetDistance: 29
-  offset: {x: 0.0000017285349, y: -29}
-  color: {r: 0, g: 0, b: 0, a: 0.15}
-  inset: 0
-  blendMode: 0
-  useCasterAlpha: 1
-  ignoreCasterColor: 0
-  colorBleedMode: 0
-  disableFitCompensation: 0
-  shadowAsSibling: 0
-  cutout: 0
-  baked: 0
-  modifiedFromInspector: 0
-  bakedShadows: []
 --- !u!114 &3233636332431259928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1322,6 +1356,37 @@ MonoBehaviour:
   Color1: {r: 1, g: 1, b: 1, a: 1}
   Color2: {r: 1, g: 0.9216875, b: 0.3160377, a: 1}
   Angle: -45
+--- !u!1 &4098742284597644470
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6128258844151187706}
+  m_Layer: 6
+  m_Name: PlantPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6128258844151187706
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4098742284597644470}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.21000004, y: 0, z: -0.20300001}
+  m_LocalScale: {x: 0.56799996, y: 0.56799996, z: 0.56799996}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 437723126352548088}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4589210484505669093
 GameObject:
   m_ObjectHideFlags: 0
@@ -1350,8 +1415,8 @@ Transform:
   m_GameObject: {fileID: 4589210484505669093}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0.5}
-  m_LocalScale: {x: 1, y: 1, z: 2}
+  m_LocalPosition: {x: 0.5, y: 0.5, z: 1.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2387502107427362499}
@@ -1428,7 +1493,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 2, y: 1, z: 4}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4823764407894527551
 GameObject:
@@ -1441,6 +1506,7 @@ GameObject:
   - component: {fileID: 2387502107427362499}
   - component: {fileID: 8933624961733020143}
   - component: {fileID: 1025308430034986898}
+  - component: {fileID: 4690306991276525013}
   m_Layer: 6
   m_Name: "\uBE44\uB2D0\uD558\uC6B0\uC2A4"
   m_TagString: Placeable
@@ -1459,11 +1525,12 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4444729780037109849}
   - {fileID: 7938501435079458305}
   - {fileID: 7991923321876238537}
+  - {fileID: 437723126352548088}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8933624961733020143
@@ -1480,7 +1547,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 3
   position: {x: 0, y: 0}
-  size: {x: 1, y: 2}
+  size: {x: 2, y: 4}
   rotation: 0
   currentCrop:
     cropId: 0
@@ -1493,6 +1560,7 @@ MonoBehaviour:
   harvestButton: {fileID: 1155825391302065156}
   _circularProgressBar: {fileID: 8432280156174542455}
   circularProgressImage: {fileID: 6855982609836329197}
+  plantVisualizer: {fileID: 4690306991276525013}
 --- !u!208 &1025308430034986898
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -1503,12 +1571,29 @@ NavMeshObstacle:
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 1
-  m_Extents: {x: 0.5, y: 0.5, z: 1}
+  m_Extents: {x: 1, y: 0.5, z: 2}
   m_MoveThreshold: 0.1
   m_Carve: 1
   m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 0, z: 0.5}
+  m_Center: {x: 0.5, y: 0.5, z: 1.5}
   m_TimeToStationary: 0.5
+--- !u!114 &4690306991276525013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4823764407894527551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d24d3e7dfaecc8843b1526d72a008219, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plantPoints:
+  - {fileID: 6128258844151187706}
+  - {fileID: 6574835246195233431}
+  - {fileID: 7644025639940277486}
+  - {fileID: 27865346924044980}
 --- !u!1 &5212753029761373148
 GameObject:
   m_ObjectHideFlags: 0
@@ -1630,7 +1715,6 @@ GameObject:
   - component: {fileID: 5025566754574625144}
   - component: {fileID: 1032874326505277964}
   - component: {fileID: 8524637423323224586}
-  - component: {fileID: 1320845401171794440}
   m_Layer: 0
   m_Name: Fill-Area-Color
   m_TagString: Untagged
@@ -1696,21 +1780,6 @@ MonoBehaviour:
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
 --- !u!114 &8524637423323224586
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5973285656393016106}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 675024213d3ca44038e1471b22348c0f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Color1: {r: 1, g: 1, b: 1, a: 1}
-  Color2: {r: 1, g: 0.8796609, b: 0.6839622, a: 1}
-  Angle: -47
---- !u!114 &1320845401171794440
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1811,6 +1880,68 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &6260162068384789629
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 27865346924044980}
+  m_Layer: 6
+  m_Name: PlantPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &27865346924044980
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6260162068384789629}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.20999998, y: 0, z: 1.0999999}
+  m_LocalScale: {x: 0.56799996, y: 0.56799996, z: 0.56799996}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 437723126352548088}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6294736209424556451
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7644025639940277486}
+  m_Layer: 6
+  m_Name: PlantPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7644025639940277486
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6294736209424556451}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.21000004, y: 0, z: 1.0999999}
+  m_LocalScale: {x: 0.56799996, y: 0.56799996, z: 0.56799996}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 437723126352548088}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7449679480120645590
 GameObject:
   m_ObjectHideFlags: 0

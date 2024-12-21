@@ -1,36 +1,75 @@
 using System;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
+using LeTai.TrueShadow;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class PomoAnimationController : MonoBehaviour
 {
     public Animator animator;
     public Camera mainCamera;
-    public RectTransform canvas;
+    public RectTransform canvasRect;
+    public RectTransform canvasOnHold;
 
-    private bool isActionPlaying = false;           // ÇöÀç Æ¯Á¤ Çàµ¿ÀÌ Àç»ı ÁßÀÎÁö ³ªÅ¸³»´Â ÇÃ·¡±×
-    private float actionTimer = 0f;                 // ÇöÀç ½ÇÇà ÁßÀÎ ¾×¼ÇÀÇ °æ°ú ½Ã°£
-    private float actionDuration = 0f;              // ¾×¼ÇÀÇ Áö¼Ó ½Ã°£
+    public Image pomo;
+    public Material pomoOnHeld;
+    public ShadowMaterial pomoShadowOnHeld;
+    
+    private Vector3 originCanvasPos;
+    private Vector2 originCanvasSizeDelta;
+
+    public Ease inflate;
+    public Ease deflate;
+    
+    private bool isActionPlaying = false;           // í˜„ì¬ íŠ¹ì • í–‰ë™ì´ ì¬ìƒ ì¤‘ì¸ì§€ ë‚˜íƒ€ë‚´ëŠ” í”Œë˜ê·¸
+    private float actionTimer = 0f;                 // í˜„ì¬ ì‹¤í–‰ ì¤‘ì¸ ì•¡ì…˜ì˜ ê²½ê³¼ ì‹œê°„
+    private float actionDuration = 0f;              // ì•¡ì…˜ì˜ ì§€ì† ì‹œê°„
     
     public readonly int MoveX = Animator.StringToHash("MoveX");
     public readonly int MoveY = Animator.StringToHash("MoveY");
     public readonly int IsMoving = Animator.StringToHash("IsMoving");
+    public static readonly int Greet = Animator.StringToHash("Greet");
+    public static readonly int Water = Animator.StringToHash("Water");
+
+    private void Start()
+    {
+        originCanvasPos = canvasRect.position;
+        originCanvasSizeDelta = canvasRect.sizeDelta;
+    }
 
     private void LateUpdate()
     {
-        // »Ç¸ğ Sprite¸¦ ·»´õ¸µÇÏ´Â Äµ¹ö½º ¹æÇâ Á¤·Ä
-        canvas.rotation = mainCamera.transform.rotation;
+        // ë½€ëª¨ Spriteë¥¼ ë Œë”ë§í•˜ëŠ” ìº”ë²„ìŠ¤ ë°©í–¥ ì •ë ¬
+        canvasRect.rotation = mainCamera.transform.rotation;
     }
 
     public void PlayGreeting()
     {
-
-        animator.SetTrigger("Greet");
+        animator.SetTrigger(Greet);
     }
 
     public void PlayWatering()
     {
+        animator.SetTrigger(Water);
+    }
 
-        animator.SetTrigger("Water");
+    public void Inflate()
+    {
+        canvasRect.DOSizeDelta(canvasOnHold.sizeDelta, 0.2f).SetEase(inflate);
+        canvasRect.DOMoveY(canvasOnHold.position.y, 0.2f).SetEase(inflate);
+
+        pomo.material = pomoOnHeld;
+        pomoShadowOnHeld.enabled = true;
+    }
+
+    public void Deflate()
+    {
+        canvasRect.DOSizeDelta(originCanvasSizeDelta, 0.2f).SetEase(deflate);
+        canvasRect.DOMoveY(originCanvasPos.y, 0.2f).SetEase(deflate);
+        
+        pomo.material = null;
+        pomoShadowOnHeld.enabled = false;
     }
 }

@@ -103,6 +103,6 @@ public class TileController : MonoBehaviour, IPointerClickHandler
         
         TileController.HideAllTile(this);
         
-        CameraManager.currentCameraMode = CameraManager.CameraMode.ZoomIn;
+        //CameraManager.currentCameraMode = CameraManager.CameraMode.ZoomIn;
     }
 }

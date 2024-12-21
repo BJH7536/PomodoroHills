@@ -28,10 +28,11 @@ MonoBehaviour:
     sizeZ: 4
     tags: []
   - id: 102
-    name: "\uC7A5\uC2DD\uBB3C1"
-    decorPrefab: {fileID: 0}
-    sizeX: 2
-    sizeZ: 2
+    name: "\uBAA8\uB2E5\uBD88"
+    decorPrefab: {fileID: 2692254275874821037, guid: 9932605a55d61df4db19ec3c0c50e566,
+      type: 3}
+    sizeX: 3
+    sizeZ: 3
     tags: []
   - id: 103
     name: "\uC7A5\uC2DD\uBB3C2"

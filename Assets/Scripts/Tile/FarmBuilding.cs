@@ -2,6 +2,7 @@ using System;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using PomodoroHills;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 [Serializable]
@@ -60,12 +61,15 @@ public class FarmBuilding : Placeable
     [SerializeField] private Button harvestButton;
     [SerializeField] private Ricimi.CircularProgressBar _circularProgressBar;
     [SerializeField] private Image circularProgressImage;
+
+    [Space]
+    
+    [SerializeField] public PlantVisualizer plantVisualizer;
     
     private void Start()
     {
         plantButton.onClick.AddListener(ShowSelectCropToPlant);
         harvestButton.onClick.AddListener(HarvestCrop);
-
     }
 
     private void OnEnable()
@@ -111,6 +115,9 @@ public class FarmBuilding : Placeable
                 _circularProgressBar.UpdateProgress(0);
                 Sprite image = DataBaseManager.Instance.ItemTable.GetItemInformById(currentCrop.cropId).image_noBackground;
                 circularProgressImage.sprite = image;
+                
+                // 성장 VFX 업데이트
+                plantVisualizer?.Visualize();
             }
             else
             {
@@ -135,6 +142,9 @@ public class FarmBuilding : Placeable
             // 성장 UI 업데이트
             _circularProgressBar.gameObject.SetActive(true);
             _circularProgressBar.UpdateProgress(growthPercentage * 100);
+            
+            // 성장 VFX 업데이트
+            plantVisualizer?.Visualize();
             
             if (currentCrop.IsFullyGrown())
             {
@@ -162,6 +172,9 @@ public class FarmBuilding : Placeable
             
             // 작물을 수확하면 성장 UI를 비활성화
             _circularProgressBar.gameObject.SetActive(false);
+            
+            // 성장 VFX 업데이트
+            plantVisualizer?.ResetVisualize();
         }
         else
         {
@@ -179,6 +192,46 @@ public class FarmBuilding : Placeable
         TimerManager.Instance.OnTimeUpdated -= UpdateCropGrowth;
     }
 
+    /// <summary>
+    /// 남은 성장 시간의 일정 퍼센티지를 줄여주는 메서드
+    /// </summary>
+    /// <param name="percentage">0 ~ 100 사이의 비율을 입력.</param>
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public void ReduceGrowthTimeByPercentage(float percentage)
+    {
+        if (percentage <= 0 || percentage > 100)
+        {
+            throw new ArgumentOutOfRangeException(nameof(percentage), "Percentage must be between 0 and 100.");
+        }
+
+        // 남은 성장 시간 계산
+        int remainingGrowthTime = currentCrop.totalGrowthTime - currentCrop.currentGrowthTime;
+
+        // 줄일 시간 계산
+        int reduceTime = Mathf.FloorToInt(remainingGrowthTime * (percentage / 100));
+
+        // 현재 성장 시간 증가
+        currentCrop.currentGrowthTime += reduceTime;
+
+        // 성장 시간이 총 성장 시간을 초과하지 않도록 조정
+        if (currentCrop.currentGrowthTime > currentCrop.totalGrowthTime)
+            currentCrop.currentGrowthTime = currentCrop.totalGrowthTime;
+        
+        float growthPercentage = currentCrop.GetGrowthPercentage();
+
+        _circularProgressBar.UpdateProgress(growthPercentage * 100);
+        
+        if (growthPercentage >= 1f)
+        {
+            _circularProgressBar.gameObject.SetActive(false);
+            ShowHarvestButton();
+        }
+        else
+        {
+            _circularProgressBar.gameObject.SetActive(true);
+        }
+    }
+    
     /// <summary>
     /// 버튼 및 UI의 표시 상태를 갱신
     /// </summary>
@@ -323,9 +376,12 @@ public class FarmBuilding : Placeable
     /// </summary>
     public void ShowHarvestButton()
     {
-        Sprite image = DataBaseManager.Instance.ItemTable.GetItemInformById(currentCrop.cropId).image_noBackground;
-        harvestButton.transform.GetChild(0).GetComponent<Image>().sprite = image;
         harvestButton.gameObject.SetActive(true);
+        Sprite image = DataBaseManager.Instance.ItemTable.GetItemInformById(currentCrop.cropId).image_noBackground;
+        
+        Transform buttonChild = harvestButton.transform.GetChild(0);
+        Image imageComponent = buttonChild.GetComponent<Image>();
+        imageComponent.sprite = image;
     }
 
     /// <summary>

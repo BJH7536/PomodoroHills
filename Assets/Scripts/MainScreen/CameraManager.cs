@@ -3,8 +3,12 @@ using Cinemachine;
 using DG.Tweening;
 using VInspector;
 
-public class CameraController : MonoBehaviour
+[DefaultExecutionOrder(-1)]
+public class CameraManager : MonoBehaviour
 {
+    private static CameraManager instance;
+    public static CameraManager Instance => instance;
+    
     [Header("Control")]
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
     [SerializeField] private BoxCollider cameraArea;
@@ -25,6 +29,19 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Transform pomo;
     private Vector3 DeltaToFocus;
     
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+    }
     
     private void Start()
     {
@@ -156,5 +173,15 @@ public class CameraController : MonoBehaviour
         targetPosition = ClampPositionWithinConfiner(targetPosition);
 
         virtualCamera.transform.DOMove(targetPosition, 0.5f, false);
+    }
+
+    public void EnableCameraPanning()
+    {
+        TouchManager.Instance.OnDragDelta += HandleDragDelta;
+    }
+    
+    public void DisableCameraPanning()
+    {
+        TouchManager.Instance.OnDragDelta -= HandleDragDelta;
     }
 }

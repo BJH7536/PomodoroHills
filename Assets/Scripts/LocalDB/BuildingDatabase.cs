@@ -24,8 +24,8 @@ public class BuildingData
     [SerializeField] private List<string> tags;             // 건물 태그 리스트 (여러 태그를 가질 수 있음)
     public List<string> Tags => tags;
 
-    [SerializeField] private List<int> growable;             // 재배 가능한 작물들의 리스트 (id를 저장)
-    public List<int> Growable => growable;
+    [SerializeField] private List<int> plantable;             // 재배 가능한 작물들의 리스트 (id를 저장)
+    public List<int> Plantable => plantable;
 }
 
 /// <summary>
@@ -101,7 +101,7 @@ public class BuildingDatabase : ScriptableObject
         BuildingData data = GetBuildingById(id);
 
         if (data != null)
-            return data.Growable;
+            return data.Plantable;
         else
             return null;
     }

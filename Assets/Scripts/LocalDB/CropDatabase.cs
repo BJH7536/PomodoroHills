@@ -17,6 +17,9 @@ public class CropData
     [SerializeField] private int harvestSeconds;                // 수확 시간 (단위: 초)
     public int HarvestSeconds => harvestSeconds;
 
+    [SerializeField] private GameObject[] growthSteps;          // 성장 단계
+    public GameObject[] GrowthSteps => growthSteps;
+    
     [SerializeField] private List<string> tags;              // 작물 태그 리스트
     public List<string> Tags => tags;
 }

@@ -44,8 +44,8 @@ MonoBehaviour:
     image_noBackground: {fileID: 0}
     type: 1
   - id: 102
-    name: "\uC7A5\uC2DD\uBB3C2"
-    image: {fileID: 21300000, guid: 691d0785343029f448d488db972361b2, type: 3}
+    name: "\uBAA8\uB2E5\uBD88"
+    image: {fileID: 21300000, guid: fa1a2b252cb793d47abdc805a33d518b, type: 3}
     image_noBackground: {fileID: 0}
     type: 1
   - id: 103

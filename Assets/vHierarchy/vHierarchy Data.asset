@@ -1713,8 +1713,8 @@ MonoBehaviour:
           iconNameOrGuid: Settings Icon
         - colorIndex: 2
           iconNameOrGuid: Settings Icon
-        - colorIndex: 8
-          iconNameOrGuid: Favorite
+        - colorIndex: 2
+          iconNameOrGuid: Settings Icon
         - colorIndex: 7
           iconNameOrGuid: 
         - colorIndex: 4

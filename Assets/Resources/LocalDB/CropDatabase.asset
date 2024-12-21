@@ -16,20 +16,40 @@ MonoBehaviour:
   - id: 300
     name: "\uC0AC\uACFC"
     harvestSeconds: 300
+    growthSteps:
+    - {fileID: 6564903297514069746, guid: 5bdcdb4deedaf6e409851a174d3d4e24, type: 3}
+    - {fileID: 781612930213299969, guid: f1a9dc0e309b14e46aaa6d14de50150f, type: 3}
+    - {fileID: 995944932278687719, guid: e7a1dd77975e41a49b95cf2348454f80, type: 3}
+    - {fileID: 6765847892771597468, guid: 80773ab3b0247a64391e3fd3ee1a8883, type: 3}
     tags:
     - "\uACFC\uC218\uC6D0"
   - id: 301
     name: "\uBCF5\uC22D\uC544"
     harvestSeconds: 2700
+    growthSteps:
+    - {fileID: 5089663513199487212, guid: 6a7a4a2c4c38d2a4e9ad67f0c42d2337, type: 3}
+    - {fileID: 3337307327985526894, guid: e86d422263cd26e48b0befecea88ac60, type: 3}
+    - {fileID: 5044547191871244075, guid: 4870c6624385dd84682a452cb1e7a653, type: 3}
+    - {fileID: 719850106162852674, guid: 11b9da2f15ee6854baeaf69e6afd4add, type: 3}
     tags:
     - "\uACFC\uC218\uC6D0"
   - id: 302
     name: "\uC625\uC218\uC218"
     harvestSeconds: 900
+    growthSteps:
+    - {fileID: 1238140437920138, guid: 9b23f07c2a1e1b04bbd30a32b69979ad, type: 3}
+    - {fileID: 1765584645647972, guid: 5739e9af46d925042ace10a33d018ed9, type: 3}
+    - {fileID: 1388164955493668, guid: d3547fa0ff4498642b2fa7852ad46f65, type: 3}
+    - {fileID: 1246158993685342, guid: ec9f18155bed71749adcfda45a2a7efd, type: 3}
     tags:
     - "\uBC2D"
   - id: 303
     name: "\uD1A0\uB9C8\uD1A0"
     harvestSeconds: 1800
+    growthSteps:
+    - {fileID: 1994261357479266, guid: 0c04e4cb51547924cbfa6ca8c3c76f32, type: 3}
+    - {fileID: 1147994195056072, guid: 4ea42f5e5362f4f4992b86092b0f70da, type: 3}
+    - {fileID: 1800831289374606, guid: 732d147a04bb8fa46b1d79722dd5c886, type: 3}
+    - {fileID: 1261134927141026, guid: 66ea212173e968646bbd6ab3185487e0, type: 3}
     tags:
-    - "\uACFC\uC218\uC6D0"
+    - "\uBC2D"

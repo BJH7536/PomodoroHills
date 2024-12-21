@@ -340,7 +340,6 @@ public class TileMapManager : MonoBehaviour
     }
 #endif
 
-    // Custom Editor에서 호출될 함수
     [Button]
     public void DisplayOccupiedGrids()
     {

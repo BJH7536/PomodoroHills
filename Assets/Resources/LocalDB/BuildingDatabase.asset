@@ -21,16 +21,16 @@ MonoBehaviour:
     sizeZ: 3
     tags:
     - "\uC8FC\uAC70\uC6A9"
-    growable: 
+    plantable: 
   - id: 1
     name: "\uACFC\uC218\uC6D0"
-    buildingPrefab: {fileID: 6923308248706837708, guid: 63e86079e17c8924ab82c8187ecf9d91,
+    buildingPrefab: {fileID: 3960156026151172499, guid: 63e86079e17c8924ab82c8187ecf9d91,
       type: 3}
     sizeX: 4
     sizeZ: 4
     tags:
     - "\uB18D\uC5C5\uC6A9"
-    growable: 2c0100002d010000
+    plantable: 2c0100002d010000
   - id: 2
     name: "\uBC2D"
     buildingPrefab: {fileID: 6538528417987340140, guid: d9d63b1d604f18f4a9754942810b9eb2,
@@ -39,13 +39,13 @@ MonoBehaviour:
     sizeZ: 1
     tags:
     - "\uB18D\uC5C5\uC6A9"
-    growable: 2e0100002f010000
+    plantable: 2e0100002f010000
   - id: 3
     name: "\uBE44\uB2D0 \uD558\uC6B0\uC2A4"
     buildingPrefab: {fileID: 4823764407894527551, guid: 460cc210bc935fd4b8d666972cf52489,
       type: 3}
-    sizeX: 1
-    sizeZ: 2
+    sizeX: 2
+    sizeZ: 4
     tags:
     - "\uB18D\uC5C5\uC6A9"
-    growable: 2e0100002f010000
+    plantable: 2e0100002f010000

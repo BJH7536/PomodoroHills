@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 
 [DefaultExecutionOrder(-1)]
 public class TouchManager : MonoBehaviour

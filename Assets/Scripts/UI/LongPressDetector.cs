@@ -1,15 +1,17 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 public class LongPressDetector : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
 {
-    public float longPressDuration = 1.0f;  // 롱프레스를 인식하는 시간 (초)
-    private bool isPressing = false;
+    public float longPressDuration = 1.0f;      // 롱프레스를 인식하는 시간 (초)
+    public bool isPressing = false;
+    public bool longPressTriggered = false;    // 롱프레스 이벤트의 발생 여부 추적
     private float pressTime = 0f;
-
-    // UnityEvent로 롱프레스 시 호출할 이벤트를 에디터에서 지정할 수 있음
-    public UnityEvent onLongPress;
+    
+    public UnityEvent onLongPress;           // 롱프레스 시작 시 호출되는 이벤트
+    public UnityEvent onLongPressEnd;        // 롱프레스 종료 시 호출되는 이벤트
 
     private void Update()
     {
@@ -18,9 +20,9 @@ public class LongPressDetector : MonoBehaviour, IPointerDownHandler, IPointerUpH
             pressTime += Time.deltaTime;
 
             // 롱프레스 시간이 지나면 이벤트 호출
-            if (pressTime >= longPressDuration)
+            if (!longPressTriggered && pressTime >= longPressDuration)
             {
-                isPressing = false;  // 중복 호출 방지
+                longPressTriggered = true;
                 onLongPress?.Invoke();  // 롱프레스 이벤트 호출
             }
         }
@@ -30,20 +32,34 @@ public class LongPressDetector : MonoBehaviour, IPointerDownHandler, IPointerUpH
     {
         // 버튼이 눌리면 타이머 시작
         isPressing = true;
+        longPressTriggered = false;
         pressTime = 0f;
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
         // 버튼이 떼어지면 타이머 종료
-        isPressing = false;
-        pressTime = 0f;
+        if (longPressTriggered)
+        {
+            onLongPressEnd?.Invoke();  // 롱프레스 종료 이벤트 호출
+        }
+        Reset();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        // 포인터가 영역을 벗어나면 롱프레스 취소
+        // 롱프레스가 아직 트리거되지 않았을 때만 롱프레스를 취소
+        if (!longPressTriggered)
+        {
+            Reset();
+        }
+        // 롱프레스가 이미 시작된 경우에는 아무 작업도 하지 않음
+    }
+    
+    private void Reset()
+    {
         isPressing = false;
+        longPressTriggered = false;
         pressTime = 0f;
     }
 }

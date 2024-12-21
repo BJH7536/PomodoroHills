@@ -191,7 +191,7 @@ public class PlaceableManager : MonoBehaviour
         string path = Application.persistentDataPath + "/placeables.json";
         File.WriteAllText(path, json);
 
-        Debug.Log("Placeables saved to " + path);
+        DebugEx.Log("Placeables saved to " + path);
     }
 
     public void LoadPlaceables()
@@ -235,7 +235,7 @@ public class PlaceableManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogWarning("Unknown Placeable type: " + data.type);
+                    DebugEx.LogWarning("Unknown Placeable type: " + data.type);
                     continue;
                 }
 
@@ -255,6 +255,8 @@ public class PlaceableManager : MonoBehaviour
                             farmBuilding.currentCrop = farmData.currentCrop;
                             farmBuilding.IsCropPlanted = farmData.isCropPlanted;
 
+                            farmBuilding.plantVisualizer?.Visualize();
+                            
                             if (farmBuilding.IsCropPlanted && farmBuilding.currentCrop != null)
                             {
                                 if (!farmBuilding.currentCrop.IsFullyGrown())
@@ -266,6 +268,9 @@ public class PlaceableManager : MonoBehaviour
                                     farmBuilding.ShowHarvestButton();
                                 }
                             }
+                            
+                            
+                            
                         }
 
                         TileMapManager.Instance.OccupyEveryTile(placeable.position, placeable.size, placeable.rotation);
@@ -275,15 +280,15 @@ public class PlaceableManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogWarning("Failed to create Placeable with id " + data.id);
+                    DebugEx.LogWarning("Failed to create Placeable with id " + data.id);
                 }
             }
 
-            Debug.Log("Placeables loaded from " + path);
+            DebugEx.Log("Placeables loaded from " + path);
         }
         else
         {
-            Debug.LogWarning("No saved placeables found at " + path);
+            DebugEx.LogWarning("No saved placeables found at " + path);
         }
     }
 
@@ -365,7 +370,7 @@ public class PlaceableManager : MonoBehaviour
 
             return newObj;
         }
-        Debug.Log("Can't Find id in Table");
+        DebugEx.Log("Can't Find id in Table");
         return null;
     }
     
