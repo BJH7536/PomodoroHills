@@ -1,6 +1,7 @@
 using UnityEngine;
 using Cinemachine;
 using DG.Tweening;
+using Sirenix.OdinInspector;
 
 [DefaultExecutionOrder(-1)]
 public class CameraManager : MonoBehaviour
@@ -164,6 +165,7 @@ public class CameraManager : MonoBehaviour
         return new Vector3(closestPoint.x, cameraArea.transform.position.y, closestPoint.z);
     }
 
+    [Button]
     public void FocusToPomo()
     {
         Vector3 targetPosition = pomo.position + DeltaToFocus;

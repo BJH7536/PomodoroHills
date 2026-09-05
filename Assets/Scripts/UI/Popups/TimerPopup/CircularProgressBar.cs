@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Sirenix.OdinInspector;
 
 public class CircularProgressBar : MonoBehaviour
 {
@@ -26,6 +27,7 @@ public class CircularProgressBar : MonoBehaviour
 
 	#endregion
 	
+	[Button]
 	public void ChangeColorFocus()
 	{
 		progressImage.color = runningFocus;
@@ -33,6 +35,7 @@ public class CircularProgressBar : MonoBehaviour
 		circle_end.color = runningFocus;
 	}
 	
+	[Button]
 	public void ChangeColorRelax()
 	{
 		progressImage.color = runningRelax;
@@ -40,6 +43,7 @@ public class CircularProgressBar : MonoBehaviour
 		circle_end.color = runningRelax;
 	}
 	
+	[Button]
 	public void ChangeColorPaused()
 	{
 		progressImage.color = paused;

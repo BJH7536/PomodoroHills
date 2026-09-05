@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using Sirenix.OdinInspector;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -339,6 +340,7 @@ public class TileMapManager : MonoBehaviour
     }
 #endif
 
+    [Button]
     public void DisplayOccupiedGrids()
     {
         // tileStates가 null이면 초기화

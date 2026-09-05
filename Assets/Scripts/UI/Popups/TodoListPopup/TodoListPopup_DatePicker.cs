@@ -1,14 +1,17 @@
 using System;
 using TMPro;
 using UnityEngine;
+using Sirenix.OdinInspector;
 
 public class TodoListPopup_DatePicker : Popup
 {
+    [TabGroup("TodoListPopup_DatePicker", "information")]
     [SerializeField] private ScrollSystem yearScrollSystem;     // 연도 선택 스크롤 시스템
     [SerializeField] private ScrollSystem monthScrollSystem;    // 월 선택 스크롤 시스템
     [SerializeField] private ScrollSystem dayScrollSystem;      // 일 선택 스크롤 시스템
     [SerializeField] private TMP_Text selectedDateText;         // 선택된 날짜를 표시하는 텍스트
     
+    [TabGroup("TodoListPopup_DatePicker", "Caller")] 
     [SerializeField] private DatePickerCaller _datePickerCaller;
     
     private int selectedYear;  // 선택된 연도

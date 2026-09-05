@@ -6,6 +6,7 @@ using PomodoroHills;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
+using Sirenix.OdinInspector;
 
 /// <summary>
 /// 인벤토리 팝업을 관리하는 클래스입니다.
@@ -16,12 +17,14 @@ public class InventoryPopup : Popup
 {
     #region Serialized Fields
 
+    [TabGroup("InventoryPopup", "Tweening")] 
     [SerializeField] private RectTransform panel;                       // 애니메이션을 적용할 패널
     [SerializeField] private RectTransform panelOpeningStartPosition;   // 애니메이션 시작 위치
     [SerializeField] private RectTransform panelOpeningEndPosition;     // 애니메이션 종료 위치
     [SerializeField] private Ease openingEase = Ease.OutQuad;           // 애니메이션 이징 함수
     [SerializeField] private float duration = 0.5f;                     // 애니메이션 지속 시간
     
+    [TabGroup("InventoryPopup", "Inventory")]
     [SerializeField] private List<Toggle> tabToggles;                   // 탭 토글 리스트
     [SerializeField] private List<GameObject> contentPanels;            // 탭에 대응하는 콘텐츠 패널 리스트
     [SerializeField] private HorizontalLayoutGroup layoutGroup;         // 레이아웃 그룹

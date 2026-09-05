@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Sirenix.OdinInspector;
 
 [DefaultExecutionOrder(-1)]
 public class SoundManager : MonoBehaviour
@@ -27,6 +28,7 @@ public class SoundManager : MonoBehaviour
 
     #endregion
     
+    [TabGroup("SoundManager", "Volumes")]
     [SerializeField] private float masterSoundVolume = 1.0f;             // 마스터 볼륨
 
     public float MasterSoundVolume
@@ -68,6 +70,7 @@ public class SoundManager : MonoBehaviour
     public Action<float> OnChangeMusicSoundVolume;
     public Action<float> OnChangeSfxSoundVolume;
     
+    [TabGroup("SoundManager", "Pooling")]
     [SerializeField] private AudioSource backgroundAudioSource;
     [SerializeField] private GameObject audioSourcePrefab;
     [SerializeField] private int InitialPoolSize = 10;

@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Sirenix.OdinInspector;
 
 public class House : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private bool turn;
     [SerializeField] private GameObject LightSource;
 
+    [Button]
     public void TurnOn()
     {
         LightSource.SetActive(true);
@@ -13,6 +15,7 @@ public class House : MonoBehaviour, IPointerClickHandler
         turn = true;
     }
 
+    [Button]
     public void TurnOff()
     {
         LightSource.SetActive(false);

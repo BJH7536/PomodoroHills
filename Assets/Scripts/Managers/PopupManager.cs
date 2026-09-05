@@ -5,6 +5,7 @@ using LeTai.Asset.TranslucentImage;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Sirenix.OdinInspector;
 using Random = UnityEngine.Random;
 
 /// <summary>
@@ -24,10 +25,12 @@ public class PopupManager : MonoBehaviour
     /// </summary>
     public static PopupManager Instance => instance;
 
+    [TabGroup("PopupManager", "PopupManagement")] 
     [SerializeField] private Transform popupCanvas;         // 팝업이 생성될 부모 캔버스
     [SerializeField] private TranslucentImageSource _translucentImageSource;
     [SerializeField] private PomoPopupImages pomoPopupImages;
 
+    [TabGroup("PopupManager", "Sounds")] 
     [SerializeField] private List<AudioClip> PopupOpen;
     
     /// <summary>
@@ -41,6 +44,7 @@ public class PopupManager : MonoBehaviour
     private Dictionary<Type, Stack<Popup>> popupPool = new Dictionary<Type, Stack<Popup>>();
 
     
+    [Button]
     public void TopOfPopupStack()
     {
         Popup top = activePopups.Peek();

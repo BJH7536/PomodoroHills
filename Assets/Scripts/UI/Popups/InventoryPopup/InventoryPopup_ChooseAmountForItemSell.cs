@@ -3,9 +3,11 @@ using Cysharp.Threading.Tasks;
 using PomodoroHills;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Sirenix.OdinInspector;
 
 public class InventoryPopup_ChooseAmountForItemSell : Popup
 {
+    [TabGroup("InventoryPopup_ChooseAmountForItemSell", "information")] 
     [SerializeField] private ItemTable ItemTable;
     [SerializeField] private ScrollSystem amountScrollSystem;
     

@@ -5,13 +5,16 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Sirenix.OdinInspector;
 
 public class PanelCircularTimer : MonoBehaviour
 {
     #region SerializeFields
     
+    [TabGroup("PanelCircularTimer", "Tween")]
     [SerializeField] private float buttonTweenDuration = 0.7f;
     
+    [TabGroup("PanelCircularTimer", "SerializeFields")]
     [SerializeField] private RectTransform playButtonRect;
     [SerializeField] private RectTransform pauseOrResumeButtonRect;
     [SerializeField] private RectTransform pauseOrResumeButtonOriginPos;
@@ -33,6 +36,7 @@ public class PanelCircularTimer : MonoBehaviour
 
     [SerializeField] private GameObject needTodoItemSelect;
     
+    [TabGroup("PanelCircularTimer", "TodoItemUI")] 
     [SerializeField] private GameObject todoItemUI;
     [SerializeField] private TMP_Text currentTodoItemName;
     [SerializeField] private TMP_Text currentTodoItemDescription;
