@@ -6,20 +6,16 @@ using TMPro;
 using TodoSystem;
 using UnityEngine;
 using UnityEngine.UI;
-using VInspector;
 
 public class TodoListPopup : Popup
 {
-    [Tab("TodoList")]
     [SerializeField] private ScrollRect scrollRect;
     [SerializeField] private TodoItemUIPool todoItemUIPool; // TodoItemUIPool 참조
     
-    [Tab("Tweening")]
     [SerializeField] private float originScale = 0.7f;
     [SerializeField] private float duration = 0.3f;
     [SerializeField] private Ease Ease = Ease.OutBack;
     
-    [Tab("Other")]
     [SerializeField] private TMP_Text titleText;
     [SerializeField] private string TitleBase = "Todo List";
     [SerializeField] private GameObject panel;

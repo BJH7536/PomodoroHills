@@ -201,7 +201,8 @@ public class PomoController : MonoBehaviour
                 }
                 catch (Exception ex)
                 {
-                    if (ex is OperationCanceledException || (ex is AggregateException aggEx && aggEx.InnerExceptions.All(e => e is OperationCanceledException)))
+                    if (ex is OperationCanceledException || 
+                        (ex is AggregateException aggEx && aggEx.InnerExceptions.All(e => e is OperationCanceledException)))
                     {
                         DebugEx.Log("OperationCanceledException 발생함");
                         currentCommand.Cancel();
@@ -255,7 +256,7 @@ public class PomoController : MonoBehaviour
         }
     }
     
-        /// <summary>
+    /// <summary>
     /// 뽀모가 혼자 도는 사이클
     /// 돌아다니거나, 말을 걸거나
     /// </summary>

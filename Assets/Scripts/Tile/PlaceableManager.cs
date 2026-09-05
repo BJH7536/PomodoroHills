@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using PomodoroHills;
 using UnityEngine;
 using UnityEngine.Serialization;
-using VInspector;
 
 //최우선 과제, 배치 절차 진입시 현재 소재 Free하기
 // placeable이 자신의 위치정보를 나타내지않아 transform 직접 참조 혹은 생성/확인 시transform을 따라가게합니다.
@@ -91,7 +90,6 @@ public class PlaceableManager : MonoBehaviour
         SaveTimerState();
     }
 
-    [Button]
     public void DebugCurrentState()
     {
         DebugEx.Log($"IsEdit : {IsEdit}");

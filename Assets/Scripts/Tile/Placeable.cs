@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using VInspector;
 
 [Serializable]
 public class Placeable : MonoBehaviour
@@ -52,19 +51,19 @@ public class Placeable : MonoBehaviour
         }
     }
 
-    [Button] // 오브젝트를 초록색으로 만드는 함수
+    // 오브젝트를 초록색으로 만드는 함수
     public void SetGreenColor()
     {
         SetColor(Color.green);
     }
 
-    [Button] // 오브젝트를 빨간색으로 만드는 함수
+    // 오브젝트를 빨간색으로 만드는 함수
     public void SetRedColor()
     {
         SetColor(Color.red);
     }
 
-    [Button] // 오브젝트를 원래 색상으로 복구하는 함수
+    // 오브젝트를 원래 색상으로 복구하는 함수
     public void ResetColor()
     {
         foreach (RendererInfo info in renderers)

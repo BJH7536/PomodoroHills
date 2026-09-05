@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using VInspector;
 
 public class Campfire : MonoBehaviour, IPointerClickHandler
 {
@@ -9,7 +8,6 @@ public class Campfire : MonoBehaviour, IPointerClickHandler
     [SerializeField] private GameObject VFX;
     [SerializeField] private GameObject LightSource;
 
-    [Button]
     public void TurnOn()
     {
         VFX.SetActive(true);
@@ -18,7 +16,6 @@ public class Campfire : MonoBehaviour, IPointerClickHandler
         turn = true;
     }
 
-    [Button]
     public void TurnOff()
     {
         VFX.SetActive(false);

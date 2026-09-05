@@ -8,11 +8,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-using VInspector;
 
 public class SessionManager : MonoBehaviour
 {
-    [Tab("Information")]
     [SerializeField] private TMP_InputField inputField_user_id;
     [SerializeField] private TMP_InputField inputField_name;
     [SerializeField] private TMP_InputField inputField_age;
@@ -33,7 +31,6 @@ public class SessionManager : MonoBehaviour
     [SerializeField] private Button button_UpdateDataToServer;
 
     
-    [Tab("Other")]
     [SerializeField] private GameObject loading;
     [SerializeField] string getUrl = $"http://211.188.54.196:5000/user";
     [SerializeField] string postUrl = $"http://211.188.54.196:5000/user";

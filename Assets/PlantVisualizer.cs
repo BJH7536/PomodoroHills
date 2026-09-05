@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using VInspector;
 
 public class PlantVisualizer : MonoBehaviour
 {
@@ -18,7 +17,6 @@ public class PlantVisualizer : MonoBehaviour
         farmBuilding = GetComponent<FarmBuilding>();
     }
 
-    [Button]
     public virtual void Visualize()
     {
         if (!farmBuilding.IsCropPlanted) return;
@@ -52,7 +50,6 @@ public class PlantVisualizer : MonoBehaviour
         UpdatePlantVisualsAsync(vfx).Forget();
     }
 
-    [Button]
     public virtual UniTaskVoid ResetVisualize()
     {
         foreach (var tf in plantPoints)
