@@ -74,3 +74,19 @@ crashlytics-build.properties
 Assets/UModeler-Hub.meta
 /Packages/com.tripolygon.umodeler-x-1.0.4-plus
 ProjectSettings/UModeler-Hub.json
+
+# Unity 크래시 복구 씬 (자동 생성)
+/[Aa]ssets/_Recovery/
+/[Aa]ssets/_Recovery.meta
+
+# 스크린샷 (로컬 산출물, 용량 큼)
+/[Aa]ssets/[Ss]creenshots/
+/[Aa]ssets/[Ss]creenshots.meta
+
+# 에디터 / 도구 설정
+.vscode/
+*.slnx
+
+# oh-my-claudecode 작업 상태
+.omc/
+/[Aa]ssets/.omc/
