@@ -264,8 +264,9 @@ public class PomoController : MonoBehaviour
             {
                 if (Random.Range(0.0f, 1.0f) < 0.8f)
                 {
-                    // 이동 명령 생성
-                    EnqueueCommand(CreateRandomMoveCommand());
+                    // 이동 명령 생성 (유효한 목적지를 못 찾으면 이번 사이클은 건너뜀)
+                    MoveCommand moveCommand = CreateRandomMoveCommand();
+                    if (moveCommand != null) EnqueueCommand(moveCommand);
                 }
                 else
                 {
@@ -279,21 +280,29 @@ public class PomoController : MonoBehaviour
         }
     }
     
+    private const int MaxMovePointAttempts = 10;
+
+    /// <summary>
+    /// 도달 가능한 무작위 목적지로 가는 MoveCommand를 만든다.
+    /// 에이전트가 NavMesh 위에 없거나 시도 횟수 안에 유효한 목적지를 못 찾으면 null.
+    /// (무한 루프로 메인 스레드가 멈추는 것을 막기 위해 시도 횟수를 제한한다)
+    /// </summary>
     private MoveCommand CreateRandomMoveCommand()
     {
-        // 목적지 설정
-        Vector3 finalPosition = GetRandomMovablePoint(transform.position, moveRadius, minDistance);
-
-        MoveCommand command = null;
-
-        while (true)
+        if (!agent.isOnNavMesh)
         {
-            command = CreateMoveCommand(finalPosition);
-
-            if (command != null) return command;
-            
-            finalPosition = GetRandomMovablePoint(transform.position, moveRadius, minDistance);
+            DebugEx.LogWarning("뽀모가 NavMesh 위에 없어 이동 명령을 만들 수 없습니다. NavMesh 베이크 상태를 확인하세요.", this);
+            return null;
         }
+
+        for (int attempt = 0; attempt < MaxMovePointAttempts; attempt++)
+        {
+            Vector3 finalPosition = GetRandomMovablePoint(transform.position, moveRadius, minDistance);
+            MoveCommand command = CreateMoveCommand(finalPosition);
+            if (command != null) return command;
+        }
+
+        return null;
     }
     
     private MoveCommand CreateMoveCommand(Vector3 position)
