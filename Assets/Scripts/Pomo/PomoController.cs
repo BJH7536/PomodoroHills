@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using GooglePlayGames;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
@@ -121,9 +120,6 @@ public class PomoController : MonoBehaviour
         
         // 애니메이션 출력
         animationController.PlayGreeting();
-        
-        // 처음 인사하기 업적
-        PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement_2);
         
         // 현재 대화 중이 아니면 DialogueCommand를 최우선으로 실행
         InsertCommandAtFront(CreateDialogueCommand());

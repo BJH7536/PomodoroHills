@@ -1,8 +1,6 @@
 using System.IO;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using GooglePlayGames;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -41,41 +39,6 @@ public class SettingsPopup : Popup
     {
         SoundManager.Instance.SfxSoundVolume = value / 100.0f;
     }
-    
-    #region GPGS Login
-    
-    /// <summary>
-    /// 구글 GPGS 로그인 버튼
-    /// </summary>
-    public void GPGSLoginButton()
-    {
-       PlayGamesPlatform.Instance.Authenticate(ProcessAuthentication);
-    }
-    
-    private void ProcessAuthentication(bool status) {
-        if (status) {
-            // 로그인에 성공
-    
-            if (GameObject.Find("Label-Name").TryGetComponent(out TMP_Text text))
-            {
-                text.text = PlayGamesPlatform.Instance.GetUserDisplayName();
-            }
-            
-            PlayGamesPlatform.Instance.UnlockAchievement(GPGSIds.achievement, (bool success) => { });
-            
-            // 로그인 성공 시 PlayerPrefs에 플래그 저장
-            PlayerPrefs.SetInt(GPGSManager.Instance.LoginFlagKey, 1);
-            PlayerPrefs.Save();
-            
-            // Continue with Play Games Services
-        } else {
-            // Disable your integration with Play Games Services or show a login button
-            // to ask users to sign-in. Clicking it should call
-            // PlayGamesPlatform.Instance.ManuallyAuthenticate(ProcessAuthentication).
-        }
-    }
-
-    #endregion
     
     #region Data Reset
     

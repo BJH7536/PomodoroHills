@@ -1,6 +1,3 @@
-// using GooglePlayGames;
-
-using GooglePlayGames;
 using UnityEngine;
 
 public class MainUI : MonoBehaviour
@@ -21,11 +18,6 @@ public class MainUI : MonoBehaviour
         PopupManager.Instance.HideAllPopups();
     }
 
-    public void OpenGPGSAchievement()
-    {
-        PlayGamesPlatform.Instance.ShowAchievementsUI();
-    }
-    
     // 설정 팝업을 열기 위한 메서드
     public void OpenSettingsPopup() 
     {
